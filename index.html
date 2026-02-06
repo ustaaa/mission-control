@@ -3112,6 +3112,18 @@
             ],
             lastUpdated: new Date().toISOString()
         };
+        function getProxyBasePath() {
+            // If the app is mounted under a prefix (e.g. /kanban via Tailscale Serve),
+            // API calls must include that same prefix.
+            const parts = location.pathname.split('/').filter(Boolean);
+            if (parts.length === 0) return '';
+            return `/${parts[0]}`;
+        }
+
+        function proxyUrl(path) {
+            return `${getProxyBasePath()}${path}`;
+        }
+
         async function loadTasksFromGitHub() {
             STATE.isLoading = true;
             
@@ -3119,7 +3131,7 @@
             if (CONFIG.useProxy) {
                 try {
                     console.log('Fetching from local proxy...');
-                    const response = await fetch('api/tasks'); // Relative path
+                    const response = await fetch(proxyUrl('/api/tasks'));
                     if (!response.ok) throw new Error('Proxy error');
                     
                     const data = await response.json();
@@ -3207,7 +3219,7 @@
             // PROXY MODE
             if (CONFIG.useProxy) {
                 try {
-                    const response = await fetch('api/tasks', {
+                    const response = await fetch(proxyUrl('/api/tasks'), {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(STATE.data)
