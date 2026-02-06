@@ -2,7 +2,7 @@
   "tasks": [
     {
       "id": "guide_onboarding",
-      "title": "\ud83d\ude80 Onboarding Guide \u2014 Set Up Mission Control",
+      "title": "🚀 Onboarding Guide — Set Up Mission Control",
       "description": "Welcome to Mission Control! Follow these steps to complete your setup. Work through each subtask in order.\n\n**Tip:** Click on a subtask to see detailed instructions. Check it off when done.",
       "status": "permanent",
       "project": "guides",
@@ -13,17 +13,17 @@
       "subtasks": [
         {
           "id": "sub_001",
-          "title": "1. Enable GitHub Pages: Settings \u2192 Pages \u2192 Branch: main \u2192 Save",
+          "title": "1. Enable GitHub Pages: Settings → Pages → Branch: main → Save",
           "done": false
         },
         {
           "id": "sub_002",
-          "title": "2. Create GitHub Token: github.com/settings/tokens \u2192 Generate (classic) \u2192 Scope: repo",
+          "title": "2. Create GitHub Token: github.com/settings/tokens → Generate (classic) → Scope: repo",
           "done": false
         },
         {
           "id": "sub_003",
-          "title": "3. Connect Dashboard: Open your GitHub Pages URL \u2192 Click 'Connect GitHub' \u2192 Paste token",
+          "title": "3. Connect Dashboard: Open your GitHub Pages URL → Click 'Connect GitHub' → Paste token",
           "done": false
         },
         {
@@ -33,17 +33,17 @@
         },
         {
           "id": "sub_005",
-          "title": "5. Enable Funnel: tailscale funnel 18789 \u2192 Copy your URL",
+          "title": "5. Enable Funnel: tailscale funnel 18789 → Copy your URL",
           "done": false
         },
         {
           "id": "sub_006",
-          "title": "6. Generate Webhook Token: openssl rand -hex 32 \u2192 Save it",
+          "title": "6. Generate Webhook Token: openssl rand -hex 32 → Save it",
           "done": false
         },
         {
           "id": "sub_007",
-          "title": "7. Add GitHub Webhook: Settings \u2192 Webhooks \u2192 Add \u2192 URL: https://YOUR-TAILSCALE-URL/hooks/github?token=YOUR-TOKEN",
+          "title": "7. Add GitHub Webhook: Settings → Webhooks → Add → URL: https://YOUR-TAILSCALE-URL/hooks/github?token=YOUR-TOKEN",
           "done": false
         },
         {
@@ -64,8 +64,8 @@
     },
     {
       "id": "guide_user",
-      "title": "\ud83d\udcd6 User Guide \u2014 How to Use Mission Control",
-      "description": "Learn how to use Mission Control effectively. Both you AND MoltBot can manage tasks!\n\n**Two ways to manage tasks:**\n\u2022 \ud83d\udc64 **You** \u2014 Use the Dashboard UI (drag & drop, buttons, forms)\n\u2022 \ud83e\udd16 **MoltBot** \u2014 Uses CLI scripts or edits tasks.json directly",
+      "title": "📖 User Guide — How to Use Mission Control",
+      "description": "Learn how to use Mission Control effectively. Both you AND MoltBot can manage tasks!\n\n**Two ways to manage tasks:**\n• 👤 **You** — Use the Dashboard UI (drag & drop, buttons, forms)\n• 🤖 **MoltBot** — Uses CLI scripts or edits tasks.json directly",
       "status": "permanent",
       "project": "guides",
       "tags": [
@@ -75,12 +75,12 @@
       "subtasks": [
         {
           "id": "sub_001",
-          "title": "\u2014 THE BOARD \u2014",
+          "title": "— THE BOARD —",
           "done": false
         },
         {
           "id": "sub_002",
-          "title": "Columns: Permanent (recurring) \u2192 Backlog \u2192 In Progress \u2192 Review \u2192 Done",
+          "title": "Columns: Permanent (recurring) → Backlog → In Progress → Review → Done",
           "done": false
         },
         {
@@ -95,22 +95,22 @@
         },
         {
           "id": "sub_005",
-          "title": "\u2014 CREATING TASKS \u2014",
+          "title": "— CREATING TASKS —",
           "done": false
         },
         {
           "id": "sub_006",
-          "title": "\ud83d\udc64 You: Click '+' button in any column header",
+          "title": "👤 You: Click '+' button in any column header",
           "done": false
         },
         {
           "id": "sub_007",
-          "title": "\ud83e\udd16 MoltBot: Edits data/tasks.json or uses CLI",
+          "title": "🤖 MoltBot: Edits data/tasks.json or uses CLI",
           "done": false
         },
         {
           "id": "sub_008",
-          "title": "\u2014 TASK DETAILS \u2014",
+          "title": "— TASK DETAILS —",
           "done": false
         },
         {
@@ -135,7 +135,7 @@
         },
         {
           "id": "sub_013",
-          "title": "Priority: High (\ud83d\udd34) / Medium (\ud83d\udfe1) / Low (\ud83d\udfe2)",
+          "title": "Priority: High (🔴) / Medium (🟡) / Low (🟢)",
           "done": false
         },
         {
@@ -145,7 +145,7 @@
         },
         {
           "id": "sub_015",
-          "title": "\u2014 WORKFLOW WITH MOLTBOT \u2014",
+          "title": "— WORKFLOW WITH MOLTBOT —",
           "done": false
         },
         {
@@ -155,7 +155,7 @@
         },
         {
           "id": "sub_017",
-          "title": "2. Move to 'In Progress' \u2192 MoltBot gets notified via webhook",
+          "title": "2. Move to 'In Progress' → MoltBot gets notified via webhook",
           "done": false
         },
         {
@@ -170,72 +170,72 @@
         },
         {
           "id": "sub_020",
-          "title": "5. You review: Approve \u2192 Done, or add feedback \u2192 back to In Progress",
+          "title": "5. You review: Approve → Done, or add feedback → back to In Progress",
           "done": false
         },
         {
           "id": "sub_021",
-          "title": "\u2014 DASHBOARD FEATURES \u2014",
+          "title": "— DASHBOARD FEATURES —",
           "done": false
         },
         {
           "id": "sub_022",
-          "title": "\ud83d\udd0d Search: Filter tasks by text",
+          "title": "🔍 Search: Filter tasks by text",
           "done": false
         },
         {
           "id": "sub_023",
-          "title": "\ud83d\udcc1 Project filter: Click project buttons to filter",
+          "title": "📁 Project filter: Click project buttons to filter",
           "done": false
         },
         {
           "id": "sub_024",
-          "title": "\u2699\ufe0f Settings: Add/edit projects",
+          "title": "⚙️ Settings: Add/edit projects",
           "done": false
         },
         {
           "id": "sub_025",
-          "title": "\ud83d\udce6 Archive: Store completed tasks out of sight",
+          "title": "📦 Archive: Store completed tasks out of sight",
           "done": false
         },
         {
           "id": "sub_026",
-          "title": "\ud83d\udc65 Team: See repo collaborators (if public)",
+          "title": "👥 Team: See repo collaborators (if public)",
           "done": false
         },
         {
           "id": "sub_027",
-          "title": "\ud83d\udcda Docs: Built-in documentation",
+          "title": "📚 Docs: Built-in documentation",
           "done": false
         },
         {
           "id": "sub_028",
-          "title": "\u2014 MOLTBOT CAPABILITIES \u2014",
+          "title": "— MOLTBOT CAPABILITIES —",
           "done": false
         },
         {
           "id": "sub_029",
-          "title": "\ud83e\udd16 Can CREATE tasks (via CLI or JSON)",
+          "title": "🤖 Can CREATE tasks (via CLI or JSON)",
           "done": false
         },
         {
           "id": "sub_030",
-          "title": "\ud83e\udd16 Can UPDATE task status, subtasks, comments",
+          "title": "🤖 Can UPDATE task status, subtasks, comments",
           "done": false
         },
         {
           "id": "sub_031",
-          "title": "\ud83e\udd16 Can MOVE tasks between columns",
+          "title": "🤖 Can MOVE tasks between columns",
           "done": false
         },
         {
           "id": "sub_032",
-          "title": "\ud83e\udd16 Can DELETE/archive tasks",
+          "title": "🤖 Can DELETE/archive tasks",
           "done": false
         },
         {
           "id": "sub_033",
-          "title": "\ud83e\udd16 Receives WEBHOOK when you move tasks to In Progress",
+          "title": "🤖 Receives WEBHOOK when you move tasks to In Progress",
           "done": false
         }
       ],
@@ -243,7 +243,7 @@
       "comments": [
         {
           "author": "Mission Control",
-          "text": "This guide stays in Permanent so you can always reference it. The subtasks aren't meant to be 'completed' \u2014 they're documentation!",
+          "text": "This guide stays in Permanent so you can always reference it. The subtasks aren't meant to be 'completed' — they're documentation!",
           "timestamp": "2026-01-01T00:00:00Z"
         }
       ],
@@ -251,7 +251,7 @@
     },
     {
       "id": "task_example",
-      "title": "Example Task \u2014 Delete me when ready!",
+      "title": "Example Task — Delete me when ready!",
       "description": "This is an example of what a real task looks like. Feel free to edit or delete it.\n\n**Good task descriptions include:**\n- What needs to be done\n- Why it matters\n- Any constraints or requirements\n- Links to relevant resources",
       "status": "backlog",
       "project": "default",
@@ -298,13 +298,13 @@
       "id": "guides",
       "name": "Guides",
       "color": "#10b981",
-      "icon": "\ud83d\udcda"
+      "icon": "📚"
     },
     {
       "id": "default",
       "name": "My Project",
       "color": "#3b82f6",
-      "icon": "\ud83d\udcc1"
+      "icon": "📁"
     }
   ],
   "activities": [
@@ -321,5 +321,13 @@
       "time": "just now"
     }
   ],
-  "lastUpdated": "2026-02-02T09:15:18.159Z"
+  "lastUpdated": "2026-02-02T09:15:18.159Z",
+  "todos": [
+    {
+      "id": "todo_001",
+      "title": "Example: Buy groceries",
+      "done": false,
+      "createdAt": "2026-02-06T00:00:00Z"
+    }
+  ]
 }
