@@ -291,6 +291,200 @@
       "priority": "medium",
       "createdAt": "2026-02-02T09:15:18.159Z",
       "status": "in_progress"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "📊 Weekly AI Hardware Brief (NVDA/AMD/TSMC)",
+      "description": "Every week: 10 bullets max: price move drivers, catalysts, risks, next events (earnings, launches).",
+      "status": "backlog",
+      "project": "finance",
+      "tags": [
+        "analysis",
+        "weekly"
+      ],
+      "subtasks": [],
+      "priority": "high",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🧾 Build: Holdings + Cost Basis tracker",
+      "description": "Simple page: positions, avg cost, %PnL, notes. Export CSV.",
+      "status": "backlog",
+      "project": "finance",
+      "tags": [
+        "dev",
+        "dashboard"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🔔 Alerts: price + news triggers",
+      "description": "Define alerts for key tickers (NVDA, AMD, MSFT, AAPL, TSM). Notify on 5% daily move + major news.",
+      "status": "backlog",
+      "project": "finance",
+      "tags": [
+        "alerts",
+        "automation"
+      ],
+      "subtasks": [],
+      "priority": "high",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "⚡ Project: Personal Operating System (POS)",
+      "description": "Turn Mission Control into a 'life control panel': recurring routines, priorities, and a weekly review workflow.",
+      "status": "backlog",
+      "project": "ops",
+      "tags": [
+        "system",
+        "workflow"
+      ],
+      "subtasks": [],
+      "priority": "high",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🧹 Mission Control cleanup pass",
+      "description": "Review columns, remove demo/sample tasks, standardize projects/tags, set priorities.",
+      "status": "backlog",
+      "project": "ops",
+      "tags": [
+        "maintenance"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🤖 MoltBot: auto-move stuck tasks",
+      "description": "Rule: if in_progress > 7 days without updates → ping + move to review/blocked.",
+      "status": "backlog",
+      "project": "ops",
+      "tags": [
+        "moltbot",
+        "automation"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "📈 Homelab observability (Grafana + metrics)",
+      "description": "Dashboards: CPU/RAM/disk, services up/down, latency. Optional: alerts.",
+      "status": "backlog",
+      "project": "homelab",
+      "tags": [
+        "grafana",
+        "monitoring"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🔐 Security baseline check",
+      "description": "Monthly: updates, firewall status, SSH settings, exposed ports, backups.",
+      "status": "permanent",
+      "project": "homelab",
+      "tags": [
+        "security",
+        "monthly"
+      ],
+      "subtasks": [],
+      "priority": "high",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "📱 Nomura Tasks App v2 (mobile) – roadmap",
+      "description": "Define features: offline-first, sync, push, widgets, quick add.",
+      "status": "backlog",
+      "project": "dev",
+      "tags": [
+        "mobile",
+        "product"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🌐 Portal: quick links + status tiles",
+      "description": "Portal shows tiles: Mission Control, ControlHub, services status, last deploy.",
+      "status": "backlog",
+      "project": "dev",
+      "tags": [
+        "portal",
+        "ui"
+      ],
+      "subtasks": [],
+      "priority": "low",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🧪 Maxwell’s Demon web simulation",
+      "description": "Prototype: particles, gate rule, entropy plot. Keep it pretty + interactive.",
+      "status": "backlog",
+      "project": "sidequests",
+      "tags": [
+        "physics",
+        "simulation"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🎮 Gaming watchlist + earnings calendar",
+      "description": "Track key publishers/studios + upcoming releases + earnings dates.",
+      "status": "backlog",
+      "project": "finance",
+      "tags": [
+        "gaming",
+        "calendar"
+      ],
+      "subtasks": [],
+      "priority": "low",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "🏋️ Weekly training plan (simple)",
+      "description": "3 workouts/week + 2 walks. Track adherence in Todo.",
+      "status": "backlog",
+      "project": "health",
+      "tags": [
+        "routine"
+      ],
+      "subtasks": [],
+      "priority": "medium",
+      "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770362526974",
+      "title": "📝 Weekly review (15 min)",
+      "description": "Every Sunday: what worked, what didn’t, pick 3 priorities for next week.",
+      "status": "permanent",
+      "project": "ops",
+      "tags": [
+        "weekly",
+        "review"
+      ],
+      "subtasks": [],
+      "priority": "high",
+      "createdAt": "2026-02-06T07:22:06Z"
     }
   ],
   "projects": [
@@ -302,9 +496,45 @@
     },
     {
       "id": "default",
-      "name": "My Project",
+      "name": "Inbox",
+      "color": "#64748b",
+      "icon": "📥"
+    },
+    {
+      "id": "finance",
+      "name": "Investments",
+      "color": "#10b981",
+      "icon": "📈"
+    },
+    {
+      "id": "homelab",
+      "name": "Home Lab",
+      "color": "#f59e0b",
+      "icon": "🏠"
+    },
+    {
+      "id": "sidequests",
+      "name": "Side Quests",
+      "color": "#ec4899",
+      "icon": "🚀"
+    },
+    {
+      "id": "dev",
+      "name": "Dev / Apps",
       "color": "#3b82f6",
-      "icon": "📁"
+      "icon": "💻"
+    },
+    {
+      "id": "ops",
+      "name": "Ops / Automation",
+      "color": "#8b5cf6",
+      "icon": "🛠️"
+    },
+    {
+      "id": "health",
+      "name": "Health & Life",
+      "color": "#ef4444",
+      "icon": "❤️"
     }
   ],
   "activities": [
@@ -319,9 +549,15 @@
       "actor": "Mission Control",
       "task": "User Guide",
       "time": "just now"
+    },
+    {
+      "type": "created",
+      "actor": "Nomura",
+      "task": "Seeded new projects + tasks",
+      "time": "just now"
     }
   ],
-  "lastUpdated": "2026-02-02T09:15:18.159Z",
+  "lastUpdated": "2026-02-06T07:22:06Z",
   "todos": [
     {
       "id": "todo_001",
