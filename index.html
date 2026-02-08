@@ -452,7 +452,11 @@
         }
 
         .task-card.archived .task-title::before {
-            content: '📦 ';
+            content: '[archived] ';
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--text-secondary);
         }
 
         .archived-badge {
@@ -2521,11 +2525,12 @@
                 <span class="search-info" id="search-info"></span>
                 <label class="archive-search-toggle" title="Include archived tasks in search">
                     <input type="checkbox" id="search-include-archived" onchange="toggleArchiveSearch(this.checked)">
-                    <span>📦 Archive</span>
+                    <span>Archive</span>
                 </label>
             </div>
         </div>
         <div class="header-right">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark theme" id="theme-toggle">Dark</button>
             <span class="live-indicator live" id="live-indicator">Live</span>
             <button class="btn btn-secondary" onclick="pollForUpdates(); window.location.reload()">↻ Refresh</button>
 
@@ -2541,7 +2546,7 @@
             <div class="user-profile" id="user-profile" style="display: none;">
                 <img class="user-avatar" id="user-avatar" src="" alt="Avatar">
                 <span class="user-name" id="user-name"></span>
-                <button class="btn-icon" onclick="showSettingsModal()" title="Settings" aria-label="Open settings">⚙️</button>
+                <button class="btn-icon" onclick="showSettingsModal()" title="Settings" aria-label="Open settings">Settings</button>
                 <span class="user-logout" onclick="logout()">Logout</span>
             </div>
         </div>
@@ -2550,7 +2555,7 @@
     <!-- Version Update Banner -->
     <div class="version-banner" id="version-banner">
         <div class="version-banner-text">
-            <span class="update-icon">🔄</span>
+            <span class="update-icon">↻</span>
             Neue Version verfügbar!
         </div>
         <div>
@@ -2561,7 +2566,7 @@
 
     <!-- Unsaved Changes Banner -->
     <div class="unsaved-banner" id="unsaved-banner">
-        <span class="unsaved-text">⚠️ You have unsaved changes</span>
+        <span class="unsaved-text">You have unsaved changes</span>
         <div>
             <button class="btn btn-secondary btn-small" onclick="discardChanges()">Discard</button>
             <button class="btn btn-primary btn-small" onclick="showCommitModal()">Save & Commit</button>
@@ -2653,7 +2658,7 @@
             <div class="column column-scheduled">
                 <div class="column-header">
                     <div class="column-dot scheduled"></div>
-                    <span class="column-title">📅 Scheduled</span>
+                    <span class="column-title">Scheduled</span>
                     <span class="column-count" id="count-scheduled">0</span>
                     <button class="column-add" onclick="openScheduledTaskModal()" title="Schedule a task" aria-label="Schedule a new task">+</button>
                 </div>
@@ -2663,7 +2668,7 @@
             <div class="column column-templates">
                 <div class="column-header">
                     <div class="column-dot templates"></div>
-                    <span class="column-title">📑 Templates</span>
+                    <span class="column-title">Templates</span>
                     <span class="column-count" id="count-templates">0</span>
                     <button class="column-add" onclick="openNewTemplate()" title="Add new template" aria-label="Add new template">+</button>
                 </div>
@@ -2715,8 +2720,8 @@
                     <div class="column-dot done"></div>
                     <span class="column-title">Done</span>
                     <span class="column-count" id="count-done">0</span>
-                    <button class="archive-all-btn" onclick="showArchiveView()" title="View archived tasks" aria-label="View archived tasks" style="background: transparent;">📂 View</button>
-                    <button class="archive-all-btn" onclick="archiveAllDone()" title="Archive all done tasks" aria-label="Archive all done tasks">📦 Archive All</button>
+                    <button class="archive-all-btn" onclick="showArchiveView()" title="View archived tasks" aria-label="View archived tasks" style="background: transparent;">View</button>
+                    <button class="archive-all-btn" onclick="archiveAllDone()" title="Archive all done tasks" aria-label="Archive all done tasks">Archive All</button>
                 </div>
                 <div class="column-tasks" id="tasks-done" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'done')"></div>
             </div>
@@ -2932,7 +2937,7 @@
     <div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)hideAuthModal()" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title" id="auth-modal-title">🔐 Connect to GitHub</h2>
+                <h2 class="modal-title" id="auth-modal-title">Connect to GitHub</h2>
                 <button class="modal-close" onclick="hideAuthModal()" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
@@ -2999,7 +3004,7 @@
     <div class="modal-overlay" id="settings-modal" onclick="if(event.target===this)hideSettingsModal()" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 class="modal-title" id="settings-modal-title">⚙️ Settings</h2>
+                <h2 class="modal-title" id="settings-modal-title">Settings</h2>
                 <button class="modal-close" onclick="hideSettingsModal()" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
@@ -3066,7 +3071,7 @@
     <div class="modal-overlay" id="commit-modal" onclick="if(event.target===this)hideCommitModal()" role="dialog" aria-modal="true" aria-labelledby="commit-modal-title">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title" id="commit-modal-title">💾 Save Changes to GitHub</h2>
+                <h2 class="modal-title" id="commit-modal-title">Save Changes to GitHub</h2>
                 <button class="modal-close" onclick="hideCommitModal()" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
@@ -3166,7 +3171,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" id="btn-delete-task" onclick="deleteTask()" style="margin-right: auto;">Delete</button>
-                <button class="btn btn-secondary" id="btn-task-to-cron" onclick="openTaskToCronWizard(currentEditingTaskId)" title="Convert to recurring cron job">⏰ As Cron</button>
+                <button class="btn btn-secondary" id="btn-task-to-cron" onclick="openTaskToCronWizard(currentEditingTaskId)" title="Convert to recurring cron job">As Cron</button>
                 <button class="btn btn-secondary" onclick="hideTaskModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="saveTask()">Save Task</button>
             </div>
@@ -3207,6 +3212,32 @@
         // Apply mode early
         CONFIG.useProxy = getStorageMode() === 'internal';
 
+        // === THEME ===
+        function initTheme() {
+            const saved = localStorage.getItem('mc_theme');
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            updateThemeButton();
+        }
+        function toggleTheme() {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('mc_theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('mc_theme', 'light');
+            }
+            updateThemeButton();
+        }
+        function updateThemeButton() {
+            const btn = document.getElementById('theme-toggle');
+            if (!btn) return;
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            btn.textContent = isLight ? 'Light' : 'Dark';
+        }
+        initTheme();
 
         // === STATE ===
         let STATE = {
@@ -3764,7 +3795,7 @@
                                   !cron.enabled ? 'Disabled' :
                                   isRunning(cron) ? 'Running...' :
                                   cron.lastStatus === 'error' ? 'Error' : 'Active';
-                const nextRun = cron.pending ? '⏳' : (cron.nextRunAt ? formatRelativeTime(new Date(cron.nextRunAt)) : 'N/A');
+                const nextRun = cron.pending ? '...' : (cron.nextRunAt ? formatRelativeTime(new Date(cron.nextRunAt)) : 'N/A');
                 
                 return `
                     <div class="cron-card" 
@@ -4245,20 +4276,20 @@
             // Archive/Unarchive actions for done tasks
             const archiveActions = task.status === 'done' && !isArchived ? `
                 <div class="task-actions" onclick="event.stopPropagation()">
-                    <button class="task-action-btn archive" onclick="archiveTask('${task.id}')" title="Archive this task">📦 Archive</button>
+                    <button class="task-action-btn archive" onclick="archiveTask('${task.id}')" title="Archive this task">Archive</button>
                 </div>
             ` : '';
 
             // Unarchive button for archived tasks
             const unarchiveActions = isArchived ? `
                 <div class="task-actions" onclick="event.stopPropagation()">
-                    <button class="task-action-btn unarchive" onclick="unarchiveTask('${task.id}')" title="Restore from archive">📤 Unarchive</button>
+                    <button class="task-action-btn unarchive" onclick="unarchiveTask('${task.id}')" title="Restore from archive">Restore</button>
                 </div>
             ` : '';
 
             // Archived badge
             const archivedBadge = isArchived ? `
-                <span class="archived-badge">📦 Archived</span>
+                <span class="archived-badge">Archived</span>
             ` : '';
 
             // Comment indicator
@@ -4823,7 +4854,7 @@
             }
 
             const commitMessage = `${action} (via Mission Control)`;
-            showToast('info', '💾 Saving...');
+            showToast('info', 'Saving...');
 
             const success = await saveTasksToGitHub(commitMessage);
             if (!success) {
@@ -4878,7 +4909,7 @@
         function addActivity(text, type = 'updated') {
             STATE.data.activities = STATE.data.activities || [];
             
-            // Parse the text to extract task name (format: "📦 Archived: Task Name" or similar)
+            // Parse the text to extract task name (format: "Archived: Task Name" or similar)
             const taskMatch = text.match(/:\s*(.+)$/) || text.match(/Archived\s+\d+\s+tasks?/);
             const taskName = taskMatch ? taskMatch[1] || taskMatch[0] : text;
             
@@ -4902,8 +4933,8 @@
             container.innerHTML = `
                 <button class="filter-btn active" data-filter="all" onclick="filterByProject('all')">All projects</button>
                 ${projectButtons}
-                <button class="filter-toggle-btn" onclick="toggleAdvancedFilters()" aria-label="Toggle advanced filters">▼ Filters</button>
-                <button class="filter-btn" onclick="toggleBulkMode()" aria-label="Toggle bulk select mode" style="margin-left: auto;">☑ Select</button>
+                <button class="filter-toggle-btn" onclick="toggleAdvancedFilters()" aria-label="Toggle advanced filters">Filters ›</button>
+                <button class="filter-btn" onclick="toggleBulkMode()" aria-label="Toggle bulk select mode" style="margin-left: auto;">Select</button>
             `;
             populateTagFilter();
         }
@@ -4955,7 +4986,7 @@
             if (task) {
                 task.archived = true;
                 task.archivedAt = new Date().toISOString();
-                addActivity(`📦 Archived: ${task.title}`, 'archive');
+                addActivity(`Archived: ${task.title}`, 'archive');
                 renderTasks();
                 saveToGitHub();
                 showToast('success', `Archived "${task.title}"`, () => {
@@ -4974,7 +5005,7 @@
                 delete task.archivedAt;
                 // Move back to done or backlog
                 task.status = 'done';
-                addActivity(`📤 Unarchived: ${task.title}`, 'unarchive');
+                addActivity(`Restored: ${task.title}`, 'unarchive');
                 renderTasks();
                 saveToGitHub();
             }
@@ -4994,7 +5025,7 @@
                 task.archivedAt = new Date().toISOString();
             });
 
-            addActivity(`📦 Archived ${count} task${count > 1 ? 's' : ''} from Done`, 'archive');
+            addActivity(`Archived ${count} task${count > 1 ? 's' : ''} from Done`, 'archive');
             renderTasks();
             autoSave(`Archive ${count} task${count > 1 ? 's' : ''}`);
             showToast('success', `Archived ${count} task${count > 1 ? 's' : ''}`, () => {
@@ -5139,7 +5170,7 @@
             dialog.innerHTML = `
                 <div class="modal" style="max-width: 700px; max-height: 80vh;">
                     <div class="modal-header">
-                        <h2 class="modal-title">📦 Archive (${archivedTasks.length} tasks)</h2>
+                        <h2 class="modal-title">Archive (${archivedTasks.length} tasks)</h2>
                         <button class="modal-close" onclick="closeArchiveView()">&times;</button>
                     </div>
                     <div class="modal-body" style="overflow-y: auto; max-height: 50vh;">
@@ -5153,14 +5184,14 @@
                                     </div>
                                 </div>
                                 <button class="btn btn-secondary btn-small" onclick="unarchiveTask('${task.id}'); closeArchiveView();">
-                                    📤 Restore
+                                    Restore
                                 </button>
                             </div>
                           `).join('')
                         }
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" onclick="exportArchivedTasksCSV()">📥 Export CSV</button>
+                        <button class="btn btn-secondary" onclick="exportArchivedTasksCSV()">Export CSV</button>
                         <button class="btn btn-primary" onclick="closeArchiveView()">Close</button>
                     </div>
                 </div>
@@ -5364,7 +5395,7 @@
             isEditingTemplate = task.isTemplate === true;
 
             // Populate modal
-            document.getElementById('task-modal-title').textContent = task.isTemplate ? '📑 Edit Template' : 'Edit Task';
+            document.getElementById('task-modal-title').textContent = task.isTemplate ? 'Edit Template' : 'Edit Task';
             document.getElementById('task-title').value = task.title;
             document.getElementById('task-description').value = task.description;
             document.getElementById('task-status').value = task.isTemplate ? (task.baseStatus || 'backlog') : task.status;
@@ -5480,8 +5511,8 @@
                         <span class="comment-author">${c.author}</span>
                         <span class="comment-time">${formatTimeAgo(c.createdAt)}</span>
                         <span class="comment-actions">
-                            <button class="comment-action-btn" onclick="editComment('${task.id}', ${idx})" title="Edit">✏️</button>
-                            <button class="comment-action-btn" onclick="deleteComment('${task.id}', ${idx})" title="Delete">🗑️</button>
+                            <button class="comment-action-btn" onclick="editComment('${task.id}', ${idx})" title="Edit">Edit</button>
+                            <button class="comment-action-btn" onclick="deleteComment('${task.id}', ${idx})" title="Delete">×</button>
                         </span>
                     </div>
                     <div class="comment-text" id="comment-text-${idx}">${renderMarkdown(c.text)}</div>
@@ -5857,8 +5888,8 @@
                     <span class="project-name">${p.name}</span>
                     <span class="project-id">${p.id}</span>
                     <div class="project-actions">
-                        <button onclick="editProject('${p.id}')" title="Edit">✏️</button>
-                        <button onclick="deleteProject('${p.id}')" title="Delete">🗑️</button>
+                        <button onclick="editProject('${p.id}')" title="Edit">Edit</button>
+                        <button onclick="deleteProject('${p.id}')" title="Delete">×</button>
                     </div>
                 </div>
             `).join('');
@@ -5925,7 +5956,7 @@
 
             // Update UI
             document.getElementById('project-form-title').textContent = `Edit Project: ${project.name}`;
-            document.getElementById('btn-save-project').textContent = '💾 Save Changes';
+            document.getElementById('btn-save-project').textContent = 'Save Changes';
             document.getElementById('btn-cancel-project').style.display = 'block';
 
             // Clear emoji selection
@@ -6255,7 +6286,7 @@
                         </div>
                         <div class="template-actions" onclick="event.stopPropagation()">
                             <button class="template-action-btn run" onclick="executeTemplate('${template.id}')" title="Run template">▶ Run</button>
-                            <button class="template-action-btn" onclick="duplicateTemplate('${template.id}')" title="Duplicate">📋 Copy</button>
+                            <button class="template-action-btn" onclick="duplicateTemplate('${template.id}')" title="Duplicate">Copy</button>
                         </div>
                     </div>
                 `;
@@ -6271,7 +6302,7 @@
             currentEditingTaskId = null;
             isEditingTemplate = true;
             
-            document.getElementById('task-modal-title').textContent = '📑 New Template';
+            document.getElementById('task-modal-title').textContent = 'New Template';
             document.getElementById('task-title').value = '';
             document.getElementById('task-description').value = '';
             document.getElementById('task-status').value = 'backlog';
@@ -6307,7 +6338,7 @@
             currentEditingTaskId = templateId;
             isEditingTemplate = true;
             
-            document.getElementById('task-modal-title').textContent = '📑 Edit Template';
+            document.getElementById('task-modal-title').textContent = 'Edit Template';
             document.getElementById('task-title').value = template.title;
             document.getElementById('task-description').value = template.description;
             document.getElementById('task-status').value = template.baseStatus || 'backlog';
@@ -6442,7 +6473,7 @@
                             ▶ Just Execute (stays available)
                         </button>
                         <button class="btn btn-secondary" style="width: 100%;" onclick="archiveFromDialog('${taskId}')">
-                            📦 Archive Task
+                            Archive Task
                         </button>
                     </div>
                 </div>
@@ -6515,7 +6546,7 @@
                         <div class="scheduled-name">${task.title}</div>
                         <div class="scheduled-time">
                             <span class="countdown ${isOverdue ? 'overdue' : ''}">
-                                ${isOverdue ? '⚠️ Overdue' : '⏰ ' + countdown}
+                                ${isOverdue ? 'Overdue' : countdown}
                             </span>
                         </div>
                         <div class="task-description">${task.description || ''}</div>
@@ -6586,7 +6617,7 @@
             dialog.innerHTML = `
                 <div class="modal" style="max-width: 500px;">
                     <div class="modal-header">
-                        <h2 class="modal-title">📅 Schedule Task</h2>
+                        <h2 class="modal-title">Schedule Task</h2>
                         <button class="modal-close" onclick="closeScheduledTaskDialog()">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -6956,7 +6987,7 @@
             dialog.innerHTML = `
                 <div class="modal" style="max-width: 550px;">
                     <div class="modal-header">
-                        <h2 class="modal-title">🔄 Edit Cron Job</h2>
+                        <h2 class="modal-title">Edit Cron Job</h2>
                         <button class="modal-close" onclick="closeCronEditor()">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -6993,14 +7024,14 @@
                             </label>
                         </div>
                         <div class="form-group" style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
-                            <label class="form-label" style="margin-bottom: 0.5rem;">📅 Next 5 Runs</label>
+                            <label class="form-label" style="margin-bottom: 0.5rem;">Next 5 Runs</label>
                             <div id="cron-next-runs" style="font-size: 0.85rem; color: var(--text-secondary);">
                                 ${generateNextRuns(cron.schedule, cron.timezone)}
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" style="margin-right: auto;" onclick="convertCronToTask('${cronId}')">📋 As Task</button>
+                        <button class="btn btn-secondary" style="margin-right: auto;" onclick="convertCronToTask('${cronId}')">As Task</button>
                         <button class="btn btn-secondary" onclick="closeCronEditor()">Cancel</button>
                         <button class="btn btn-primary" onclick="saveCronChanges('${cronId}')">Save Changes</button>
                     </div>
@@ -7261,7 +7292,7 @@
             dialog.innerHTML = `
                 <div class="modal" style="max-width: 500px;">
                     <div class="modal-header">
-                        <h2 class="modal-title">⏰ Convert to Cron</h2>
+                        <h2 class="modal-title">Convert to Cron</h2>
                         <button class="modal-close" onclick="closeTaskToCronWizard()">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -7277,16 +7308,16 @@
                         <div id="wizard-step-1">
                             <div style="display: grid; gap: 0.5rem;">
                                 <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="setScheduleType('daily')">
-                                    📅 Daily
+                                    Daily
                                 </button>
                                 <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="setScheduleType('weekly')">
-                                    📆 Weekly
+                                    Weekly
                                 </button>
                                 <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="setScheduleType('monthly')">
-                                    🗓️ Monthly
+                                    Monthly
                                 </button>
                                 <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="setScheduleType('custom')">
-                                    ⚙️ Custom Cron Expression
+                                    Custom Cron Expression
                                 </button>
                             </div>
                         </div>
@@ -7535,7 +7566,7 @@
             dialog.innerHTML = `
                 <div class="modal" style="max-width: 400px;">
                     <div class="modal-header">
-                        <h2 class="modal-title">📋 Convert to Task</h2>
+                        <h2 class="modal-title">Convert to Task</h2>
                         <button class="modal-close" onclick="closeCronToTaskDialog()">&times;</button>
                     </div>
                     <div class="modal-body">

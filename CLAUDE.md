@@ -20,43 +20,42 @@
 
 ## Last Deployment
 
-**Commit:** `2bd4da3`  
-**Date:** 2026-02-08 14:23 UTC  
-**Summary:** Merged Claude Code UI improvements + PWA support  
-**Status:** ✅ Live on http://192.168.1.51:18701
+**Commit:** _pending_  
+**Date:** 2026-02-08 16:XX UTC  
+**Summary:** Monochrome icons + theme toggle  
+**Status:** 🔄 Deploying...
 
-### What was deployed:
-- Accessibility improvements (aria labels, focus traps, keyboard nav)
-- Undo system for delete/archive operations
-- Bulk selection mode
-- Advanced filtering & sorting
-- Processing timeout indicators
-- Search highlighting
-- PWA support restored
+### What's being deployed:
+- Monochrome text icons (replaced emoji throughout UI)
+- Light/dark theme toggle with localStorage persistence
+- Gruvbox light palette support
 
 ---
 
 ## Handoff Notes (Claude Code → Nomura)
 
-**Before finishing your session, update this section:**
+### Session: 2026-02-08
 
-```
-### Session: [DATE]
-**Changed:** 
-- 
+**Changed:**
+- Replaced all emoji in UI action buttons, modal titles, column headers, badges, and filter bar with plain monochrome text
+- CSS pseudo-element emoji replaced with `[archived]` text badge
+- Added light/dark theme toggle in header, persisted via `localStorage('mc_theme')`
+- Light theme uses Gruvbox light palette (`[data-theme="light"]`)
 
 **Watch out for:**
-- 
+- `column-add` elements changed from `<span>` to `<button>` for accessibility — verify no CSS regressions
+- Bulk mode changes task card `onclick` dynamically — test normal mode still opens detail modal
+- Search highlighting uses `innerHTML` replacement — HTML entities in titles may render unexpectedly
+- Light theme may need fine-tuning on some hard-coded `rgba()` values
 
-**Next up / TODO:**
-- 
-```
-
-_Nomura will clear this section after deploying._
+**Next up / TODO (Low priority):**
+- Task duplication feature
+- Keyboard shortcut overlay (? key)
+- Export options (JSON, CSV, Markdown)
 
 ---
 
-_Currently empty — no pending handoff._
+_Nomura will clear this section after deploying._
 
 ---
 
