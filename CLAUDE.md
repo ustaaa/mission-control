@@ -185,3 +185,22 @@ Task cards include a `↔` move button (`.task-move-btn`) that opens a dropdown 
 - Tag dropdown auto-populated from task data via `populateTagFilter()`
 - Sort options: default, newest, oldest, priority, alphabetical
 - Applied in `renderTasks()` after project filter
+
+#### Delete Confirmations & Undo
+- `deleteSubtask()` and `deleteComment()` both require `confirm()` before proceeding
+- Both support undo via `showToast()` with undo callback — deleted items are restored in place
+
+#### Activity Pagination
+- `renderActivity()` shows `ACTIVITY_PAGE_SIZE` (15) items initially
+- "Load more" button appends the next page via `loadMoreActivity()`
+- Counter shows remaining items
+
+#### Search Highlighting
+- `highlightText(text, query)` wraps matches in `<mark>` tags
+- `applySearchFilter()` highlights matched text in task titles and descriptions
+- `<mark>` styled with Gruvbox yellow background (`rgba(215, 153, 33, 0.35)`)
+
+#### Processing Indicator
+- Tasks with `processingStartedAt` show animated border pulse (blue for active, red for 30+ min timeout)
+- `startProcessingRefresh()` auto-refreshes every 60s to keep elapsed time current
+- Timeout tasks (30+ min) show a "Cancel" button (`cancelProcessing()`) that clears processing state

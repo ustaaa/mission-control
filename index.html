@@ -493,6 +493,13 @@
             pointer-events: none;
         }
 
+        .task-card mark {
+            background: rgba(215, 153, 33, 0.35);
+            color: inherit;
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+
         /* Cron Cards */
         .cron-card {
             background: var(--bg-card);
@@ -1956,32 +1963,19 @@
             color: var(--text-primary);
         }
 
-        /* === PROCESSING INDICATOR ENHANCED === */
-        .task-card.is-processing {
-            border-left: 3px solid var(--accent-yellow);
-            animation: processingGlow 2s ease-in-out infinite;
-        }
-        .task-card.is-processing.long-running {
-            border-left-color: var(--accent-red);
-        }
-        .processing-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+        /* === PROCESSING CANCEL BUTTON === */
+        .processing-cancel-btn {
+            background: transparent;
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 0.7rem;
-            font-weight: 600;
-            background: rgba(215, 153, 33, 0.2);
-            color: var(--accent-yellow);
+            cursor: pointer;
+            margin-left: 4px;
         }
-        .processing-badge.long-running {
+        .processing-cancel-btn:hover {
             background: rgba(204, 36, 29, 0.2);
-            color: var(--accent-red);
-        }
-        @keyframes processingGlow {
-            0%, 100% { box-shadow: none; }
-            50% { box-shadow: 0 0 8px rgba(215, 153, 33, 0.3); }
         }
 
         /* === TASK MOVE BUTTON === */
@@ -4190,11 +4184,44 @@
             }
 
             updateStats();
-            
+
             // Re-apply search filter after rendering
             if (searchQuery) {
                 applySearchFilter();
             }
+
+            // Start auto-refresh if any tasks are processing
+            const hasProcessing = (data.tasks || []).some(t =>
+                (t.processingStartedAt || t.processing) && t.status === 'in_progress'
+            );
+            if (hasProcessing) startProcessingRefresh();
+        }
+
+        // Auto-refresh processing timers every 60 seconds
+        let _processingRefreshInterval = null;
+        function startProcessingRefresh() {
+            if (_processingRefreshInterval) return;
+            _processingRefreshInterval = setInterval(() => {
+                const hasProcessing = (STATE.data?.tasks || []).some(t =>
+                    (t.processingStartedAt || t.processing) && t.status === 'in_progress'
+                );
+                if (hasProcessing) {
+                    renderTasks();
+                } else {
+                    clearInterval(_processingRefreshInterval);
+                    _processingRefreshInterval = null;
+                }
+            }, 60000);
+        }
+
+        function cancelProcessing(taskId) {
+            const task = STATE.data.tasks.find(t => t.id === taskId);
+            if (!task) return;
+            delete task.processingStartedAt;
+            delete task.processing;
+            renderTasks();
+            autoSave(`Cancel processing for "${task.title}"`);
+            showToast('success', `Cancelled processing for "${task.title}"`);
         }
 
         function renderTaskCard(task) {
@@ -4275,6 +4302,7 @@
                         <div class="processing-spinner"></div>
                         <span>${spinnerText}</span>
                         <span class="processing-time">(${timeDisplay})</span>
+                        ${isTimeout ? `<button class="processing-cancel-btn" onclick="event.stopPropagation(); cancelProcessing('${task.id}')" title="Cancel processing">Cancel</button>` : ''}
                     </div>
                 `;
             }
@@ -4800,11 +4828,16 @@
             }
         }
 
+        const ACTIVITY_PAGE_SIZE = 15;
+        let activityVisible = ACTIVITY_PAGE_SIZE;
+
         function renderActivity() {
             const container = document.getElementById('activity-list');
             const data = STATE.data || FALLBACK_DATA;
             const activities = data.activities || FALLBACK_DATA.activities;
-            container.innerHTML = activities.map(a => `
+            const visible = activities.slice(0, activityVisible);
+            const hasMore = activities.length > activityVisible;
+            container.innerHTML = visible.map(a => `
                 <div class="activity-item">
                     <div class="activity-dot ${a.type}"></div>
                     <div class="activity-content">
@@ -4814,7 +4847,16 @@
                         <div class="activity-time">${a.time}</div>
                     </div>
                 </div>
-            `).join('');
+            `).join('') + (hasMore ? `
+                <button class="activity-load-more" onclick="loadMoreActivity()">
+                    Load more (${activities.length - activityVisible} remaining)
+                </button>
+            ` : '');
+        }
+
+        function loadMoreActivity() {
+            activityVisible += ACTIVITY_PAGE_SIZE;
+            renderActivity();
         }
 
         function getActionText(activity) {
@@ -5160,35 +5202,51 @@
             }
         }
 
+        function highlightText(text, query) {
+            if (!query || !text) return text;
+            const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+        }
+
         function applySearchFilter() {
             const cards = document.querySelectorAll('.task-card');
             const data = STATE.data || FALLBACK_DATA;
-            
+
             cards.forEach(card => {
                 const taskId = card.getAttribute('data-task-id');
                 const task = data.tasks.find(t => t.id === taskId);
-                
+
                 if (!task || !searchQuery) {
                     card.classList.remove('search-dimmed');
+                    // Remove highlights
+                    const titleEl = card.querySelector('.task-title-text');
+                    const descEl = card.querySelector('.task-description');
+                    if (titleEl) titleEl.innerHTML = task ? task.title : titleEl.textContent;
+                    if (descEl) descEl.innerHTML = task ? task.description : descEl.textContent;
                     return;
                 }
-                
+
                 // Search in title, description, tags, and comments
                 const titleMatch = task.title.toLowerCase().includes(searchQuery);
                 const descMatch = task.description.toLowerCase().includes(searchQuery);
                 const tagMatch = task.tags.some(tag => tag.toLowerCase().includes(searchQuery));
-                const commentMatch = task.comments && task.comments.some(c => 
-                    c.text.toLowerCase().includes(searchQuery) || 
+                const commentMatch = task.comments && task.comments.some(c =>
+                    c.text.toLowerCase().includes(searchQuery) ||
                     c.author.toLowerCase().includes(searchQuery)
                 );
-                
+
                 if (titleMatch || descMatch || tagMatch || commentMatch) {
                     card.classList.remove('search-dimmed');
+                    // Apply highlights to visible text
+                    const titleEl = card.querySelector('.task-title-text');
+                    const descEl = card.querySelector('.task-description');
+                    if (titleEl && titleMatch) titleEl.innerHTML = highlightText(task.title, searchQuery);
+                    if (descEl && descMatch) descEl.innerHTML = highlightText(task.description, searchQuery);
                 } else {
                     card.classList.add('search-dimmed');
                 }
             });
-            
+
             // Update search result count
             const matchCount = document.querySelectorAll('.task-card:not(.search-dimmed)').length;
             const totalCount = cards.length;
@@ -5484,9 +5542,15 @@
             const task = STATE.data.tasks.find(t => t.id === taskId);
             if (!task || !task.comments) return;
 
+            const deletedComment = JSON.parse(JSON.stringify(task.comments[commentIdx]));
             task.comments.splice(commentIdx, 1);
             renderComments(task);
             autoSave(`Delete comment from "${task.title}"`);
+            showToast('success', 'Comment deleted', () => {
+                task.comments.splice(commentIdx, 0, deletedComment);
+                renderComments(task);
+                autoSave(`Undo delete comment from "${task.title}"`);
+            });
         }
 
         function formatTimeAgo(dateString) {
@@ -5518,15 +5582,23 @@
         }
 
         function deleteSubtask(taskId, subtaskId) {
+            if (!confirm('Delete this subtask?')) return;
             const task = STATE.data.tasks.find(t => t.id === taskId);
             if (task) {
-                const subtask = task.subtasks.find(s => s.id === subtaskId);
+                const subtaskIdx = task.subtasks.findIndex(s => s.id === subtaskId);
+                const subtask = task.subtasks[subtaskIdx];
                 const subtaskTitle = subtask?.title || 'Subtask';
+                const deletedSubtask = JSON.parse(JSON.stringify(subtask));
                 task.subtasks = task.subtasks.filter(s => s.id !== subtaskId);
                 renderSubtasks(task);
                 renderTasks();
-                // AUTO-SAVE
                 autoSave(`Remove subtask "${subtaskTitle}" from "${task.title}"`);
+                showToast('success', `Deleted subtask "${subtaskTitle}"`, () => {
+                    task.subtasks.splice(subtaskIdx, 0, deletedSubtask);
+                    renderSubtasks(task);
+                    renderTasks();
+                    autoSave(`Undo delete subtask "${subtaskTitle}"`);
+                });
             }
         }
 
