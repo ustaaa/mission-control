@@ -225,11 +225,12 @@ _No deployment yet — Nomura will update this section after first deploy._
 - **Critical UI:** ARIA labels on all interactive elements, modal accessibility (role=dialog, focus trap), keyboard task movement (↔ move dropdown), focus-visible styles
 - **High UI:** Undo system (toast with undo callback on delete/archive), modal overflow fix on mobile, bulk operations (multi-select + bulk move/archive/delete), advanced filtering & sorting (priority, tag, sort)
 - **Medium UI:** Subtask/comment delete confirmations with undo, activity feed pagination (15/page), search result highlighting (`<mark>` tags), processing indicator auto-refresh + cancel button
-- **Icon cleanup:** Replaced all emoji in UI action buttons, modal titles, column headers, badges, and filter bar with plain monochrome text. Only docs view content retains emoji. CSS pseudo-element `📦` replaced with `[archived]` text badge.
+- **Icon cleanup:** Replaced all emoji in UI action buttons, modal titles, column headers, badges, filter bar, and project filter buttons with plain monochrome text. Only docs view content retains emoji. CSS pseudo-element `📦` replaced with `[archived]` text badge.
 - **Theme toggle:** Added light/dark theme switch in header, persisted via `localStorage('mc_theme')`. Light theme uses Gruvbox light palette (`[data-theme="light"]`).
+- **Visual polish:** Fixed `.btn-icon` sizing (Settings button), `.column-add` button reset (no browser default border), `.theme-toggle` sizing, stripped project emoji from filter buttons for uniform look.
 
 **Issues / watch out for:**
-- The `column-add` elements were changed from `<span>` to `<button>` for accessibility — verify no CSS regressions on column headers
+- The `column-add` elements were changed from `<span>` to `<button>` — button reset CSS added (no border/bg/padding)
 - Bulk mode changes the task card `onclick` handler dynamically — test that clicking tasks still opens the detail modal in normal mode
 - Search highlighting uses `innerHTML` replacement on `.task-title-text` and `.task-description` — if task titles contain HTML entities they may render unexpectedly
 - Some elements use `--border-color` (not defined in `:root`) — pre-existing issue, not caused by these changes
