@@ -204,3 +204,35 @@ Task cards include a `↔` move button (`.task-move-btn`) that opens a dropdown 
 - Tasks with `processingStartedAt` show animated border pulse (blue for active, red for 30+ min timeout)
 - `startProcessingRefresh()` auto-refreshes every 60s to keep elapsed time current
 - Timeout tasks (30+ min) show a "Cancel" button (`cancelProcessing()`) that clears processing state
+
+---
+
+## Coordination: Claude + Nomura
+
+**Workflow:**
+- **Claude** (Claude Code) makes changes, updates "Handoff Notes" below before ending a session
+- **Nomura** (OpenClaw) reads handoff notes, commits, deploys, and updates "Last Deployment" below
+- **Claude** checks "Last Deployment" at the start of each session to see what's live
+
+### Last Deployment
+_No deployment yet — Nomura will update this section after first deploy._
+
+### Handoff Notes
+**Session: 2026-02-08**
+
+**What changed:**
+- Created CLAUDE.md from scratch
+- **Critical UI:** ARIA labels on all interactive elements, modal accessibility (role=dialog, focus trap), keyboard task movement (↔ move dropdown), focus-visible styles
+- **High UI:** Undo system (toast with undo callback on delete/archive), modal overflow fix on mobile, bulk operations (multi-select + bulk move/archive/delete), advanced filtering & sorting (priority, tag, sort)
+- **Medium UI:** Subtask/comment delete confirmations with undo, activity feed pagination (15/page), search result highlighting (`<mark>` tags), processing indicator auto-refresh + cancel button
+
+**Issues / watch out for:**
+- The `column-add` elements were changed from `<span>` to `<button>` for accessibility — verify no CSS regressions on column headers
+- Bulk mode changes the task card `onclick` handler dynamically — test that clicking tasks still opens the detail modal in normal mode
+- Search highlighting uses `innerHTML` replacement on `.task-title-text` and `.task-description` — if task titles contain HTML entities they may render unexpectedly
+
+**What's next / TODO (Low priority items, pending user review):**
+- Theme toggle (light/dark mode switch)
+- Task duplication feature
+- Keyboard shortcut overlay (? key)
+- Export options (JSON, CSV, Markdown)
