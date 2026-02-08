@@ -1706,6 +1706,313 @@
             }
         }
 
+        /* === FOCUS VISIBLE === */
+        *:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible, .btn:focus-visible, .nav-tab:focus-visible, .filter-btn:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(69, 133, 136, 0.25);
+        }
+
+        /* === LIGHT THEME === */
+        [data-theme="light"] {
+            --bg-primary: #fbf1c7;
+            --bg-secondary: #f2e5bc;
+            --bg-card: #ebdbb2;
+            --bg-modal: #f2e5bc;
+            --text-primary: #3c3836;
+            --text-secondary: #665c54;
+            --accent-blue: #076678;
+            --accent-green: #79740e;
+            --accent-yellow: #b57614;
+            --accent-red: #9d0006;
+            --accent-purple: #8f3f71;
+            --border: rgba(60, 56, 54, 0.15);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        /* === UNDO TOAST === */
+        .toast.undo {
+            border-color: var(--accent-yellow);
+            justify-content: space-between;
+        }
+        .toast .undo-btn {
+            background: var(--accent-yellow);
+            color: #1d2021;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        .toast .undo-btn:hover {
+            filter: brightness(1.15);
+        }
+
+        /* === BULK OPERATIONS === */
+        .bulk-bar {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 2rem;
+            background: var(--accent-blue);
+            color: #ebdbb2;
+            font-size: 0.9rem;
+        }
+        .bulk-bar.visible {
+            display: flex;
+        }
+        .bulk-bar button {
+            background: rgba(255,255,255,0.15);
+            color: #ebdbb2;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .bulk-bar button:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        .task-card.bulk-selected {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: -2px;
+        }
+        .task-card .bulk-checkbox {
+            display: none;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 5;
+        }
+        .bulk-mode .task-card .bulk-checkbox {
+            display: block;
+        }
+        .bulk-mode .task-card {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        /* === ADVANCED FILTERS === */
+        .advanced-filters {
+            display: none;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem 2rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+        }
+        .advanced-filters.visible {
+            display: flex;
+        }
+        .advanced-filters select, .advanced-filters input {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+        }
+        .advanced-filters label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .filter-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .filter-toggle-btn:hover, .filter-toggle-btn.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        /* === KEYBOARD SHORTCUT OVERLAY === */
+        .shortcut-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        .shortcut-overlay.visible {
+            display: flex;
+        }
+        .shortcut-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .shortcut-panel h2 {
+            margin-bottom: 1rem;
+        }
+        .shortcut-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .shortcut-row:last-child {
+            border-bottom: none;
+        }
+        .shortcut-key {
+            display: inline-block;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        .shortcut-desc {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* === EXPORT MODAL === */
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .export-option:hover {
+            border-color: var(--accent-blue);
+            background: var(--bg-secondary);
+        }
+        .export-icon {
+            font-size: 1.5rem;
+        }
+        .export-info {
+            flex: 1;
+        }
+        .export-info strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+        .export-info span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* === ACTIVITY PAGINATION === */
+        .activity-load-more {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .activity-load-more:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        /* === PROCESSING INDICATOR ENHANCED === */
+        .task-card.is-processing {
+            border-left: 3px solid var(--accent-yellow);
+            animation: processingGlow 2s ease-in-out infinite;
+        }
+        .task-card.is-processing.long-running {
+            border-left-color: var(--accent-red);
+        }
+        .processing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(215, 153, 33, 0.2);
+            color: var(--accent-yellow);
+        }
+        .processing-badge.long-running {
+            background: rgba(204, 36, 29, 0.2);
+            color: var(--accent-red);
+        }
+        @keyframes processingGlow {
+            0%, 100% { box-shadow: none; }
+            50% { box-shadow: 0 0 8px rgba(215, 153, 33, 0.3); }
+        }
+
+        /* === TASK MOVE DROPDOWN === */
+        .move-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 50;
+            min-width: 160px;
+            padding: 4px;
+        }
+        .move-dropdown button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .move-dropdown button:hover {
+            background: var(--bg-card);
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .header {
