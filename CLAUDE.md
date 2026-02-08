@@ -151,8 +151,37 @@ Config is loaded from `~/.clawdbot/mission-control.json`.
 - Keep the project dependency-free — do not introduce package managers or build tools
 
 ### Working with index.html
-The file is ~7,300 lines containing embedded CSS, HTML, and JS. When editing:
+The file is ~7,700 lines containing embedded CSS, HTML, and JS. When editing:
 - CSS is at the top inside `<style>` tags
 - HTML structure follows in `<body>`
 - JS is at the bottom inside `<script>` tags
 - Use the Gruvbox color palette defined in `:root` CSS variables
+
+### UI Features & Patterns
+
+#### Accessibility
+- All icon buttons have `aria-label` attributes
+- Modals use `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and keyboard focus traps (`trapFocus`/`releaseFocus` helpers)
+- Toast container has `aria-live="polite"` for screen reader announcements
+- `*:focus-visible` outlines are styled globally for keyboard navigation
+- Search container uses `role="search"`
+
+#### Keyboard Task Movement
+Task cards include a `↔` move button (`.task-move-btn`) that opens a dropdown (`toggleMoveDropdown`) with status options. This provides a keyboard-accessible alternative to drag-and-drop. The dropdown uses `role="menu"` with `role="menuitem"` buttons.
+
+#### Undo System
+`showToast(type, message, undoCallback)` accepts an optional third argument. When provided, the toast displays an "Undo" button and stays visible for 6 seconds (vs 3 seconds default). Used by `deleteTask`, `archiveTask`, and `archiveAllDone`.
+
+#### Bulk Operations
+- `toggleBulkMode()` enters multi-select mode (adds `.bulk-mode` to body)
+- Task cards render checkboxes; clicking toggles selection via `toggleBulkSelect()`
+- Bulk bar (`#bulk-bar`) provides move-to-status, archive, and delete actions
+- All bulk actions support undo via the toast system
+- Triggered via "Select" button in the filters bar
+
+#### Advanced Filtering & Sorting
+- Collapsible panel (`#advanced-filters`) toggled via "Filters" button in filter bar
+- Filters: priority (`advancedPriority`), tag (`advancedTag`), sort order (`advancedSort`)
+- Tag dropdown auto-populated from task data via `populateTagFilter()`
+- Sort options: default, newest, oldest, priority, alphabetical
+- Applied in `renderTasks()` after project filter
