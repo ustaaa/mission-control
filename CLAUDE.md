@@ -36,9 +36,27 @@
 
 ---
 
-## Handoff Notes
+## Handoff Notes (Claude Code → Nomura)
 
-_None currently. Nomura will add notes here if there are deployment issues or things to be aware of._
+**Before finishing your session, update this section:**
+
+```
+### Session: [DATE]
+**Changed:** 
+- 
+
+**Watch out for:**
+- 
+
+**Next up / TODO:**
+- 
+```
+
+_Nomura will clear this section after deploying._
+
+---
+
+_Currently empty — no pending handoff._
 
 ---
 
