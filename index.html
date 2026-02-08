@@ -1984,6 +1984,27 @@
             50% { box-shadow: 0 0 8px rgba(215, 153, 33, 0.3); }
         }
 
+        /* === TASK MOVE BUTTON === */
+        .task-move-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        .task-card:hover .task-move-btn,
+        .task-move-btn:focus-visible {
+            opacity: 1;
+        }
+        .task-move-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
         /* === TASK MOVE DROPDOWN === */
         .move-dropdown {
             position: absolute;
@@ -2052,6 +2073,11 @@
                 width: 100%;
                 border-left: none;
                 border-top: 1px solid var(--border);
+            }
+
+            .modal {
+                max-height: 90vh;
+                overflow-y: auto;
             }
         }
 
@@ -2472,7 +2498,7 @@
                 <span>🎯</span>
                 <span>Mission Control</span>
             </div>
-            <nav class="nav-tabs">
+            <nav class="nav-tabs" aria-label="Main navigation">
                 <div class="nav-tab active" data-view="tasks" onclick="switchView('tasks')">Tasks</div>
                 <div class="nav-tab" data-view="todo" onclick="switchView('todo')">Todo</div>
                 <div class="nav-tab" data-view="docs" onclick="switchView('docs')">Docs</div>
@@ -2480,19 +2506,20 @@
             </nav>
             
             <!-- Search -->
-            <div class="search-container">
+            <div class="search-container" role="search">
                 <div class="search-input-wrapper">
-                    <input type="text" 
-                           id="search-input" 
-                           class="search-input" 
-                           placeholder="Search tasks..." 
+                    <input type="text"
+                           id="search-input"
+                           class="search-input"
+                           placeholder="Search tasks..."
+                           aria-label="Search tasks"
                            oninput="handleSearch(this.value)"
                            onkeydown="if(event.key==='Escape'){clearSearch()}">
                     <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="M21 21l-4.35-4.35"></path>
                     </svg>
-                    <button class="search-clear" onmousedown="event.preventDefault()" onclick="clearSearch()" title="Clear search">×</button>
+                    <button class="search-clear" onmousedown="event.preventDefault()" onclick="clearSearch()" title="Clear search" aria-label="Clear search">×</button>
                 </div>
                 <span class="search-info" id="search-info"></span>
                 <label class="archive-search-toggle" title="Include archived tasks in search">
@@ -2517,7 +2544,7 @@
             <div class="user-profile" id="user-profile" style="display: none;">
                 <img class="user-avatar" id="user-avatar" src="" alt="Avatar">
                 <span class="user-name" id="user-name"></span>
-                <button class="btn-icon" onclick="showSettingsModal()" title="Settings">⚙️</button>
+                <button class="btn-icon" onclick="showSettingsModal()" title="Settings" aria-label="Open settings">⚙️</button>
                 <span class="user-logout" onclick="logout()">Logout</span>
             </div>
         </div>
@@ -2530,8 +2557,8 @@
             Neue Version verfügbar!
         </div>
         <div>
-            <button class="btn-refresh" onclick="reloadPage()">↻ Aktualisieren</button>
-            <button class="btn-dismiss" onclick="dismissVersionBanner()">✕</button>
+            <button class="btn-refresh" onclick="reloadPage()" aria-label="Refresh page">↻ Aktualisieren</button>
+            <button class="btn-dismiss" onclick="dismissVersionBanner()" aria-label="Dismiss update banner">✕</button>
         </div>
     </div>
 
@@ -2570,8 +2597,53 @@
         <button class="filter-btn active" data-filter="all">All projects</button>
     </div>
 
+    <!-- Advanced Filters -->
+    <div class="advanced-filters" id="advanced-filters">
+        <label>Priority:
+            <select id="filter-priority" onchange="applyAdvancedFilters()" aria-label="Filter by priority">
+                <option value="">All</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </label>
+        <label>Tag:
+            <select id="filter-tag" onchange="applyAdvancedFilters()" aria-label="Filter by tag">
+                <option value="">All</option>
+            </select>
+        </label>
+        <label>Sort:
+            <select id="sort-by" onchange="applyAdvancedFilters()" aria-label="Sort tasks by">
+                <option value="default">Default</option>
+                <option value="date-newest">Newest first</option>
+                <option value="date-oldest">Oldest first</option>
+                <option value="priority">Priority</option>
+                <option value="alpha">Alphabetical</option>
+            </select>
+        </label>
+        <button class="filter-btn" onclick="clearAdvancedFilters()" aria-label="Clear all filters">Clear</button>
+    </div>
+
+    <!-- Bulk Operations Bar -->
+    <div class="bulk-bar" id="bulk-bar">
+        <span id="bulk-count">0 selected</span>
+        <select id="bulk-status-select" aria-label="Move selected tasks to status">
+            <option value="">Move to...</option>
+            <option value="permanent">Permanent</option>
+            <option value="backlog">Backlog</option>
+            <option value="in_progress">In Progress</option>
+            <option value="review">Review</option>
+            <option value="done">Done</option>
+        </select>
+        <button onclick="bulkMoveSelected()" aria-label="Apply status change">Apply</button>
+        <button onclick="bulkArchiveSelected()" aria-label="Archive selected tasks">Archive</button>
+        <button onclick="bulkDeleteSelected()" aria-label="Delete selected tasks">Delete</button>
+        <span style="flex:1"></span>
+        <button onclick="exitBulkMode()" aria-label="Exit bulk selection mode">Cancel</button>
+    </div>
+
     <main class="main">
-        <div class="kanban">
+        <div class="kanban" role="region" aria-label="Task board">
             <div class="column column-recurring">
                 <div class="column-header">
                     <div class="column-dot recurring"></div>
@@ -2586,7 +2658,7 @@
                     <div class="column-dot scheduled"></div>
                     <span class="column-title">📅 Scheduled</span>
                     <span class="column-count" id="count-scheduled">0</span>
-                    <span class="column-add" onclick="openScheduledTaskModal()" title="Schedule a task">+</span>
+                    <button class="column-add" onclick="openScheduledTaskModal()" title="Schedule a task" aria-label="Schedule a new task">+</button>
                 </div>
                 <div class="column-tasks" id="tasks-scheduled" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'scheduled')"></div>
             </div>
@@ -2596,7 +2668,7 @@
                     <div class="column-dot templates"></div>
                     <span class="column-title">📑 Templates</span>
                     <span class="column-count" id="count-templates">0</span>
-                    <span class="column-add" onclick="openNewTemplate()" title="Add new template">+</span>
+                    <button class="column-add" onclick="openNewTemplate()" title="Add new template" aria-label="Add new template">+</button>
                 </div>
                 <div class="column-tasks" id="tasks-templates"></div>
             </div>
@@ -2606,7 +2678,7 @@
                     <div class="column-dot permanent"></div>
                     <span class="column-title">Permanent</span>
                     <span class="column-count" id="count-permanent">0</span>
-                    <span class="column-add" onclick="openNewTask('permanent')" title="Add new task">+</span>
+                    <button class="column-add" onclick="openNewTask('permanent')" title="Add new task" aria-label="Add new permanent task">+</button>
                 </div>
                 <div class="column-tasks" id="tasks-permanent" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'permanent')"></div>
             </div>
@@ -2616,7 +2688,7 @@
                     <div class="column-dot backlog"></div>
                     <span class="column-title">Backlog</span>
                     <span class="column-count" id="count-backlog">0</span>
-                    <span class="column-add" onclick="openNewTask('backlog')" title="Add new task">+</span>
+                    <button class="column-add" onclick="openNewTask('backlog')" title="Add new task" aria-label="Add new backlog task">+</button>
                 </div>
                 <div class="column-tasks" id="tasks-backlog" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'backlog')"></div>
             </div>
@@ -2626,7 +2698,7 @@
                     <div class="column-dot in-progress"></div>
                     <span class="column-title">In Progress</span>
                     <span class="column-count" id="count-in_progress">0</span>
-                    <span class="column-add" onclick="openNewTask('in_progress')" title="Add new task">+</span>
+                    <button class="column-add" onclick="openNewTask('in_progress')" title="Add new task" aria-label="Add new in-progress task">+</button>
                 </div>
                 <div class="column-tasks" id="tasks-in_progress" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'in_progress')"></div>
             </div>
@@ -2636,7 +2708,7 @@
                     <div class="column-dot review"></div>
                     <span class="column-title">Review</span>
                     <span class="column-count" id="count-review">0</span>
-                    <span class="column-add" onclick="openNewTask('review')" title="Add new task">+</span>
+                    <button class="column-add" onclick="openNewTask('review')" title="Add new task" aria-label="Add new review task">+</button>
                 </div>
                 <div class="column-tasks" id="tasks-review" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'review')"></div>
             </div>
@@ -2646,8 +2718,8 @@
                     <div class="column-dot done"></div>
                     <span class="column-title">Done</span>
                     <span class="column-count" id="count-done">0</span>
-                    <button class="archive-all-btn" onclick="showArchiveView()" title="View archived tasks" style="background: transparent;">📂 View</button>
-                    <button class="archive-all-btn" onclick="archiveAllDone()" title="Archive all done tasks">📦 Archive All</button>
+                    <button class="archive-all-btn" onclick="showArchiveView()" title="View archived tasks" aria-label="View archived tasks" style="background: transparent;">📂 View</button>
+                    <button class="archive-all-btn" onclick="archiveAllDone()" title="Archive all done tasks" aria-label="Archive all done tasks">📦 Archive All</button>
                 </div>
                 <div class="column-tasks" id="tasks-done" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'done')"></div>
             </div>
@@ -2656,13 +2728,13 @@
         <aside class="activity" id="activity-sidebar">
             <div class="activity-header">
                 <span>ACTIVITY</span>
-                <button class="activity-toggle" onclick="toggleActivity()" title="Hide Activity">
+                <button class="activity-toggle" onclick="toggleActivity()" title="Hide Activity" aria-label="Toggle activity sidebar">
                     <span id="activity-toggle-icon">✕</span>
                 </button>
             </div>
             <div class="activity-list" id="activity-list"></div>
         </aside>
-        <button class="activity-reopen" id="activity-reopen" onclick="toggleActivity()" title="Show Activity">
+        <button class="activity-reopen" id="activity-reopen" onclick="toggleActivity()" title="Show Activity" aria-label="Show activity sidebar">
             ACTIVITY
         </button>
     </main>
@@ -2860,11 +2932,11 @@
     </div><!-- END view-people -->
 
     <!-- Auth Modal -->
-    <div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)hideAuthModal()">
+    <div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)hideAuthModal()" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">🔐 Connect to GitHub</h2>
-                <button class="modal-close" onclick="hideAuthModal()">&times;</button>
+                <h2 class="modal-title" id="auth-modal-title">🔐 Connect to GitHub</h2>
+                <button class="modal-close" onclick="hideAuthModal()" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
                 <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
@@ -2927,11 +2999,11 @@
     </div>
 
     <!-- Settings Modal -->
-    <div class="modal-overlay" id="settings-modal" onclick="if(event.target===this)hideSettingsModal()">
+    <div class="modal-overlay" id="settings-modal" onclick="if(event.target===this)hideSettingsModal()" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 class="modal-title">⚙️ Settings</h2>
-                <button class="modal-close" onclick="hideSettingsModal()">&times;</button>
+                <h2 class="modal-title" id="settings-modal-title">⚙️ Settings</h2>
+                <button class="modal-close" onclick="hideSettingsModal()" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
                 <h3 style="margin-bottom: 12px; font-size: 1rem;">Storage</h3>
@@ -2994,11 +3066,11 @@
     </div>
 
     <!-- Commit Modal -->
-    <div class="modal-overlay" id="commit-modal" onclick="if(event.target===this)hideCommitModal()">
+    <div class="modal-overlay" id="commit-modal" onclick="if(event.target===this)hideCommitModal()" role="dialog" aria-modal="true" aria-labelledby="commit-modal-title">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">💾 Save Changes to GitHub</h2>
-                <button class="modal-close" onclick="hideCommitModal()">&times;</button>
+                <h2 class="modal-title" id="commit-modal-title">💾 Save Changes to GitHub</h2>
+                <button class="modal-close" onclick="hideCommitModal()" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -3023,11 +3095,11 @@
     </div>
 
     <!-- Task Edit Modal -->
-    <div class="modal-overlay" id="task-modal" onclick="if(event.target===this)hideTaskModal()">
+    <div class="modal-overlay" id="task-modal" onclick="if(event.target===this)hideTaskModal()" role="dialog" aria-modal="true" aria-labelledby="task-modal-title">
         <div class="modal" style="max-width: 600px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="task-modal-title">Edit Task</h2>
-                <button class="modal-close" onclick="hideTaskModal()">&times;</button>
+                <button class="modal-close" onclick="hideTaskModal()" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -3105,7 +3177,7 @@
     </div>
 
     <!-- Toast Container -->
-    <div class="toast-container" id="toast-container"></div>
+    <div class="toast-container" id="toast-container" role="status" aria-live="polite"></div>
 
     <script>
         // === CONFIG ===
@@ -3149,6 +3221,9 @@
             isLoading: false,
             gatewayUrl: null  // Set via config or auto-detected
         };
+
+        // Undo stack for destructive actions
+        let undoStack = [];
 
         // === VERSION CHECK ===
         const VERSION_FILE = 'data/version.json';
@@ -3739,13 +3814,46 @@
         }
 
         // === AUTH FUNCTIONS ===
+        // === FOCUS TRAP (Accessibility) ===
+        let _focusTrapEl = null;
+        let _focusTrapPrev = null;
+        function trapFocus(modalOverlay) {
+            _focusTrapPrev = document.activeElement;
+            _focusTrapEl = modalOverlay;
+            modalOverlay.addEventListener('keydown', _focusTrapHandler);
+        }
+        function releaseFocus(modalOverlay) {
+            modalOverlay.removeEventListener('keydown', _focusTrapHandler);
+            if (_focusTrapPrev && _focusTrapPrev.focus) _focusTrapPrev.focus();
+            _focusTrapEl = null;
+            _focusTrapPrev = null;
+        }
+        function _focusTrapHandler(e) {
+            if (e.key !== 'Tab') return;
+            const modal = e.currentTarget.querySelector('.modal');
+            if (!modal) return;
+            const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+            } else {
+                if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
+        }
+
         function showAuthModal() {
-            document.getElementById('auth-modal').classList.add('visible');
+            const modal = document.getElementById('auth-modal');
+            modal.classList.add('visible');
+            trapFocus(modal);
             document.getElementById('token-input').focus();
         }
 
         function hideAuthModal() {
-            document.getElementById('auth-modal').classList.remove('visible');
+            const modal = document.getElementById('auth-modal');
+            releaseFocus(modal);
+            modal.classList.remove('visible');
             document.getElementById('token-input').value = '';
             hideValidationStates();
         }
@@ -3884,19 +3992,28 @@
         });
 
         // === TOAST NOTIFICATIONS ===
-        function showToast(type, message) {
+        function showToast(type, message, undoCallback) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `
-                <span>${type === 'success' ? '✓' : '✗'}</span>
-                <span>${message}</span>
-            `;
+            toast.className = `toast ${type}${undoCallback ? ' undo' : ''}`;
+            const icon = type === 'success' ? '✓' : type === 'info' ? 'ℹ' : '✗';
+            let html = `<span>${icon}</span><span>${message}</span>`;
+            if (undoCallback) {
+                html += `<button class="undo-btn" aria-label="Undo action">Undo</button>`;
+            }
+            toast.innerHTML = html;
+            if (undoCallback) {
+                toast.querySelector('.undo-btn').onclick = () => {
+                    undoCallback();
+                    toast.remove();
+                };
+            }
             container.appendChild(toast);
 
+            const duration = undoCallback ? 6000 : 3000;
             setTimeout(() => {
                 toast.remove();
-            }, 3000);
+            }, duration);
         }
 
         // === MARKDOWN RENDERER ===
@@ -4007,16 +4124,32 @@
                     tasks = tasks.filter(t => t.project === currentFilter || (t.tags && t.tags.includes(currentFilter)));
                 }
 
-                // Sort: Done column by completedAt (newest first), others by priority + sortOrder
-                if (status === 'done') {
-                    // Done: newest completed tasks first
+                // Apply advanced filters
+                if (advancedPriority) {
+                    tasks = tasks.filter(t => t.priority === advancedPriority);
+                }
+                if (advancedTag) {
+                    tasks = tasks.filter(t => t.tags && t.tags.includes(advancedTag));
+                }
+
+                // Sort
+                if (advancedSort === 'date-newest') {
+                    tasks.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                } else if (advancedSort === 'date-oldest') {
+                    tasks.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+                } else if (advancedSort === 'priority') {
+                    tasks.sort((a, b) => (priorityOrder[a.priority] ?? 1) - (priorityOrder[b.priority] ?? 1));
+                } else if (advancedSort === 'alpha') {
+                    tasks.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+                } else if (status === 'done') {
+                    // Default done: newest completed tasks first
                     tasks.sort((a, b) => {
                         const dateA = a.completedAt ? new Date(a.completedAt).getTime() : 0;
                         const dateB = b.completedAt ? new Date(b.completedAt).getTime() : 0;
-                        return dateB - dateA; // Descending (newest first)
+                        return dateB - dateA;
                     });
                 } else {
-                    // Other columns: priority first, then sortOrder
+                    // Default other columns: priority first, then sortOrder
                     tasks.sort((a, b) => {
                         const prioA = priorityOrder[a.priority] ?? 1;
                         const prioB = priorityOrder[b.priority] ?? 1;
@@ -4146,15 +4279,24 @@
                 `;
             }
 
+            // Move button (keyboard alternative to drag-drop)
+            const moveBtn = !isArchived ? `
+                <div class="task-move-wrapper" onclick="event.stopPropagation()" style="position:relative;">
+                    <button class="task-move-btn" onclick="toggleMoveDropdown(event, '${task.id}')" aria-label="Move task to another column" title="Move to...">↔</button>
+                </div>
+            ` : '';
+
             return `
                 <div class="task-card priority-${task.priority}${isArchived ? ' archived' : ''}${processingCardClass ? ' ' + processingCardClass : ''}" data-task-id="${task.id}"
                      draggable="${!isArchived}"
                      ondragstart="handleDragStart(event, '${task.id}')"
                      ondragend="handleDragEnd(event)"
-                     onclick="openTaskDetail('${task.id}')">
+                     onclick="${bulkMode ? `toggleBulkSelect('${task.id}', event)` : `openTaskDetail('${task.id}')`}">
+                    <input type="checkbox" class="bulk-checkbox" ${bulkSelected.has(task.id) ? 'checked' : ''} onclick="toggleBulkSelect('${task.id}', event)" aria-label="Select task">
                     <div class="task-title">
                         <span class="task-title-text">${task.title}</span>
                         ${archivedBadge}
+                        ${moveBtn}
                     </div>
                     ${processingIndicator}
                     <div class="task-description">${task.description}</div>
@@ -4199,6 +4341,141 @@
                 // AUTO-SAVE
                 autoSave(`Move "${task.title}" → ${newStatus}`);
             }
+        }
+
+        // === KEYBOARD MOVE DROPDOWN ===
+        let _openMoveDropdown = null;
+        function toggleMoveDropdown(event, taskId) {
+            event.stopPropagation();
+            closeMoveDropdown();
+            const task = STATE.data.tasks.find(t => t.id === taskId);
+            if (!task) return;
+            const statuses = ['permanent', 'backlog', 'in_progress', 'review', 'done'];
+            const wrapper = event.currentTarget.closest('.task-move-wrapper');
+            const dropdown = document.createElement('div');
+            dropdown.className = 'move-dropdown';
+            dropdown.setAttribute('role', 'menu');
+            statuses.forEach(s => {
+                if (s === task.status) return;
+                const btn = document.createElement('button');
+                btn.setAttribute('role', 'menuitem');
+                btn.textContent = s.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+                btn.onclick = (e) => { e.stopPropagation(); closeMoveDropdown(); quickMoveTask(taskId, s); };
+                dropdown.appendChild(btn);
+            });
+            wrapper.appendChild(dropdown);
+            _openMoveDropdown = dropdown;
+            // Focus first item for keyboard users
+            const firstBtn = dropdown.querySelector('button');
+            if (firstBtn) firstBtn.focus();
+            // Close on outside click
+            setTimeout(() => document.addEventListener('click', closeMoveDropdown, { once: true }), 0);
+        }
+        function closeMoveDropdown() {
+            if (_openMoveDropdown) { _openMoveDropdown.remove(); _openMoveDropdown = null; }
+        }
+
+        // === BULK OPERATIONS ===
+        let bulkMode = false;
+        let bulkSelected = new Set();
+
+        function toggleBulkMode() {
+            bulkMode = !bulkMode;
+            bulkSelected.clear();
+            document.body.classList.toggle('bulk-mode', bulkMode);
+            document.getElementById('bulk-bar').classList.toggle('visible', bulkMode);
+            updateBulkCount();
+            renderTasks();
+        }
+
+        function exitBulkMode() {
+            bulkMode = false;
+            bulkSelected.clear();
+            document.body.classList.remove('bulk-mode');
+            document.getElementById('bulk-bar').classList.remove('visible');
+            renderTasks();
+        }
+
+        function toggleBulkSelect(taskId, event) {
+            event.stopPropagation();
+            if (bulkSelected.has(taskId)) {
+                bulkSelected.delete(taskId);
+            } else {
+                bulkSelected.add(taskId);
+            }
+            const card = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
+            if (card) card.classList.toggle('bulk-selected', bulkSelected.has(taskId));
+            updateBulkCount();
+        }
+
+        function updateBulkCount() {
+            const el = document.getElementById('bulk-count');
+            if (el) el.textContent = `${bulkSelected.size} selected`;
+        }
+
+        function bulkMoveSelected() {
+            const status = document.getElementById('bulk-status-select').value;
+            if (!status || bulkSelected.size === 0) return;
+            const count = bulkSelected.size;
+            bulkSelected.forEach(id => {
+                const task = STATE.data.tasks.find(t => t.id === id);
+                if (task) {
+                    if (status === 'done') task.completedAt = new Date().toISOString();
+                    task.status = status;
+                }
+            });
+            STATE.data.lastUpdated = new Date().toISOString();
+            exitBulkMode();
+            autoSave(`Bulk move ${count} tasks to ${status}`);
+        }
+
+        function bulkArchiveSelected() {
+            if (bulkSelected.size === 0) return;
+            const count = bulkSelected.size;
+            const ids = [...bulkSelected];
+            ids.forEach(id => {
+                const task = STATE.data.tasks.find(t => t.id === id);
+                if (task) { task.archived = true; task.archivedAt = new Date().toISOString(); }
+            });
+            STATE.data.lastUpdated = new Date().toISOString();
+            exitBulkMode();
+            autoSave(`Bulk archive ${count} tasks`);
+            showToast('success', `Archived ${count} tasks`, () => {
+                ids.forEach(id => {
+                    const t = STATE.data.tasks.find(x => x.id === id);
+                    if (t) { delete t.archived; delete t.archivedAt; }
+                });
+                renderTasks();
+                autoSave(`Undo bulk archive ${count} tasks`);
+            });
+        }
+
+        function bulkDeleteSelected() {
+            if (bulkSelected.size === 0) return;
+            if (!confirm(`Delete ${bulkSelected.size} tasks?`)) return;
+            const count = bulkSelected.size;
+            const deletedTasks = [];
+            bulkSelected.forEach(id => {
+                const idx = STATE.data.tasks.findIndex(t => t.id === id);
+                if (idx >= 0) {
+                    deletedTasks.push({ task: JSON.parse(JSON.stringify(STATE.data.tasks[idx])), index: idx });
+                }
+            });
+            // Remove in reverse order to preserve indices
+            deletedTasks.sort((a, b) => b.index - a.index).forEach(d => {
+                STATE.data.tasks.splice(d.index, 1);
+            });
+            STATE.data.lastUpdated = new Date().toISOString();
+            exitBulkMode();
+            autoSave(`Bulk delete ${count} tasks`);
+            showToast('success', `Deleted ${count} tasks`, () => {
+                deletedTasks.sort((a, b) => a.index - b.index).forEach(d => {
+                    STATE.data.tasks.splice(d.index, 0, d.task);
+                });
+                STATE.data.lastUpdated = new Date().toISOString();
+                renderTasks();
+                autoSave(`Undo bulk delete ${count} tasks`);
+            });
         }
 
         // === DRAG & DROP (Trello-style smooth) ===
@@ -4580,12 +4857,52 @@
             container.innerHTML = `
                 <button class="filter-btn active" data-filter="all" onclick="filterByProject('all')">All projects</button>
                 ${projectButtons}
+                <button class="filter-toggle-btn" onclick="toggleAdvancedFilters()" aria-label="Toggle advanced filters">▼ Filters</button>
+                <button class="filter-btn" onclick="toggleBulkMode()" aria-label="Toggle bulk select mode" style="margin-left: auto;">☑ Select</button>
             `;
+            populateTagFilter();
         }
 
         let currentFilter = 'all';
         let searchQuery = '';
         let showArchivedInSearch = false;
+
+        // === ADVANCED FILTERS ===
+        let advancedPriority = '';
+        let advancedTag = '';
+        let advancedSort = 'default';
+
+        function toggleAdvancedFilters() {
+            document.getElementById('advanced-filters').classList.toggle('visible');
+        }
+
+        function populateTagFilter() {
+            const select = document.getElementById('filter-tag');
+            if (!select) return;
+            const data = STATE.data || FALLBACK_DATA;
+            const tags = new Set();
+            (data.tasks || []).forEach(t => (t.tags || []).forEach(tag => tags.add(tag)));
+            const current = select.value;
+            select.innerHTML = '<option value="">All</option>' + [...tags].sort().map(t => `<option value="${t}">${t}</option>`).join('');
+            select.value = current;
+        }
+
+        function applyAdvancedFilters() {
+            advancedPriority = document.getElementById('filter-priority').value;
+            advancedTag = document.getElementById('filter-tag').value;
+            advancedSort = document.getElementById('sort-by').value;
+            renderTasks();
+        }
+
+        function clearAdvancedFilters() {
+            document.getElementById('filter-priority').value = '';
+            document.getElementById('filter-tag').value = '';
+            document.getElementById('sort-by').value = 'default';
+            advancedPriority = '';
+            advancedTag = '';
+            advancedSort = 'default';
+            renderTasks();
+        }
 
         // === ARCHIVE FUNCTIONS ===
         function archiveTask(taskId) {
@@ -4596,6 +4913,12 @@
                 addActivity(`📦 Archived: ${task.title}`, 'archive');
                 renderTasks();
                 saveToGitHub();
+                showToast('success', `Archived "${task.title}"`, () => {
+                    delete task.archived;
+                    delete task.archivedAt;
+                    renderTasks();
+                    autoSave(`Undo archive "${task.title}"`);
+                });
             }
         }
 
@@ -4615,21 +4938,29 @@
         function archiveAllDone() {
             const doneTasks = STATE.data.tasks.filter(t => t.status === 'done' && !t.archived);
             if (doneTasks.length === 0) {
-                showToast('No tasks to archive', 'info');
+                showToast('info', 'No tasks to archive');
                 return;
             }
-            
+
             const count = doneTasks.length;
+            const archivedIds = doneTasks.map(t => t.id);
             doneTasks.forEach(task => {
                 task.archived = true;
                 task.archivedAt = new Date().toISOString();
             });
-            
+
             addActivity(`📦 Archived ${count} task${count > 1 ? 's' : ''} from Done`, 'archive');
             renderTasks();
             autoSave(`Archive ${count} task${count > 1 ? 's' : ''}`);
-            showToast(`Archived ${count} task${count > 1 ? 's' : ''}`, 'success');
-            
+            showToast('success', `Archived ${count} task${count > 1 ? 's' : ''}`, () => {
+                archivedIds.forEach(id => {
+                    const t = STATE.data.tasks.find(x => x.id === id);
+                    if (t) { delete t.archived; delete t.archivedAt; }
+                });
+                renderTasks();
+                autoSave(`Undo archive ${count} tasks`);
+            });
+
             // Check if we need to move old tasks to archive files
             checkAndMoveOldArchivedTasks();
         }
@@ -4996,7 +5327,9 @@
             // Render comments
             renderComments(task);
 
-            document.getElementById('task-modal').classList.add('visible');
+            const modal = document.getElementById('task-modal');
+            modal.classList.add('visible');
+            trapFocus(modal);
         }
 
         function renderSubtasks(task) {
@@ -5280,7 +5613,9 @@
         }
 
         function hideTaskModal() {
-            document.getElementById('task-modal').classList.remove('visible');
+            const modal = document.getElementById('task-modal');
+            releaseFocus(modal);
+            modal.classList.remove('visible');
             currentEditingTaskId = null;
             isEditingTemplate = false;
         }
@@ -5362,14 +5697,22 @@
 
             const task = STATE.data.tasks.find(t => t.id === currentEditingTaskId);
             const taskTitle = task?.title || 'Task';
+            const deletedTask = JSON.parse(JSON.stringify(task));
+            const taskIndex = STATE.data.tasks.indexOf(task);
 
             STATE.data.tasks = STATE.data.tasks.filter(t => t.id !== currentEditingTaskId);
             STATE.data.lastUpdated = new Date().toISOString();
             hideTaskModal();
             renderTasks();
 
-            // AUTO-SAVE
+            // AUTO-SAVE with undo
             autoSave(`Delete "${taskTitle}"`);
+            showToast('success', `Deleted "${taskTitle}"`, () => {
+                STATE.data.tasks.splice(taskIndex, 0, deletedTask);
+                STATE.data.lastUpdated = new Date().toISOString();
+                renderTasks();
+                autoSave(`Undo delete "${taskTitle}"`);
+            });
         }
 
         function markAsChanged() {
@@ -5396,11 +5739,15 @@
 
             document.getElementById('commit-message').value = '';
             document.getElementById('changes-summary').innerHTML = generateChangesSummary();
-            document.getElementById('commit-modal').classList.add('visible');
+            const modal = document.getElementById('commit-modal');
+            modal.classList.add('visible');
+            trapFocus(modal);
         }
 
         function hideCommitModal() {
-            document.getElementById('commit-modal').classList.remove('visible');
+            const modal = document.getElementById('commit-modal');
+            releaseFocus(modal);
+            modal.classList.remove('visible');
         }
 
         // === SETTINGS MODAL ===
@@ -5408,11 +5755,15 @@
             renderProjectsList();
             const select = document.getElementById('storage-mode');
             if (select) select.value = getStorageMode();
-            document.getElementById('settings-modal').classList.add('visible');
+            const modal = document.getElementById('settings-modal');
+            modal.classList.add('visible');
+            trapFocus(modal);
         }
 
         function hideSettingsModal() {
-            document.getElementById('settings-modal').classList.remove('visible');
+            const modal = document.getElementById('settings-modal');
+            releaseFocus(modal);
+            modal.classList.remove('visible');
         }
 
         function renderProjectsList() {
