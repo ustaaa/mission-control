@@ -20,12 +20,12 @@
 
 ## Last Deployment
 
-**Commit:** _pending_  
-**Date:** 2026-02-08 16:XX UTC  
+**Commit:** `6b9c627`  
+**Date:** 2026-02-08 16:06 UTC  
 **Summary:** Monochrome icons + theme toggle  
-**Status:** 🔄 Deploying...
+**Status:** ✅ Live on http://192.168.1.51:18701
 
-### What's being deployed:
+### What was deployed:
 - Monochrome text icons (replaced emoji throughout UI)
 - Light/dark theme toggle with localStorage persistence
 - Gruvbox light palette support
@@ -34,28 +34,27 @@
 
 ## Handoff Notes (Claude Code → Nomura)
 
-### Session: 2026-02-08
+_Currently empty — last handoff deployed at 2026-02-08 16:06 UTC._
 
-**Changed:**
-- Replaced all emoji in UI action buttons, modal titles, column headers, badges, and filter bar with plain monochrome text
-- CSS pseudo-element emoji replaced with `[archived]` text badge
-- Added light/dark theme toggle in header, persisted via `localStorage('mc_theme')`
-- Light theme uses Gruvbox light palette (`[data-theme="light"]`)
-
-**Watch out for:**
-- `column-add` elements changed from `<span>` to `<button>` for accessibility — verify no CSS regressions
-- Bulk mode changes task card `onclick` dynamically — test normal mode still opens detail modal
-- Search highlighting uses `innerHTML` replacement — HTML entities in titles may render unexpectedly
-- Light theme may need fine-tuning on some hard-coded `rgba()` values
-
-**Next up / TODO (Low priority):**
+**Pending TODO (Low priority from Claude Code):**
 - Task duplication feature
 - Keyboard shortcut overlay (? key)
 - Export options (JSON, CSV, Markdown)
 
 ---
 
-_Nomura will clear this section after deploying._
+**Template for Claude Code — copy/paste before ending session:**
+```
+### Session: [DATE]
+**Changed:** 
+- 
+
+**Watch out for:**
+- 
+
+**Next up / TODO:**
+- 
+```
 
 ---
 
