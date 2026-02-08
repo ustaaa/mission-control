@@ -20,10 +20,19 @@
 
 ## Last Deployment
 
-**Commit:** `000b3a0`  
-**Date:** 2026-02-08 14:06 UTC  
-**Summary:** Added CLAUDE.md coordination file  
+**Commit:** `2bd4da3`  
+**Date:** 2026-02-08 14:23 UTC  
+**Summary:** Merged Claude Code UI improvements + PWA support  
 **Status:** ✅ Live on http://192.168.1.51:18701
+
+### What was deployed:
+- Accessibility improvements (aria labels, focus traps, keyboard nav)
+- Undo system for delete/archive operations
+- Bulk selection mode
+- Advanced filtering & sorting
+- Processing timeout indicators
+- Search highlighting
+- PWA support restored
 
 ---
 
