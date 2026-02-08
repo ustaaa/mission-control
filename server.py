@@ -7,7 +7,7 @@ import base64
 from http import HTTPStatus
 
 # Configuration
-PORT = int(os.environ.get("PORT", "18701"))
+PORT = int(os.environ.get("PORT", "8080"))
 
 # GitHub sync target (optional)
 GITHUB_OWNER = os.environ.get("MC_GITHUB_OWNER", "ustaaa")

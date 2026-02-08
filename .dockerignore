@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.example
+
+# Documentation
+README.md
+*.md
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache
+.coverage
+
+# Node
+node_modules
+package*.json
+
+# Logs
+*.log
+server*.log
+
+# Examples (not needed in container)
+examples/
+
+# Olares packaging (separate)
+OlaresManifest.yaml

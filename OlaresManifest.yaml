@@ -1,0 +1,16 @@
+name: mission-control
+version: 0.1.0
+description: |
+  Kanban task board + voice chat + notes integration for Irtek.
+
+container:
+  image: your-registry/mission-control:latest
+  ports:
+    - name: ui
+      containerPort: 8000
+
+storage:
+  appData:
+    mountPath: /data
+  appCache:
+    mountPath: /cache

@@ -2,26 +2,166 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Mission Control - MoltBot</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#282828">
+    <meta name="color-scheme" content="dark">
+    <meta name="description" content="Task management dashboard for MoltBot">
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MissionCtrl">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%231d2021' width='180' height='180' rx='36'/><text x='90' y='120' font-size='90' text-anchor='middle'>🎛️</text></svg>">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
     <style>
         :root {
-            /* Gruvbox Theme */
+            /* Gruvbox Theme (Default) */
             --bg-primary: #1d2021;
             --bg-secondary: #282828;
+            --bg-tertiary: #3c3836;
             --bg-card: #32302f;
             --bg-modal: #282828;
             --text-primary: #ebdbb2;
             --text-secondary: #a89984;
+            --text-muted: #665c54;
             
             /* Gruvbox Accents */
+            --accent: #458588;
             --accent-blue: #458588;
             --accent-green: #98971a;
             --accent-yellow: #d79921;
             --accent-red: #cc241d;
             --accent-purple: #b16286;
+            --accent-orange: #d65d0e;
             
             --border: rgba(235, 219, 178, 0.12);
+            --border-color: rgba(235, 219, 178, 0.12);
+            
+            /* Responsive Spacing Scale */
+            --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+            --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+            --space-md: clamp(0.75rem, 1.5vw, 1rem);
+            --space-lg: clamp(1rem, 2vw, 1.5rem);
+            --space-xl: clamp(1.5rem, 3vw, 2rem);
+            
+            /* Responsive Column Widths */
+            --col-min-width: 280px;
+            --col-max-width: 400px;
+            
+            /* Breakpoints */
+            --bp-mobile: 640px;
+            --bp-tablet: 1024px;
+            --bp-desktop: 1440px;
+        }
+        
+        /* ============================================
+           THEME SYSTEM - CSS Custom Properties
+           ============================================ */
+        
+        /* Nord Theme - Arctic Blue Palette */
+        [data-theme="nord"] {
+            --bg-primary: #2e3440;
+            --bg-secondary: #3b4252;
+            --bg-tertiary: #434c5e;
+            --bg-card: #434c5e;
+            --bg-modal: #3b4252;
+            --text-primary: #eceff4;
+            --text-secondary: #d8dee9;
+            --text-muted: #4c566a;
+            
+            --accent: #88c0d0;
+            --accent-blue: #88c0d0;
+            --accent-green: #a3be8c;
+            --accent-yellow: #ebcb8b;
+            --accent-red: #bf616a;
+            --accent-purple: #b48ead;
+            --accent-orange: #d08770;
+            
+            --border: rgba(216, 222, 233, 0.15);
+            --border-color: rgba(216, 222, 233, 0.15);
+        }
+        
+        /* Claude Theme - Anthropic Claude Actual UI (Warm, Earthy) */
+        [data-theme="claude"] {
+            --bg-primary: #1e1e2e;
+            --bg-secondary: #2d2d3a;
+            --bg-tertiary: #363642;
+            --bg-card: #363642;
+            --bg-modal: #2d2d3a;
+            --text-primary: #fafafa;
+            --text-secondary: #a0a0a0;
+            --text-muted: #6b6b7b;
+            
+            --accent: #d97757;
+            --accent-blue: #d97757;
+            --accent-green: #7eb77f;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-orange: #d97757;
+            
+            --border: rgba(217, 119, 87, 0.3);
+            --border-color: rgba(217, 119, 87, 0.3);
+        }
+        
+        /* OpenCode Theme - Moonrise AI / Purple Accent */
+        [data-theme="opencode"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-card: #21262d;
+            --bg-modal: #161b22;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --text-muted: #484f58;
+            
+            --accent: #a855f7;
+            --accent-blue: #a855f7;
+            --accent-green: #3fb950;
+            --accent-yellow: #d29922;
+            --accent-red: #f85149;
+            --accent-purple: #a855f7;
+            --accent-orange: #db6d28;
+            
+            --border: rgba(168, 85, 247, 0.3);
+            --border-color: rgba(168, 85, 247, 0.3);
+        }
+        
+        /* GNOME Theme - Adwaita Dark */
+        [data-theme="gnome"] {
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3d3d3d;
+            --bg-card: #3d3d3d;
+            --bg-modal: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #707070;
+            
+            --accent: #3584e4;
+            --accent-blue: #3584e4;
+            --accent-green: #33d17a;
+            --accent-yellow: #f6d32d;
+            --accent-red: #e01b24;
+            --accent-purple: #9141ac;
+            --accent-orange: #ff7800;
+            
+            --border: rgba(53, 132, 228, 0.3);
+            --border-color: rgba(53, 132, 228, 0.3);
+        }
+        
+        /* Base font size - smaller for Mission Control */
+        html {
+            font-size: 14px;
         }
 
         * {
@@ -57,7 +197,7 @@
         }
 
         .logo {
-            font-size: 1.25rem;
+            font-size: 1rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -88,35 +228,85 @@
             gap: 1rem;
         }
 
+        /* ============================================
+           BUTTON HIERARCHY SYSTEM
+           ============================================ */
         .btn {
             padding: 0.5rem 1rem;
             border-radius: 6px;
             border: none;
             cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s;
+            font-size: 0.813rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
+            white-space: nowrap;
         }
 
+        .btn svg {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        /* Primary - Main CTA, filled prominent */
         .btn-primary {
-            background: var(--accent-blue);
+            background: var(--accent);
             color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary:hover {
-            background: #2563eb;
+            filter: brightness(1.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
 
+        /* Secondary - Less prominent, outline style */
         .btn-secondary {
-            background: var(--bg-card);
+            background: transparent;
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
 
         .btn-secondary:hover {
-            background: var(--border);
+            background: var(--bg-tertiary);
+            border-color: var(--text-muted);
+        }
+
+        /* Ghost - Minimal, no border */
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Icon-only button */
+        .btn-icon-only {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .btn-icon-only:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-icon-only svg {
+            width: 18px;
+            height: 18px;
         }
 
         .btn-github {
@@ -129,6 +319,12 @@
         }
 
         .btn-danger {
+            background: transparent;
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .btn-danger:hover {
             background: var(--accent-red);
             color: white;
         }
@@ -136,6 +332,25 @@
         .btn-small {
             padding: 0.375rem 0.75rem;
             font-size: 0.75rem;
+        }
+
+        .btn-small svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Toolbar grouping */
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+            margin: 0 0.5rem;
         }
 
         .live-indicator {
@@ -202,33 +417,89 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
+        /* Theme Switcher */
+        .theme-switcher {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-switcher select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem 2rem 0.5rem 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.813rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            min-width: 100px;
+        }
+
+        .theme-switcher select:hover {
+            border-color: var(--text-muted);
+            background: var(--bg-card);
+        }
+
+        .theme-switcher select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(69, 133, 136, 0.15);
+        }
+
+        .theme-switcher::after {
+            content: '';
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid var(--text-secondary);
+            pointer-events: none;
+        }
+
         /* Stats Bar */
         .stats-bar {
             display: flex;
-            gap: 2rem;
-            padding: 1rem 2rem;
-            background: var(--bg-secondary);
+            gap: 1.5rem;
+            padding: 0.875rem 2rem;
+            background: var(--bg-primary);
             border-bottom: 1px solid var(--border);
         }
 
         .stat {
             display: flex;
-            align-items: baseline;
+            align-items: center;
             gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 6px;
         }
 
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1rem;
             font-weight: 600;
         }
 
         .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 500;
         }
 
         .stat-highlight {
             color: var(--accent-green);
+        }
+        
+        /* Hide 0% completion - show dash instead */
+        .stat-value.zero-state {
+            color: var(--text-muted);
         }
 
         /* Unsaved Changes Banner */
@@ -345,84 +616,147 @@
             color: white;
         }
 
-        /* Main Layout */
+        /* Main Layout - Responsive */
         .main {
             display: flex;
-            height: calc(100vh - 180px);
+            height: calc(100vh - clamp(140px, 15vh, 180px));
+            overflow: hidden;
         }
 
-        /* Kanban Board */
+        /* ============================================
+           KANBAN BOARD - Fluid Responsive Grid
+           ============================================ */
         .kanban {
             flex: 1;
-            display: flex;
-            gap: 1rem;
-            padding: 1rem 2rem;
+            display: grid;
+            /* Truly fluid columns: auto-fill, with smarter min/max */
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+            gap: var(--space-lg);
+            padding: var(--space-lg);
             overflow-x: auto;
-            align-items: stretch;
+            overflow-y: hidden;
+            align-items: start;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        
+        /* Horizontal scroll mode when many columns */
+        @container (max-width: 1800px) {
+            .kanban {
+                grid-template-columns: repeat(8, minmax(280px, 340px));
+                grid-auto-flow: column;
+                scroll-snap-type: x proximity;
+            }
+        }
+
+        /* Fallback for browsers without container queries */
+        @media (max-width: 1800px) {
+            .kanban {
+                grid-template-columns: repeat(8, minmax(280px, 340px));
+                grid-auto-flow: column;
+                scroll-snap-type: x proximity;
+            }
         }
 
         .column {
-            min-width: 300px;
-            max-width: 350px;
-            flex-shrink: 0;
+            min-width: 280px;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
+            scroll-snap-align: start;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: var(--space-sm);
+        }
+        
+        /* Wide screens: let columns breathe */
+        @media (min-width: 2560px) {
+            .kanban {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                max-width: 3400px;
+                margin: 0 auto;
+            }
+            
+            .column {
+                max-width: none;
+            }
         }
 
         .column-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
+            gap: 0.625rem;
+            padding: 0.75rem 0.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
         }
 
         .column-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .column-dot.recurring { background: #06b6d4; } /* Cyan/Teal for recurring */
+        .column-dot.recurring { background: #06b6d4; }
         .column-dot.permanent { background: var(--accent-purple); }
-        .column-dot.scheduled { background: #f97316; } /* Orange for scheduled */
-        .column-dot.templates { background: #8B5CF6; } /* Purple for templates */
+        .column-dot.scheduled { background: #f97316; }
+        .column-dot.templates { background: #8B5CF6; }
         .column-dot.backlog { background: var(--accent-yellow); }
         .column-dot.in-progress { background: var(--accent-blue); }
         .column-dot.review { background: var(--accent-green); }
         .column-dot.done { background: #6b7280; }
 
         .column-title {
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.875rem;
+            letter-spacing: -0.01em;
         }
 
         .column-count {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: var(--bg-tertiary);
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
         }
 
         .column-add {
             margin-left: auto;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             cursor: pointer;
-            font-size: 1.25rem;
             width: 24px;
             height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 4px;
-            transition: all 0.2s;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+
+        .column-add svg {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2;
         }
 
         .column-add:hover {
-            background: var(--bg-card);
-            color: var(--accent-blue);
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            border-color: var(--border);
         }
 
         .column-add.disabled {
             opacity: 0.3;
             cursor: not-allowed;
+        }
+        
+        .column-add.disabled:hover {
+            background: transparent;
+            color: var(--text-muted);
+            border-color: transparent;
         }
 
         .archive-all-btn {
@@ -467,24 +801,57 @@
         .column-tasks {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.5rem;
             flex: 1;
+            padding: 0.25rem;
             padding-bottom: 1rem;
-            align-items: stretch; /* Cards take full width but not full height */
+            overflow-y: auto;
+            overflow-x: hidden;
+            align-items: stretch;
+            /* Smooth scrolling */
+            scroll-behavior: smooth;
+            /* Hide scrollbar but keep functionality */
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-tertiary) transparent;
+        }
+        
+        .column-tasks::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .column-tasks::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .column-tasks::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+        }
+        
+        .column-tasks::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
         }
 
         /* Task Card */
         .task-card {
             background: var(--bg-card);
-            border-radius: 8px;
-            padding: 1rem;
+            border-radius: 10px;
+            padding: 0.875rem;
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 1px solid var(--border);
+            /* Subtle shadow for depth */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
             /* No automatic animation - FLIP handles movement */
-            transition: opacity 0.3s, filter 0.3s;
+            transition: opacity 0.2s, filter 0.2s, box-shadow 0.15s, border-color 0.15s;
             /* Prevent stretching */
             display: block;
             height: auto;
+            margin-bottom: 0.625rem;
+        }
+        
+        .task-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            border-color: var(--text-muted);
         }
         
         .task-card.search-dimmed {
@@ -799,11 +1166,6 @@
             100% { transform: scale(1); }
         }
 
-        .task-card:hover {
-            border-color: var(--border);
-            transform: translateY(-2px);
-        }
-
         .task-card.priority-high {
             border-left: 3px solid var(--accent-red);
         }
@@ -811,13 +1173,20 @@
         .task-card.priority-medium {
             border-left: 3px solid var(--accent-yellow);
         }
+        
+        .task-card.priority-low {
+            border-left: 3px solid var(--accent-green);
+        }
 
         .task-title {
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 0.5rem;
             display: flex;
             align-items: flex-start;
             gap: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            color: var(--text-primary);
         }
 
         .task-title-text {
@@ -826,8 +1195,8 @@
 
         .task-description {
             color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -1461,10 +1830,14 @@
 
         /* Empty State */
         .empty-state {
-            color: var(--text-secondary);
+            color: var(--text-muted);
             text-align: center;
-            padding: 2rem;
-            font-size: 0.875rem;
+            padding: 2.5rem 1.5rem;
+            font-size: 0.813rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+            margin: 0.5rem;
         }
 
         /* Modal */
@@ -2096,9 +2469,1402 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* ============================================
+           RESPONSIVE MEDIA QUERIES
+           ============================================ */
+        
+        /* Mobile Column Selector (hidden by default, shown on mobile) */
+        .mobile-column-selector {
+            display: none;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .mobile-column-selector select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0a0'%3E%3Cpath d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+        
+        .mobile-column-selector select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .mobile-column-selector .swipe-hint {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Mobile: < 640px - Dropdown column selector pattern */
+        @media (max-width: 640px) {
+            html {
+                font-size: 14px;
+            }
+            
+            .header {
+                padding: var(--space-sm) var(--space-md);
+                flex-wrap: wrap;
+                gap: var(--space-sm);
+            }
+            
+            .header-left {
+                gap: var(--space-sm);
+                width: 100%;
+            }
+            
+            .logo {
+                font-size: 1rem;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-tab {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.75rem;
+            }
+            
+            .header-right {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .stats-bar {
+                padding: var(--space-sm) var(--space-md);
+                gap: var(--space-md);
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .stat-value {
+                font-size: 1.25rem;
+            }
+            
+            .filters {
+                padding: var(--space-sm);
+            }
+            
+            .main {
+                height: auto;
+                min-height: calc(100vh - 280px);
+                flex-direction: column;
+            }
+            
+            /* Show mobile column selector */
+            .mobile-column-selector {
+                display: block;
+            }
+            
+            /* Mobile: Single column view with dropdown selector */
+            .kanban {
+                display: block;
+                padding: var(--space-sm);
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+            
+            /* Hide all columns by default on mobile */
+            .column {
+                display: none;
+                min-width: 100%;
+                max-width: 100%;
+            }
+            
+            /* Show only the active/selected column */
+            .column.mobile-active {
+                display: flex;
+            }
+            
+            /* Hide column headers on mobile (selector handles this) */
+            .column.mobile-active .column-header {
+                display: none;
+            }
+            
+            .column.mobile-active .column-tasks {
+                padding-top: var(--space-sm);
+            }
+            
+            .task-card {
+                padding: var(--space-sm);
+            }
+            
+            .modal-content {
+                width: 95vw;
+                max-height: 90vh;
+            }
+            
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Hide theme text on very small screens */
+            .theme-switcher .theme-label {
+                display: none;
+            }
+            
+            /* Hide activity sidebar on mobile */
+            .activity {
+                display: none;
+            }
+            
+            .activity-reopen {
+                display: none !important;
+            }
+        }
+        
+        /* Tablet: 641px - 1024px */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            html {
+                font-size: 15px;
+            }
+            
+            .header {
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .stats-bar {
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            /* Tablet: Scrollable grid with fixed columns */
+            .kanban {
+                display: grid;
+                grid-template-columns: repeat(8, 300px);
+                grid-auto-flow: column;
+                gap: var(--space-sm);
+                padding: var(--space-sm) var(--space-md);
+                scroll-snap-type: x mandatory;
+            }
+            
+            .column {
+                min-width: 280px;
+                max-width: 320px;
+                scroll-snap-align: start;
+            }
+            
+            .modal-content {
+                width: 80vw;
+                max-width: 700px;
+            }
+            
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Desktop: 1025px - 1600px */
+        @media (min-width: 1025px) and (max-width: 1600px) {
+            .kanban {
+                display: grid;
+                grid-template-columns: repeat(8, minmax(280px, 320px));
+                gap: var(--space-md);
+                padding: var(--space-md) var(--space-lg);
+            }
+            
+            .column {
+                min-width: 280px;
+                max-width: 340px;
+            }
+            
+            .modal-content {
+                width: 70vw;
+                max-width: 800px;
+            }
+            
+            .project-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Wide: 1601px - 2559px - Columns can expand */
+        @media (min-width: 1601px) and (max-width: 2559px) {
+            .kanban {
+                display: grid;
+                grid-template-columns: repeat(8, minmax(300px, 1fr));
+                gap: var(--space-lg);
+                padding: var(--space-lg) var(--space-xl);
+            }
+            
+            .column {
+                min-width: 300px;
+                max-width: 420px;
+            }
+            
+            .modal-content {
+                width: 60vw;
+                max-width: 900px;
+            }
+            
+            .project-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .container {
+                max-width: 1800px;
+                margin: 0 auto;
+            }
+        }
+        
+        /* Touch Device Optimizations */
+        @media (pointer: coarse) {
+            .task-card,
+            .btn,
+            .filter-btn,
+            .nav-tab {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .column-add {
+                width: 44px;
+                height: 44px;
+            }
+            
+            .kanban {
+                scroll-snap-type: x mandatory;
+            }
+            
+            .column {
+                scroll-snap-align: start;
+            }
+        }
+        
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Dark Mode (System Preference) */
+        @media (prefers-color-scheme: light) {
+            /* Mission Control is dark-mode only, but we could add light theme here */
+        }
+        
+        /* Print Styles */
+        @media print {
+            .header,
+            .filters,
+            .column-add,
+            .btn {
+                display: none !important;
+            }
+            
+            .kanban {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+                overflow: visible;
+            }
+            
+            .column {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        /* Voice Recording Styles */
+        .voice-mic-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            margin-left: 4px;
+        }
+        
+        .voice-mic-btn:hover {
+            background: var(--bg-card);
+            color: var(--accent-blue);
+            transform: scale(1.1);
+        }
+        
+        .voice-mic-btn.recording {
+            color: var(--accent-red);
+            animation: micPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes micPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.15);
+                opacity: 0.8;
+            }
+        }
+        
+        .recording-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(204, 36, 29, 0.15);
+            border: 1px solid var(--accent-red);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.875rem;
+            color: var(--accent-red);
+        }
+        
+        .recording-indicator.active {
+            display: flex;
+        }
+        
+        .recording-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            animation: recordingPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes recordingPulse {
+            0%, 100% { 
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(204, 36, 29, 0.5);
+            }
+            50% { 
+                opacity: 0.6;
+                box-shadow: 0 0 8px 4px rgba(204, 36, 29, 0.3);
+            }
+        }
+        
+        .voice-transcript {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            font-style: italic;
+            color: var(--text-secondary);
+            min-height: 40px;
+        }
+        
+        .voice-transcript.has-text {
+            color: var(--text-primary);
+            font-style: normal;
+        }
+        
+        .voice-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .voice-modal-overlay.visible {
+            display: flex;
+        }
+        
+        .voice-modal {
+            background: var(--bg-modal);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .voice-modal-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .voice-modal-icon.recording {
+            animation: micPulse 1s ease-in-out infinite;
+        }
+        
+        .voice-modal-status {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .voice-modal-hint {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .voice-modal-transcript {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            min-height: 60px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .voice-modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        /* Voice Note Styles */
+        .voice-note-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        
+        .voice-note-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--accent-blue);
+            opacity: 1;
+        }
+        
+        .voice-memo-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .voice-memo-btn:hover {
+            background: var(--bg-card);
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+        
+        /* Voice Note Recording Modal */
+        .voice-note-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .voice-note-modal-overlay.visible {
+            display: flex;
+        }
+        
+        .voice-note-modal {
+            background: var(--bg-modal);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .voice-note-modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .voice-note-modal-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .voice-note-record-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .voice-note-record-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            background: var(--bg-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.2s;
+        }
+        
+        .voice-note-record-btn:hover {
+            border-color: var(--accent-red);
+            transform: scale(1.05);
+        }
+        
+        .voice-note-record-btn.recording {
+            background: rgba(204, 36, 29, 0.15);
+            border-color: var(--accent-red);
+            animation: recordPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes recordPulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(204, 36, 29, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 0 15px rgba(204, 36, 29, 0);
+            }
+        }
+        
+        .voice-note-timer {
+            font-size: 1.5rem;
+            font-weight: 500;
+            font-family: monospace;
+            color: var(--text-primary);
+        }
+        
+        .voice-note-timer.recording {
+            color: var(--accent-red);
+        }
+        
+        .voice-note-waveform {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 40px;
+        }
+        
+        .voice-note-waveform .bar {
+            width: 4px;
+            background: var(--accent-blue);
+            border-radius: 2px;
+            height: 10px;
+            transition: height 0.1s;
+        }
+        
+        .voice-note-waveform.recording .bar {
+            animation: waveformBounce 0.5s ease-in-out infinite;
+        }
+        
+        .voice-note-waveform .bar:nth-child(1) { animation-delay: 0s; }
+        .voice-note-waveform .bar:nth-child(2) { animation-delay: 0.1s; }
+        .voice-note-waveform .bar:nth-child(3) { animation-delay: 0.2s; }
+        .voice-note-waveform .bar:nth-child(4) { animation-delay: 0.3s; }
+        .voice-note-waveform .bar:nth-child(5) { animation-delay: 0.4s; }
+        .voice-note-waveform .bar:nth-child(6) { animation-delay: 0.35s; }
+        .voice-note-waveform .bar:nth-child(7) { animation-delay: 0.25s; }
+        .voice-note-waveform .bar:nth-child(8) { animation-delay: 0.15s; }
+        
+        @keyframes waveformBounce {
+            0%, 100% { height: 10px; }
+            50% { height: 35px; }
+        }
+        
+        /* Voice Note Playback Controls */
+        .voice-note-playback {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .voice-note-playback.visible {
+            display: flex;
+        }
+        
+        .voice-note-playback-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .voice-note-play-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent-blue);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+        
+        .voice-note-play-btn:hover {
+            transform: scale(1.05);
+            background: #2563eb;
+        }
+        
+        .voice-note-progress {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .voice-note-progress-fill {
+            height: 100%;
+            background: var(--accent-blue);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        .voice-note-duration {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+            min-width: 45px;
+        }
+        
+        .voice-note-transcript-preview {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            text-align: left;
+        }
+        
+        .voice-note-modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+        
+        /* Voice Note Player in Comments */
+        .voice-note-comment {
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .voice-note-comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .voice-note-comment-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .voice-note-comment-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .voice-note-player {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .voice-note-player-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent-blue);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .voice-note-player-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .voice-note-player-progress {
+            flex: 1;
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .voice-note-player-progress-fill {
+            height: 100%;
+            background: var(--accent-blue);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        .voice-note-player-duration {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+            min-width: 36px;
+            text-align: right;
+        }
+        
+        .voice-note-transcript {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* ============================================
+           NOTES + DIGITAL PEN STYLES
+           ============================================ */
+        
+        /* Notes Container */
+        .notes-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .notes-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notes-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Notes Grid (List View) */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            overflow-y: auto;
+            flex: 1;
+            padding-bottom: 1rem;
+        }
+
+        .note-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .note-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .note-card-thumbnail {
+            width: 100%;
+            height: 140px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .note-card-thumbnail.dark {
+            background: #1a1a1a;
+        }
+
+        .note-card-thumbnail.lined {
+            background: 
+                linear-gradient(#f0f0f0 1px, transparent 1px);
+            background-size: 100% 24px;
+            background-color: #fff;
+        }
+
+        .note-card-thumbnail.grid {
+            background: 
+                radial-gradient(circle, #ccc 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #fff;
+        }
+
+        .note-card-thumbnail canvas {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .note-card-thumbnail .empty-note {
+            color: var(--text-muted);
+            font-size: 2rem;
+        }
+
+        .note-card-info {
+            padding: 0.75rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .note-card-title {
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-card-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .note-card-delete {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .note-card:hover .note-card-delete {
+            opacity: 1;
+        }
+
+        .note-card-delete:hover {
+            background: var(--accent-red);
+        }
+
+        /* New Note Card */
+        .note-card.new-note {
+            border: 2px dashed var(--border);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .note-card.new-note:hover {
+            border-color: var(--accent);
+            background: rgba(69, 133, 136, 0.1);
+        }
+
+        .new-note-content {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .new-note-content .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Notes Editor View */
+        .notes-editor {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .notes-editor.active {
+            display: flex;
+        }
+
+        .notes-list.hidden {
+            display: none;
+        }
+
+        /* Editor Toolbar */
+        .notes-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .notes-toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding-right: 0.75rem;
+            border-right: 1px solid var(--border);
+        }
+
+        .notes-toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .notes-tool-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.15s;
+        }
+
+        .notes-tool-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+        }
+
+        .notes-tool-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .notes-tool-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Color Picker */
+        .notes-color-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .notes-color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .notes-color-btn.active {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 2px var(--bg-secondary);
+        }
+
+        /* Width Slider */
+        .notes-width-slider {
+            width: 100px;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg-card);
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .notes-width-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+        }
+
+        .notes-width-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: none;
+        }
+
+        .notes-width-value {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            min-width: 32px;
+            text-align: center;
+        }
+
+        /* Background Selector */
+        .notes-bg-select {
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .notes-bg-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Note Title Input */
+        .notes-title-input {
+            flex: 1;
+            max-width: 300px;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .notes-title-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Canvas Container */
+        .notes-canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+            touch-action: none;
+        }
+
+        .notes-canvas-container.dark {
+            background: #1a1a1a;
+        }
+
+        .notes-canvas-container.lined {
+            background: 
+                linear-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 100% 28px;
+            background-color: #fff;
+        }
+
+        .notes-canvas-container.grid {
+            background: 
+                radial-gradient(circle, #ddd 1px, transparent 1px);
+            background-size: 24px 24px;
+            background-color: #fff;
+        }
+
+        .notes-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        /* Fullscreen Mode */
+        .notes-container.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            max-width: none;
+            height: 100vh;
+            padding: 0;
+            z-index: 2000;
+            background: var(--bg-primary);
+        }
+
+        .notes-container.fullscreen .notes-header {
+            display: none;
+        }
+
+        .notes-container.fullscreen .notes-toolbar {
+            border-radius: 0;
+        }
+
+        /* Mobile Notes */
+        @media (max-width: 640px) {
+            .notes-toolbar {
+                padding: 0.5rem;
+                gap: 0.25rem;
+            }
+
+            .notes-toolbar-group {
+                padding-right: 0.5rem;
+            }
+
+            .notes-tool-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .notes-color-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .notes-width-slider {
+                width: 80px;
+            }
+
+            .notes-title-input {
+                max-width: 150px;
+            }
+
+            .notes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        /* Chat Widget Styles */
+        .chat-widget {
+            position: fixed;
+            bottom: var(--space-lg);
+            right: var(--space-lg);
+            width: clamp(300px, 35vw, 400px);
+            max-height: 500px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .chat-widget.collapsed {
+            transform: translateY(calc(100% - 44px));
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--accent-blue);
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: white;
+            user-select: none;
+        }
+
+        .chat-header:hover {
+            background: #2563eb;
+        }
+
+        .chat-body {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .chat-message {
+            max-width: 85%;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .chat-message.user {
+            align-self: flex-end;
+            background: var(--accent-blue);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.bot {
+            align-self: flex-start;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message.typing {
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            border-top: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            outline: none;
+        }
+
+        .chat-input-area input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .chat-input-area button {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            background: #2563eb;
+        }
+
+        /* Mobile chat adjustments */
+        @media (max-width: 640px) {
+            .chat-widget {
+                width: calc(100vw - 2rem);
+                right: var(--space-md);
+                bottom: var(--space-md);
+                max-height: 60vh;
+            }
+            
+            .chat-body {
+                height: 50vh;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .chat-widget.collapsed {
+                transform: translateY(calc(100% - 48px));
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Chat Widget -->
+    <div id="chat-widget" class="chat-widget">
+        <div class="chat-header" onclick="toggleChat()">
+            <span>💬 Nomura</span>
+            <span id="chat-toggle">▼</span>
+        </div>
+        <div id="chat-body" class="chat-body">
+            <div id="chat-messages" class="chat-messages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ask Nomura..." onkeypress="handleChatKey(event)">
+                <button onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+    </div>
     <!-- Login Required Screen (shown when not authenticated) -->
     <div id="login-screen" class="login-screen">
         <div class="login-container">
@@ -2168,6 +3934,7 @@
             <nav class="nav-tabs">
                 <div class="nav-tab active" data-view="tasks" onclick="switchView('tasks')">Tasks</div>
                 <div class="nav-tab" data-view="todo" onclick="switchView('todo')">Todo</div>
+                <div class="nav-tab" data-view="notes" onclick="switchView('notes')">📝 Notes</div>
                 <div class="nav-tab" data-view="docs" onclick="switchView('docs')">Docs</div>
                 <div class="nav-tab" data-view="people" onclick="switchView('people')">People</div>
             </nav>
@@ -2195,23 +3962,61 @@
             </div>
         </div>
         <div class="header-right">
-            <span class="live-indicator live" id="live-indicator">Live</span>
-            <button class="btn btn-secondary" onclick="pollForUpdates(); window.location.reload()">↻ Refresh</button>
+            <!-- Status Group -->
+            <div class="toolbar-group">
+                <span class="live-indicator live" id="live-indicator">Live</span>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <!-- Actions Group -->
+            <div class="toolbar-group">
+                <button class="btn btn-ghost" onclick="pollForUpdates(); window.location.reload()" title="Refresh">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Refresh</span>
+                </button>
+                <button class="btn btn-secondary" onclick="openVoiceNoteModal(null)" title="Record a voice memo">
+                    <i data-lucide="mic"></i>
+                    <span>Voice Memo</span>
+                </button>
+            </div>
 
-            <!-- Not Logged In -->
-            <button class="btn btn-github" id="btn-connect" onclick="showAuthModal()">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                </svg>
-                Connect GitHub
-            </button>
+            <div class="toolbar-divider"></div>
+            
+            <!-- Settings Group -->
+            <div class="toolbar-group">
+                <div class="theme-switcher">
+                    <select id="theme-select" onchange="setTheme(this.value)" aria-label="Select theme">
+                        <option value="gruvbox">Gruvbox</option>
+                        <option value="nord">Nord</option>
+                        <option value="claude">Claude</option>
+                        <option value="opencode">OpenCode</option>
+                        <option value="gnome">GNOME</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="toolbar-divider"></div>
 
-            <!-- Logged In (hidden by default) -->
-            <div class="user-profile" id="user-profile" style="display: none;">
-                <img class="user-avatar" id="user-avatar" src="" alt="Avatar">
-                <span class="user-name" id="user-name"></span>
-                <button class="btn-icon" onclick="showSettingsModal()" title="Settings">⚙️</button>
-                <span class="user-logout" onclick="logout()">Logout</span>
+            <!-- Auth Group -->
+            <div class="toolbar-group">
+                <!-- Not Logged In -->
+                <button class="btn btn-github" id="btn-connect" onclick="showAuthModal()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    <span>local</span>
+                </button>
+
+                <!-- Logged In (hidden by default) -->
+                <div class="user-profile" id="user-profile" style="display: none;">
+                    <img class="user-avatar" id="user-avatar" src="" alt="Avatar">
+                    <span class="user-name" id="user-name"></span>
+                    <button class="btn-icon-only" onclick="showSettingsModal()" title="Settings">
+                        <i data-lucide="settings"></i>
+                    </button>
+                    <span class="user-logout" onclick="logout()">Logout</span>
+                </div>
             </div>
         </div>
     </header>
@@ -2263,9 +4068,24 @@
         <button class="filter-btn active" data-filter="all">All projects</button>
     </div>
 
+    <!-- Mobile Column Selector (hidden on desktop) -->
+    <div class="mobile-column-selector" id="mobile-column-selector">
+        <select id="mobile-column-select" onchange="selectMobileColumn(this.value)">
+            <option value="recurring">🔄 Recurring</option>
+            <option value="scheduled">📅 Scheduled</option>
+            <option value="templates">📑 Templates</option>
+            <option value="permanent">🟣 Permanent</option>
+            <option value="backlog" selected>📋 Backlog</option>
+            <option value="in_progress">🚀 In Progress</option>
+            <option value="review">👀 Review</option>
+            <option value="done">✅ Done</option>
+        </select>
+        <div class="swipe-hint">Swipe left/right to change columns</div>
+    </div>
+
     <main class="main">
-        <div class="kanban">
-            <div class="column column-recurring">
+        <div class="kanban" id="kanban-board">
+            <div class="column column-recurring" data-column="recurring">
                 <div class="column-header">
                     <div class="column-dot recurring"></div>
                     <span class="column-title">Recurring</span>
@@ -2274,67 +4094,71 @@
                 <div class="column-tasks" id="tasks-recurring" ondragover="handleCronDragOver(event)" ondragleave="handleCronDragLeave(event)" ondrop="handleCronDrop(event)"></div>
             </div>
 
-            <div class="column column-scheduled">
+            <div class="column column-scheduled" data-column="scheduled">
                 <div class="column-header">
                     <div class="column-dot scheduled"></div>
                     <span class="column-title">📅 Scheduled</span>
                     <span class="column-count" id="count-scheduled">0</span>
-                    <span class="column-add" onclick="openScheduledTaskModal()" title="Schedule a task">+</span>
+                    <span class="column-add" onclick="openScheduledTaskModal()" title="Schedule a task"><i data-lucide="plus"></i></span>
                 </div>
                 <div class="column-tasks" id="tasks-scheduled" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'scheduled')"></div>
             </div>
 
-            <div class="column column-templates">
+            <div class="column column-templates" data-column="templates">
                 <div class="column-header">
                     <div class="column-dot templates"></div>
                     <span class="column-title">📑 Templates</span>
                     <span class="column-count" id="count-templates">0</span>
-                    <span class="column-add" onclick="openNewTemplate()" title="Add new template">+</span>
+                    <span class="column-add" onclick="openNewTemplate()" title="Add new template"><i data-lucide="plus"></i></span>
                 </div>
                 <div class="column-tasks" id="tasks-templates"></div>
             </div>
 
-            <div class="column">
+            <div class="column" data-column="permanent">
                 <div class="column-header">
                     <div class="column-dot permanent"></div>
                     <span class="column-title">Permanent</span>
                     <span class="column-count" id="count-permanent">0</span>
-                    <span class="column-add" onclick="openNewTask('permanent')" title="Add new task">+</span>
+                    <span class="column-add" onclick="openNewTask('permanent')" title="Add new task"><i data-lucide="plus"></i></span>
+                    <button class="voice-mic-btn" onclick="startVoiceInput('permanent')" title="Add task by voice">🎤</button>
                 </div>
                 <div class="column-tasks" id="tasks-permanent" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'permanent')"></div>
             </div>
 
-            <div class="column">
+            <div class="column" data-column="backlog">
                 <div class="column-header">
                     <div class="column-dot backlog"></div>
                     <span class="column-title">Backlog</span>
                     <span class="column-count" id="count-backlog">0</span>
-                    <span class="column-add" onclick="openNewTask('backlog')" title="Add new task">+</span>
+                    <span class="column-add" onclick="openNewTask('backlog')" title="Add new task"><i data-lucide="plus"></i></span>
+                    <button class="voice-mic-btn" onclick="startVoiceInput('backlog')" title="Add task by voice">🎤</button>
                 </div>
                 <div class="column-tasks" id="tasks-backlog" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'backlog')"></div>
             </div>
 
-            <div class="column">
+            <div class="column" data-column="in_progress">
                 <div class="column-header">
                     <div class="column-dot in-progress"></div>
                     <span class="column-title">In Progress</span>
                     <span class="column-count" id="count-in_progress">0</span>
-                    <span class="column-add" onclick="openNewTask('in_progress')" title="Add new task">+</span>
+                    <span class="column-add" onclick="openNewTask('in_progress')" title="Add new task"><i data-lucide="plus"></i></span>
+                    <button class="voice-mic-btn" onclick="startVoiceInput('in_progress')" title="Add task by voice">🎤</button>
                 </div>
                 <div class="column-tasks" id="tasks-in_progress" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'in_progress')"></div>
             </div>
 
-            <div class="column">
+            <div class="column" data-column="review">
                 <div class="column-header">
                     <div class="column-dot review"></div>
                     <span class="column-title">Review</span>
                     <span class="column-count" id="count-review">0</span>
-                    <span class="column-add" onclick="openNewTask('review')" title="Add new task">+</span>
+                    <span class="column-add" onclick="openNewTask('review')" title="Add new task"><i data-lucide="plus"></i></span>
+                    <button class="voice-mic-btn" onclick="startVoiceInput('review')" title="Add task by voice">🎤</button>
                 </div>
                 <div class="column-tasks" id="tasks-review" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'review')"></div>
             </div>
 
-            <div class="column">
+            <div class="column" data-column="done">
                 <div class="column-header">
                     <div class="column-dot done"></div>
                     <span class="column-title">Done</span>
@@ -2552,6 +4376,83 @@
         </div>
     </div><!-- END view-people -->
 
+    <!-- NOTES VIEW -->
+    <div id="view-notes" class="view" style="display: none;">
+        <div class="notes-container" id="notes-container">
+            <div class="notes-header">
+                <h1>📝 Notes</h1>
+                <div class="notes-actions">
+                    <button class="btn btn-primary" onclick="createNewNote()">+ New Note</button>
+                </div>
+            </div>
+
+            <!-- Notes List View -->
+            <div class="notes-list" id="notes-list">
+                <div class="notes-grid" id="notes-grid">
+                    <!-- Note cards populated by JS -->
+                </div>
+            </div>
+
+            <!-- Notes Editor View -->
+            <div class="notes-editor" id="notes-editor">
+                <!-- Toolbar -->
+                <div class="notes-toolbar">
+                    <div class="notes-toolbar-group">
+                        <button class="notes-tool-btn" onclick="closeNoteEditor()" title="Back to notes">←</button>
+                    </div>
+
+                    <div class="notes-toolbar-group">
+                        <input type="text" class="notes-title-input" id="note-title-input" placeholder="Note title..." onchange="updateNoteTitle()">
+                    </div>
+
+                    <div class="notes-toolbar-group">
+                        <button class="notes-tool-btn active" id="tool-pen" onclick="setNoteTool('pen')" title="Pen">✏️</button>
+                        <button class="notes-tool-btn" id="tool-eraser" onclick="setNoteTool('eraser')" title="Eraser">🧹</button>
+                    </div>
+
+                    <div class="notes-toolbar-group">
+                        <button class="notes-color-btn active" id="color-black" style="background: #000000;" onclick="setNoteColor('#000000')" title="Black"></button>
+                        <button class="notes-color-btn" id="color-blue" style="background: #2563eb;" onclick="setNoteColor('#2563eb')" title="Blue"></button>
+                        <button class="notes-color-btn" id="color-red" style="background: #dc2626;" onclick="setNoteColor('#dc2626')" title="Red"></button>
+                        <button class="notes-color-btn" id="color-green" style="background: #16a34a;" onclick="setNoteColor('#16a34a')" title="Green"></button>
+                        <button class="notes-color-btn" id="color-yellow" style="background: #eab308;" onclick="setNoteColor('#eab308')" title="Yellow"></button>
+                        <button class="notes-color-btn" id="color-white" style="background: #ffffff; border: 1px solid #ccc;" onclick="setNoteColor('#ffffff')" title="White"></button>
+                    </div>
+
+                    <div class="notes-toolbar-group">
+                        <input type="range" class="notes-width-slider" id="stroke-width-slider" min="1" max="20" value="3" oninput="setNoteStrokeWidth(this.value)">
+                        <span class="notes-width-value" id="stroke-width-value">3px</span>
+                    </div>
+
+                    <div class="notes-toolbar-group">
+                        <select class="notes-bg-select" id="note-bg-select" onchange="setNoteBackground(this.value)">
+                            <option value="plain">Plain White</option>
+                            <option value="lined">Lined Paper</option>
+                            <option value="grid">Grid / Dots</option>
+                            <option value="dark">Dark Mode</option>
+                        </select>
+                    </div>
+
+                    <div class="notes-toolbar-group">
+                        <button class="notes-tool-btn" id="tool-undo" onclick="noteUndo()" title="Undo" disabled>↩️</button>
+                        <button class="notes-tool-btn" id="tool-redo" onclick="noteRedo()" title="Redo" disabled>↪️</button>
+                        <button class="notes-tool-btn" onclick="noteClear()" title="Clear All">🗑️</button>
+                    </div>
+
+                    <div class="notes-toolbar-group">
+                        <button class="notes-tool-btn" onclick="toggleNotesFullscreen()" title="Fullscreen">⛶</button>
+                        <button class="btn btn-primary btn-small" onclick="saveCurrentNote()">💾 Save</button>
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div class="notes-canvas-container" id="notes-canvas-container">
+                    <canvas class="notes-canvas" id="notes-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div><!-- END view-notes -->
+
     <!-- Auth Modal -->
     <div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)hideAuthModal()">
         <div class="modal">
@@ -2723,9 +4624,17 @@
                 <button class="modal-close" onclick="hideTaskModal()">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- Voice Recording Indicator -->
+                <div class="recording-indicator" id="modal-recording-indicator">
+                    <div class="recording-dot"></div>
+                    <span>Recording... Speak your task</span>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Title</label>
-                    <input type="text" class="form-input" id="task-title" placeholder="Task title">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" class="form-input" id="task-title" placeholder="Task title" style="flex: 1;">
+                        <button class="voice-mic-btn" id="modal-voice-btn" onclick="startModalVoiceInput()" title="Speak task title">🎤</button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description</label>
@@ -2800,6 +4709,69 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
+    <!-- Voice Input Modal -->
+    <div class="voice-modal-overlay" id="voice-modal" onclick="if(event.target===this)cancelVoiceInput()">
+        <div class="voice-modal">
+            <div class="voice-modal-icon" id="voice-modal-icon">🎤</div>
+            <div class="voice-modal-status" id="voice-modal-status">Listening...</div>
+            <div class="voice-modal-hint" id="voice-modal-hint">
+                Say something like "Add buy milk to backlog"
+            </div>
+            <div class="voice-modal-transcript" id="voice-modal-transcript">
+                <span style="color: var(--text-secondary); font-style: italic;">Waiting for speech...</span>
+            </div>
+            <div class="voice-modal-buttons">
+                <button class="btn btn-secondary" onclick="cancelVoiceInput()">Cancel</button>
+                <button class="btn btn-primary" id="voice-create-btn" onclick="createTaskFromVoice()" disabled>Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Note Recording Modal -->
+    <div class="voice-note-modal-overlay" id="voice-note-modal" onclick="if(event.target===this)cancelVoiceNote()">
+        <div class="voice-note-modal">
+            <div class="voice-note-modal-title" id="voice-note-modal-title">🎙️ Record Voice Note</div>
+            <div class="voice-note-modal-subtitle" id="voice-note-modal-subtitle">Tap to start recording</div>
+            
+            <div class="voice-note-record-area">
+                <button class="voice-note-record-btn" id="voice-note-record-btn" onclick="toggleVoiceNoteRecording()">
+                    <span id="voice-note-record-icon">🔴</span>
+                </button>
+                <div class="voice-note-timer" id="voice-note-timer">0:00</div>
+                <div class="voice-note-waveform" id="voice-note-waveform">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+            
+            <!-- Playback area (shown after recording) -->
+            <div class="voice-note-playback" id="voice-note-playback">
+                <div class="voice-note-playback-controls">
+                    <button class="voice-note-play-btn" id="voice-note-play-btn" onclick="toggleVoiceNotePlayback()">▶</button>
+                    <div class="voice-note-progress" id="voice-note-progress" onclick="seekVoiceNote(event)">
+                        <div class="voice-note-progress-fill" id="voice-note-progress-fill"></div>
+                    </div>
+                    <span class="voice-note-duration" id="voice-note-duration">0:00</span>
+                </div>
+                <div class="voice-note-transcript-preview" id="voice-note-transcript-preview" style="display: none;">
+                    Transcribing...
+                </div>
+            </div>
+            
+            <div class="voice-note-modal-buttons">
+                <button class="btn btn-secondary" onclick="cancelVoiceNote()">Cancel</button>
+                <button class="btn btn-danger" id="voice-note-discard-btn" onclick="discardVoiceNote()" style="display: none;">🗑️ Discard</button>
+                <button class="btn btn-primary" id="voice-note-save-btn" onclick="saveVoiceNote()" disabled>💾 Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // === CONFIG ===
         const CONFIG = {
@@ -2831,6 +4803,149 @@
         // Apply mode early
         CONFIG.useProxy = getStorageMode() === 'internal';
 
+        // === THEME SYSTEM ===
+        const THEME_KEY = 'mc_theme';
+        const THEMES = ['gruvbox', 'nord', 'claude', 'opencode', 'gnome'];
+        
+        function getTheme() {
+            const stored = localStorage.getItem(THEME_KEY);
+            if (stored && THEMES.includes(stored)) return stored;
+            return 'gruvbox'; // Default
+        }
+        
+        function setTheme(theme) {
+            if (!THEMES.includes(theme)) return;
+            
+            // Apply theme via data attribute
+            if (theme === 'gruvbox') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', theme);
+            }
+            
+            // Persist preference
+            localStorage.setItem(THEME_KEY, theme);
+            
+            // Update dropdown if it exists
+            const select = document.getElementById('theme-select');
+            if (select && select.value !== theme) {
+                select.value = theme;
+            }
+            
+            console.log('Theme set to:', theme);
+        }
+        
+        function initTheme() {
+            const theme = getTheme();
+            setTheme(theme);
+            
+            // Sync dropdown with current theme
+            const select = document.getElementById('theme-select');
+            if (select) {
+                select.value = theme;
+            }
+        }
+        
+        // Apply theme immediately to prevent flash
+        (function() {
+            const theme = localStorage.getItem(THEME_KEY);
+            if (theme && theme !== 'gruvbox') {
+                document.body.setAttribute('data-theme', theme);
+            }
+        })();
+
+        // === MOBILE COLUMN SELECTOR ===
+        const MOBILE_COLUMN_KEY = 'mc_mobile_column';
+        const MOBILE_COLUMNS = [
+            { id: 'recurring', name: '🔄 Recurring', class: 'column-recurring' },
+            { id: 'scheduled', name: '📅 Scheduled', class: 'column-scheduled' },
+            { id: 'templates', name: '📑 Templates', class: 'column-templates' },
+            { id: 'permanent', name: '🟣 Permanent', class: '' },
+            { id: 'backlog', name: '📋 Backlog', class: '' },
+            { id: 'in_progress', name: '🚀 In Progress', class: '' },
+            { id: 'review', name: '👀 Review', class: '' },
+            { id: 'done', name: '✅ Done', class: '' }
+        ];
+        
+        function getMobileColumn() {
+            const stored = sessionStorage.getItem(MOBILE_COLUMN_KEY);
+            return stored || 'backlog';
+        }
+        
+        function selectMobileColumn(columnId) {
+            // Persist selection in session
+            sessionStorage.setItem(MOBILE_COLUMN_KEY, columnId);
+            
+            // Update dropdown
+            const select = document.getElementById('mobile-column-select');
+            if (select && select.value !== columnId) {
+                select.value = columnId;
+            }
+            
+            // Remove mobile-active from all columns
+            document.querySelectorAll('.kanban .column').forEach(col => {
+                col.classList.remove('mobile-active');
+            });
+            
+            // Find and activate the correct column using data-column attribute
+            const targetColumn = document.querySelector(`.kanban .column[data-column="${columnId}"]`);
+            if (targetColumn) {
+                targetColumn.classList.add('mobile-active');
+            }
+        }
+        
+        function initMobileColumnSelector() {
+            const savedColumn = getMobileColumn();
+            selectMobileColumn(savedColumn);
+            
+            // Set up swipe gestures
+            const kanban = document.getElementById('kanban-board');
+            if (kanban) {
+                let touchStartX = 0;
+                let touchEndX = 0;
+                
+                kanban.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+                
+                kanban.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                }, { passive: true });
+                
+                function handleSwipe() {
+                    const swipeThreshold = 50;
+                    const diff = touchStartX - touchEndX;
+                    
+                    if (Math.abs(diff) < swipeThreshold) return;
+                    
+                    const currentColumn = getMobileColumn();
+                    const currentIndex = MOBILE_COLUMNS.findIndex(c => c.id === currentColumn);
+                    
+                    if (diff > 0 && currentIndex < MOBILE_COLUMNS.length - 1) {
+                        // Swipe left → next column
+                        selectMobileColumn(MOBILE_COLUMNS[currentIndex + 1].id);
+                    } else if (diff < 0 && currentIndex > 0) {
+                        // Swipe right → previous column
+                        selectMobileColumn(MOBILE_COLUMNS[currentIndex - 1].id);
+                    }
+                }
+            }
+        }
+        
+        // Initialize mobile selector on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.innerWidth <= 640) {
+                initMobileColumnSelector();
+            }
+        });
+        
+        // Re-initialize on resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 640) {
+                initMobileColumnSelector();
+            }
+        });
 
         // === STATE ===
         let STATE = {
@@ -3296,6 +5411,11 @@
             renderActivity();
             updateStats();
             updateProjectDropdown();
+            
+            // Initialize mobile column selector after rendering
+            if (window.innerWidth <= 640) {
+                initMobileColumnSelector();
+            }
         }
 
         // === CRON RENDERING ===
@@ -3755,6 +5875,11 @@
             if (searchQuery) {
                 applySearchFilter();
             }
+            
+            // Re-initialize Lucide icons after DOM update
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
 
         function renderTaskCard(task) {
@@ -3762,6 +5887,7 @@
             const subtasksTotal = task.subtasks.length;
             const progress = subtasksTotal > 0 ? Math.round((subtasksDone / subtasksTotal) * 100) : 0;
             const commentsCount = (task.comments || []).length;
+            const voiceNotesCount = (task.comments || []).filter(c => c.type === 'voice_note').length;
             const isArchived = task.archived === true;
 
             // Review actions
@@ -3799,6 +5925,20 @@
                     </svg>
                     <span>${commentsCount}</span>
                 </div>
+            ` : '';
+            
+            // Voice note indicator
+            const voiceNoteIndicator = voiceNotesCount > 0 ? `
+                <div class="task-comment-indicator" title="${voiceNotesCount} voice note${voiceNotesCount > 1 ? 's' : ''}" style="color: var(--accent-blue);">
+                    🎤 <span>${voiceNotesCount}</span>
+                </div>
+            ` : '';
+            
+            // Voice note button (shown on hover, for adding voice notes to task)
+            const voiceNoteButton = !isArchived ? `
+                <button class="voice-note-btn" onclick="event.stopPropagation(); openVoiceNoteModal('${task.id}')" title="Add voice note">
+                    🎤
+                </button>
             ` : '';
             
             // Processing spinner (shown when agent is working on this task)
@@ -3855,7 +5995,9 @@
                         <div class="task-tags">
                             ${task.tags.map(tag => `<span class="task-tag ${tag}">${tag}</span>`).join('')}
                         </div>
+                        ${voiceNoteIndicator}
                         ${commentIndicator}
+                        ${voiceNoteButton}
                     </div>
                     ${subtasksTotal > 0 ? `
                         <div class="task-subtasks">
@@ -4773,19 +6915,52 @@
                 container.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.875rem;">No comments yet</div>';
                 return;
             }
-            container.innerHTML = comments.map((c, idx) => `
-                <div class="comment-item" data-comment-idx="${idx}">
-                    <div class="comment-header">
-                        <span class="comment-author">${c.author}</span>
-                        <span class="comment-time">${formatTimeAgo(c.createdAt)}</span>
-                        <span class="comment-actions">
-                            <button class="comment-action-btn" onclick="editComment('${task.id}', ${idx})" title="Edit">✏️</button>
-                            <button class="comment-action-btn" onclick="deleteComment('${task.id}', ${idx})" title="Delete">🗑️</button>
-                        </span>
+            container.innerHTML = comments.map((c, idx) => {
+                // Voice note comment
+                if (c.type === 'voice_note') {
+                    return `
+                        <div class="voice-note-comment" data-comment-idx="${idx}">
+                            <div class="voice-note-comment-header">
+                                <span class="voice-note-comment-label">🎤 Voice Note</span>
+                                <span class="voice-note-comment-time">${formatTimeAgo(c.createdAt)} • ${formatDuration(c.duration || 0)}</span>
+                            </div>
+                            <div class="voice-note-player" data-audio="${c.audio}" data-idx="${idx}">
+                                <button class="voice-note-player-btn" onclick="playVoiceNoteComment(${idx}, '${task.id}')" id="vn-play-${idx}">▶</button>
+                                <div class="voice-note-player-progress" onclick="seekVoiceNoteComment(event, ${idx})">
+                                    <div class="voice-note-player-progress-fill" id="vn-progress-${idx}"></div>
+                                </div>
+                                <span class="voice-note-player-duration" id="vn-duration-${idx}">${formatDuration(c.duration || 0)}</span>
+                            </div>
+                            ${c.transcript ? `<div class="voice-note-transcript">"${c.transcript}"</div>` : ''}
+                            <div style="text-align: right; margin-top: 0.5rem;">
+                                <button class="comment-action-btn" onclick="deleteComment('${task.id}', ${idx})" title="Delete">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Regular text comment
+                return `
+                    <div class="comment-item" data-comment-idx="${idx}">
+                        <div class="comment-header">
+                            <span class="comment-author">${c.author}</span>
+                            <span class="comment-time">${formatTimeAgo(c.createdAt)}</span>
+                            <span class="comment-actions">
+                                <button class="comment-action-btn" onclick="editComment('${task.id}', ${idx})" title="Edit">✏️</button>
+                                <button class="comment-action-btn" onclick="deleteComment('${task.id}', ${idx})" title="Delete">🗑️</button>
+                            </span>
+                        </div>
+                        <div class="comment-text" id="comment-text-${idx}">${renderMarkdown(c.text)}</div>
                     </div>
-                    <div class="comment-text" id="comment-text-${idx}">${renderMarkdown(c.text)}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+        
+        // Format duration in mm:ss
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
         function editComment(taskId, commentIdx) {
@@ -5284,6 +7459,15 @@
                     const input = document.getElementById('todo-input');
                     if (input) input.focus();
                 }, 50);
+            }
+            
+            // Notes view handling
+            if (viewName === 'notes') {
+                renderNotesList();
+                // Initialize canvas if editor is active
+                if (document.getElementById('notes-editor')?.classList.contains('active') && !notesCanvas) {
+                    initNotesCanvas();
+                }
             }
         }
 
@@ -7005,8 +9189,1448 @@
             }
         };
 
+        // === VOICE INPUT FUNCTIONS ===
+        let voiceRecognition = null;
+        let voiceTargetColumn = 'backlog';
+        let voiceTranscript = '';
+        let voiceIsListening = false;
+        
+        // Check browser support
+        function isSpeechRecognitionSupported() {
+            return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+        }
+        
+        // Initialize speech recognition
+        function initVoiceRecognition() {
+            if (!isSpeechRecognitionSupported()) {
+                return null;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onstart = () => {
+                voiceIsListening = true;
+                updateVoiceModalUI('listening');
+            };
+            
+            recognition.onresult = (event) => {
+                const results = event.results;
+                const lastResult = results[results.length - 1];
+                voiceTranscript = lastResult[0].transcript;
+                
+                // Update transcript display
+                const transcriptEl = document.getElementById('voice-modal-transcript');
+                if (transcriptEl) {
+                    transcriptEl.innerHTML = voiceTranscript;
+                }
+                
+                // If final result, enable create button
+                if (lastResult.isFinal) {
+                    updateVoiceModalUI('ready');
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                if (event.error === 'no-speech') {
+                    updateVoiceModalUI('no-speech');
+                } else if (event.error === 'not-allowed') {
+                    showToast('error', 'Microphone access denied. Please allow microphone access.');
+                    cancelVoiceInput();
+                } else {
+                    showToast('error', `Voice error: ${event.error}`);
+                    updateVoiceModalUI('error');
+                }
+            };
+            
+            recognition.onend = () => {
+                voiceIsListening = false;
+                if (voiceTranscript) {
+                    updateVoiceModalUI('ready');
+                } else {
+                    updateVoiceModalUI('ended');
+                }
+            };
+            
+            return recognition;
+        }
+        
+        // Start voice input from column header button
+        function startVoiceInput(column = 'backlog') {
+            if (!STATE.user) {
+                showToast('error', 'Login to add tasks by voice');
+                return;
+            }
+            
+            if (!isSpeechRecognitionSupported()) {
+                showToast('error', 'Voice input not supported in this browser. Try Chrome or Edge.');
+                return;
+            }
+            
+            voiceTargetColumn = column;
+            voiceTranscript = '';
+            
+            // Show voice modal
+            const modal = document.getElementById('voice-modal');
+            if (modal) {
+                modal.classList.add('visible');
+            }
+            
+            // Reset UI
+            updateVoiceModalUI('starting');
+            
+            // Initialize and start recognition
+            if (!voiceRecognition) {
+                voiceRecognition = initVoiceRecognition();
+            }
+            
+            if (voiceRecognition) {
+                try {
+                    voiceRecognition.start();
+                } catch (e) {
+                    console.log('Recognition already started or error:', e);
+                }
+            }
+        }
+        
+        // Update voice modal UI state
+        function updateVoiceModalUI(state) {
+            const iconEl = document.getElementById('voice-modal-icon');
+            const statusEl = document.getElementById('voice-modal-status');
+            const hintEl = document.getElementById('voice-modal-hint');
+            const transcriptEl = document.getElementById('voice-modal-transcript');
+            const createBtn = document.getElementById('voice-create-btn');
+            
+            switch(state) {
+                case 'starting':
+                    iconEl.textContent = '🎤';
+                    iconEl.classList.add('recording');
+                    statusEl.textContent = 'Starting...';
+                    hintEl.textContent = 'Getting microphone access...';
+                    transcriptEl.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">Waiting for speech...</span>';
+                    createBtn.disabled = true;
+                    break;
+                    
+                case 'listening':
+                    iconEl.textContent = '🎤';
+                    iconEl.classList.add('recording');
+                    statusEl.textContent = 'Listening...';
+                    hintEl.innerHTML = `Speak your task. Target column: <strong>${formatColumnName(voiceTargetColumn)}</strong><br><small>Try: "Add buy groceries" or "Add fix bug to in progress"</small>`;
+                    break;
+                    
+                case 'ready':
+                    iconEl.textContent = '✅';
+                    iconEl.classList.remove('recording');
+                    statusEl.textContent = 'Got it!';
+                    
+                    // Parse the transcript to extract task and column
+                    const parsed = parseVoiceCommand(voiceTranscript);
+                    hintEl.innerHTML = `Task: <strong>${parsed.taskTitle}</strong><br>Column: <strong>${formatColumnName(parsed.column)}</strong>`;
+                    createBtn.disabled = false;
+                    break;
+                    
+                case 'no-speech':
+                    iconEl.textContent = '🔇';
+                    iconEl.classList.remove('recording');
+                    statusEl.textContent = 'No speech detected';
+                    hintEl.textContent = 'Click to try again';
+                    createBtn.disabled = true;
+                    break;
+                    
+                case 'error':
+                    iconEl.textContent = '⚠️';
+                    iconEl.classList.remove('recording');
+                    statusEl.textContent = 'Error occurred';
+                    hintEl.textContent = 'Please try again';
+                    createBtn.disabled = true;
+                    break;
+                    
+                case 'ended':
+                    iconEl.textContent = '🎤';
+                    iconEl.classList.remove('recording');
+                    if (!voiceTranscript) {
+                        statusEl.textContent = 'No speech detected';
+                        hintEl.textContent = 'Click the mic to try again';
+                    }
+                    break;
+            }
+        }
+        
+        // Parse voice command to extract task name and optional column
+        function parseVoiceCommand(transcript) {
+            let taskTitle = transcript.trim();
+            let column = voiceTargetColumn;
+            
+            // Normalize transcript
+            const lower = transcript.toLowerCase().trim();
+            
+            // Pattern: "add [task] to [column]"
+            const addToMatch = lower.match(/^add\s+(.+?)\s+to\s+(backlog|in progress|in_progress|review|done|permanent)$/i);
+            if (addToMatch) {
+                taskTitle = addToMatch[1].trim();
+                column = normalizeColumnName(addToMatch[2]);
+                return { taskTitle: capitalizeFirst(taskTitle), column };
+            }
+            
+            // Pattern: "add [task]" (uses default column)
+            const addMatch = lower.match(/^add\s+(.+)$/i);
+            if (addMatch) {
+                taskTitle = addMatch[1].trim();
+                return { taskTitle: capitalizeFirst(taskTitle), column };
+            }
+            
+            // Pattern: "[task] to [column]"
+            const toMatch = lower.match(/^(.+?)\s+to\s+(backlog|in progress|in_progress|review|done|permanent)$/i);
+            if (toMatch) {
+                taskTitle = toMatch[1].trim();
+                column = normalizeColumnName(toMatch[2]);
+                return { taskTitle: capitalizeFirst(taskTitle), column };
+            }
+            
+            // No pattern matched - use as-is
+            return { taskTitle: capitalizeFirst(taskTitle), column };
+        }
+        
+        // Normalize column name variations
+        function normalizeColumnName(name) {
+            const lower = name.toLowerCase().trim();
+            if (lower === 'in progress' || lower === 'in_progress') return 'in_progress';
+            if (lower === 'backlog') return 'backlog';
+            if (lower === 'review') return 'review';
+            if (lower === 'done') return 'done';
+            if (lower === 'permanent') return 'permanent';
+            return 'backlog'; // default
+        }
+        
+        // Format column name for display
+        function formatColumnName(column) {
+            const names = {
+                'backlog': 'Backlog',
+                'in_progress': 'In Progress',
+                'review': 'Review',
+                'done': 'Done',
+                'permanent': 'Permanent'
+            };
+            return names[column] || column;
+        }
+        
+        // Capitalize first letter
+        function capitalizeFirst(str) {
+            if (!str) return str;
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+        
+        // Cancel voice input
+        function cancelVoiceInput() {
+            if (voiceRecognition && voiceIsListening) {
+                try {
+                    voiceRecognition.stop();
+                } catch (e) {}
+            }
+            
+            const modal = document.getElementById('voice-modal');
+            if (modal) {
+                modal.classList.remove('visible');
+            }
+            
+            voiceTranscript = '';
+            voiceIsListening = false;
+        }
+        
+        // Create task from voice transcript
+        function createTaskFromVoice() {
+            if (!voiceTranscript) {
+                showToast('error', 'No transcript to create task from');
+                return;
+            }
+            
+            const parsed = parseVoiceCommand(voiceTranscript);
+            
+            if (!parsed.taskTitle) {
+                showToast('error', 'Could not parse task title');
+                return;
+            }
+            
+            // Create the task
+            const newTask = {
+                id: 'task_' + Date.now(),
+                title: parsed.taskTitle,
+                description: '',
+                status: parsed.column,
+                project: 'system',
+                tags: [],
+                subtasks: [],
+                priority: 'medium',
+                createdAt: new Date().toISOString(),
+                createdBy: 'voice'
+            };
+            
+            STATE.data.tasks.push(newTask);
+            STATE.data.lastUpdated = new Date().toISOString();
+            
+            // Close modal
+            cancelVoiceInput();
+            
+            // Render and save
+            renderTasks(true);
+            autoSave(`🎤 Voice: Create "${parsed.taskTitle}"`);
+            
+            showToast('success', `Created: "${parsed.taskTitle}" in ${formatColumnName(parsed.column)}`);
+        }
+        
+        // Add keyboard shortcut for voice input (Ctrl+Shift+V)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'V') {
+                e.preventDefault();
+                startVoiceInput('backlog');
+            }
+            
+            // Escape to cancel voice input
+            if (e.key === 'Escape') {
+                const voiceModal = document.getElementById('voice-modal');
+                if (voiceModal && voiceModal.classList.contains('visible')) {
+                    cancelVoiceInput();
+                }
+            }
+        });
+        
+        // Modal voice input - directly fills the title field
+        let modalVoiceRecognition = null;
+        let modalVoiceIsListening = false;
+        
+        function startModalVoiceInput() {
+            if (!isSpeechRecognitionSupported()) {
+                showToast('error', 'Voice input not supported. Try Chrome or Edge.');
+                return;
+            }
+            
+            const indicator = document.getElementById('modal-recording-indicator');
+            const micBtn = document.getElementById('modal-voice-btn');
+            const titleInput = document.getElementById('task-title');
+            
+            // If already listening, stop
+            if (modalVoiceIsListening && modalVoiceRecognition) {
+                modalVoiceRecognition.stop();
+                return;
+            }
+            
+            // Initialize recognition
+            if (!modalVoiceRecognition) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                modalVoiceRecognition = new SpeechRecognition();
+                
+                modalVoiceRecognition.lang = 'en-US';
+                modalVoiceRecognition.continuous = false;
+                modalVoiceRecognition.interimResults = true;
+                
+                modalVoiceRecognition.onstart = () => {
+                    modalVoiceIsListening = true;
+                    if (indicator) indicator.classList.add('active');
+                    if (micBtn) micBtn.classList.add('recording');
+                };
+                
+                modalVoiceRecognition.onresult = (event) => {
+                    const result = event.results[event.results.length - 1];
+                    let transcript = result[0].transcript;
+                    
+                    // Remove "add" prefix if present
+                    transcript = transcript.replace(/^add\s+/i, '');
+                    
+                    // Capitalize first letter
+                    transcript = capitalizeFirst(transcript.trim());
+                    
+                    // Update title field
+                    if (titleInput) {
+                        titleInput.value = transcript;
+                    }
+                };
+                
+                modalVoiceRecognition.onerror = (event) => {
+                    console.error('Modal voice error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showToast('error', 'Microphone access denied');
+                    }
+                };
+                
+                modalVoiceRecognition.onend = () => {
+                    modalVoiceIsListening = false;
+                    if (indicator) indicator.classList.remove('active');
+                    if (micBtn) micBtn.classList.remove('recording');
+                };
+            }
+            
+            try {
+                modalVoiceRecognition.start();
+            } catch (e) {
+                console.log('Modal recognition error:', e);
+            }
+        }
+
+        // === VOICE NOTE RECORDING ===
+        let voiceNoteMediaRecorder = null;
+        let voiceNoteAudioChunks = [];
+        let voiceNoteAudioBlob = null;
+        let voiceNoteAudioUrl = null;
+        let voiceNoteAudio = null;
+        let voiceNoteIsRecording = false;
+        let voiceNoteTimerInterval = null;
+        let voiceNoteStartTime = null;
+        let voiceNoteTargetTaskId = null;
+        let voiceNoteTranscript = '';
+        let voiceNoteTranscriptRecognition = null;
+        
+        // Audio context for waveform visualization
+        let voiceNoteAudioContext = null;
+        let voiceNoteAnalyser = null;
+        
+        // Open voice note modal
+        function openVoiceNoteModal(taskId) {
+            if (!STATE.user) {
+                showToast('error', 'Login to add voice notes');
+                return;
+            }
+            
+            voiceNoteTargetTaskId = taskId;
+            
+            // Update modal title based on context
+            const titleEl = document.getElementById('voice-note-modal-title');
+            const subtitleEl = document.getElementById('voice-note-modal-subtitle');
+            
+            if (taskId) {
+                const task = STATE.data.tasks.find(t => t.id === taskId);
+                titleEl.textContent = '🎙️ Add Voice Note';
+                subtitleEl.textContent = `To: ${task ? task.title : 'Task'}`;
+            } else {
+                titleEl.textContent = '🎙️ Voice Memo';
+                subtitleEl.textContent = 'Record a standalone voice memo';
+            }
+            
+            // Reset UI
+            resetVoiceNoteModal();
+            
+            // Show modal
+            document.getElementById('voice-note-modal').classList.add('visible');
+        }
+        
+        // Reset voice note modal to initial state
+        function resetVoiceNoteModal() {
+            voiceNoteIsRecording = false;
+            voiceNoteAudioChunks = [];
+            voiceNoteAudioBlob = null;
+            voiceNoteTranscript = '';
+            
+            if (voiceNoteAudioUrl) {
+                URL.revokeObjectURL(voiceNoteAudioUrl);
+                voiceNoteAudioUrl = null;
+            }
+            
+            if (voiceNoteTimerInterval) {
+                clearInterval(voiceNoteTimerInterval);
+                voiceNoteTimerInterval = null;
+            }
+            
+            // Reset UI elements
+            document.getElementById('voice-note-timer').textContent = '0:00';
+            document.getElementById('voice-note-timer').classList.remove('recording');
+            document.getElementById('voice-note-record-btn').classList.remove('recording');
+            document.getElementById('voice-note-record-icon').textContent = '🔴';
+            document.getElementById('voice-note-waveform').classList.remove('recording');
+            document.getElementById('voice-note-playback').classList.remove('visible');
+            document.getElementById('voice-note-save-btn').disabled = true;
+            document.getElementById('voice-note-discard-btn').style.display = 'none';
+            document.getElementById('voice-note-transcript-preview').style.display = 'none';
+        }
+        
+        // Toggle voice note recording
+        async function toggleVoiceNoteRecording() {
+            if (voiceNoteIsRecording) {
+                stopVoiceNoteRecording();
+            } else {
+                await startVoiceNoteRecording();
+            }
+        }
+        
+        // Start recording
+        async function startVoiceNoteRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // Create MediaRecorder
+                const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+                    ? 'audio/webm;codecs=opus' 
+                    : 'audio/webm';
+                
+                voiceNoteMediaRecorder = new MediaRecorder(stream, { mimeType });
+                voiceNoteAudioChunks = [];
+                
+                voiceNoteMediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        voiceNoteAudioChunks.push(event.data);
+                    }
+                };
+                
+                voiceNoteMediaRecorder.onstop = () => {
+                    voiceNoteAudioBlob = new Blob(voiceNoteAudioChunks, { type: mimeType });
+                    voiceNoteAudioUrl = URL.createObjectURL(voiceNoteAudioBlob);
+                    
+                    // Create audio element for playback
+                    voiceNoteAudio = new Audio(voiceNoteAudioUrl);
+                    voiceNoteAudio.onended = () => {
+                        document.getElementById('voice-note-play-btn').textContent = '▶';
+                    };
+                    voiceNoteAudio.ontimeupdate = () => {
+                        const progress = (voiceNoteAudio.currentTime / voiceNoteAudio.duration) * 100;
+                        document.getElementById('voice-note-progress-fill').style.width = `${progress}%`;
+                        document.getElementById('voice-note-duration').textContent = formatDuration(voiceNoteAudio.currentTime);
+                    };
+                    
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // Show playback controls
+                    showVoiceNotePlayback();
+                    
+                    // Start transcription (optional)
+                    transcribeVoiceNote();
+                };
+                
+                // Start recording
+                voiceNoteMediaRecorder.start(100); // Collect data every 100ms
+                voiceNoteIsRecording = true;
+                voiceNoteStartTime = Date.now();
+                
+                // Update UI
+                document.getElementById('voice-note-record-btn').classList.add('recording');
+                document.getElementById('voice-note-record-icon').textContent = '⏹';
+                document.getElementById('voice-note-timer').classList.add('recording');
+                document.getElementById('voice-note-waveform').classList.add('recording');
+                
+                // Start timer
+                voiceNoteTimerInterval = setInterval(updateVoiceNoteTimer, 100);
+                
+            } catch (err) {
+                console.error('Failed to start recording:', err);
+                showToast('error', 'Could not access microphone. Please allow microphone access.');
+            }
+        }
+        
+        // Stop recording
+        function stopVoiceNoteRecording() {
+            if (voiceNoteMediaRecorder && voiceNoteMediaRecorder.state !== 'inactive') {
+                voiceNoteMediaRecorder.stop();
+            }
+            
+            voiceNoteIsRecording = false;
+            
+            // Stop timer
+            if (voiceNoteTimerInterval) {
+                clearInterval(voiceNoteTimerInterval);
+            }
+            
+            // Update UI
+            document.getElementById('voice-note-record-btn').classList.remove('recording');
+            document.getElementById('voice-note-record-icon').textContent = '🔴';
+            document.getElementById('voice-note-timer').classList.remove('recording');
+            document.getElementById('voice-note-waveform').classList.remove('recording');
+        }
+        
+        // Update timer display
+        function updateVoiceNoteTimer() {
+            const elapsed = (Date.now() - voiceNoteStartTime) / 1000;
+            document.getElementById('voice-note-timer').textContent = formatDuration(elapsed);
+        }
+        
+        // Show playback controls
+        function showVoiceNotePlayback() {
+            document.getElementById('voice-note-playback').classList.add('visible');
+            document.getElementById('voice-note-save-btn').disabled = false;
+            document.getElementById('voice-note-discard-btn').style.display = 'inline-flex';
+            
+            // Set duration
+            voiceNoteAudio.onloadedmetadata = () => {
+                document.getElementById('voice-note-duration').textContent = formatDuration(voiceNoteAudio.duration);
+            };
+        }
+        
+        // Toggle playback
+        function toggleVoiceNotePlayback() {
+            if (!voiceNoteAudio) return;
+            
+            if (voiceNoteAudio.paused) {
+                voiceNoteAudio.play();
+                document.getElementById('voice-note-play-btn').textContent = '⏸';
+            } else {
+                voiceNoteAudio.pause();
+                document.getElementById('voice-note-play-btn').textContent = '▶';
+            }
+        }
+        
+        // Seek in voice note
+        function seekVoiceNote(event) {
+            if (!voiceNoteAudio) return;
+            
+            const progressBar = event.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (event.clientX - rect.left) / rect.width;
+            voiceNoteAudio.currentTime = percent * voiceNoteAudio.duration;
+        }
+        
+        // Transcribe voice note using Web Speech API
+        function transcribeVoiceNote() {
+            if (!isSpeechRecognitionSupported() || !voiceNoteAudioUrl) return;
+            
+            const transcriptEl = document.getElementById('voice-note-transcript-preview');
+            transcriptEl.style.display = 'block';
+            transcriptEl.textContent = 'Transcribing... (play audio to transcribe)';
+            
+            // Note: Web Speech API doesn't support transcribing from audio files directly.
+            // This would need a backend service for full transcription.
+            // For now, we'll offer manual transcript entry or skip.
+            transcriptEl.textContent = 'Voice note recorded. Play to review.';
+        }
+        
+        // Discard voice note
+        function discardVoiceNote() {
+            resetVoiceNoteModal();
+        }
+        
+        // Cancel voice note modal
+        function cancelVoiceNote() {
+            if (voiceNoteIsRecording) {
+                stopVoiceNoteRecording();
+            }
+            
+            if (voiceNoteAudioUrl) {
+                URL.revokeObjectURL(voiceNoteAudioUrl);
+            }
+            
+            document.getElementById('voice-note-modal').classList.remove('visible');
+            voiceNoteTargetTaskId = null;
+        }
+        
+        // Save voice note
+        async function saveVoiceNote() {
+            if (!voiceNoteAudioBlob) {
+                showToast('error', 'No recording to save');
+                return;
+            }
+            
+            // Convert audio blob to base64
+            const base64Audio = await blobToBase64(voiceNoteAudioBlob);
+            const duration = voiceNoteAudio ? voiceNoteAudio.duration : 0;
+            
+            const voiceNote = {
+                id: 'vn_' + Date.now(),
+                type: 'voice_note',
+                audio: base64Audio,
+                duration: Math.round(duration),
+                transcript: voiceNoteTranscript || null,
+                author: STATE.user?.login || 'User',
+                createdAt: new Date().toISOString()
+            };
+            
+            if (voiceNoteTargetTaskId) {
+                // Add to existing task
+                const task = STATE.data.tasks.find(t => t.id === voiceNoteTargetTaskId);
+                if (task) {
+                    if (!task.comments) task.comments = [];
+                    task.comments.push(voiceNote);
+                    
+                    // Close modal and refresh
+                    cancelVoiceNote();
+                    renderComments(task);
+                    renderTasks();
+                    autoSave(`🎤 Voice note on "${task.title}"`);
+                    showToast('success', 'Voice note saved!');
+                }
+            } else {
+                // Create standalone voice memo task
+                const newTask = {
+                    id: 'task_' + Date.now(),
+                    title: '🎤 Voice Memo',
+                    description: voiceNoteTranscript || 'Voice memo',
+                    status: 'backlog',
+                    project: 'system',
+                    tags: ['voice-memo'],
+                    subtasks: [],
+                    priority: 'medium',
+                    createdAt: new Date().toISOString(),
+                    createdBy: 'voice',
+                    comments: [voiceNote]
+                };
+                
+                STATE.data.tasks.push(newTask);
+                
+                // Close modal and refresh
+                cancelVoiceNote();
+                renderTasks(true);
+                autoSave('🎤 Voice memo created');
+                showToast('success', 'Voice memo created!');
+            }
+        }
+        
+        // Convert blob to base64
+        function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+        
+        // === VOICE NOTE PLAYBACK IN COMMENTS ===
+        let currentPlayingVoiceNote = null;
+        let voiceNoteCommentAudios = {};
+        
+        // Play voice note in comments
+        function playVoiceNoteComment(commentIdx, taskId) {
+            const task = STATE.data.tasks.find(t => t.id === taskId);
+            if (!task || !task.comments || !task.comments[commentIdx]) return;
+            
+            const comment = task.comments[commentIdx];
+            if (comment.type !== 'voice_note' || !comment.audio) return;
+            
+            // Stop current playing audio if any
+            if (currentPlayingVoiceNote !== null && voiceNoteCommentAudios[currentPlayingVoiceNote]) {
+                voiceNoteCommentAudios[currentPlayingVoiceNote].pause();
+                voiceNoteCommentAudios[currentPlayingVoiceNote].currentTime = 0;
+                document.getElementById(`vn-play-${currentPlayingVoiceNote}`).textContent = '▶';
+            }
+            
+            // Create or get audio element
+            if (!voiceNoteCommentAudios[commentIdx]) {
+                voiceNoteCommentAudios[commentIdx] = new Audio(comment.audio);
+                
+                voiceNoteCommentAudios[commentIdx].onended = () => {
+                    document.getElementById(`vn-play-${commentIdx}`).textContent = '▶';
+                    document.getElementById(`vn-progress-${commentIdx}`).style.width = '0%';
+                    currentPlayingVoiceNote = null;
+                };
+                
+                voiceNoteCommentAudios[commentIdx].ontimeupdate = () => {
+                    const audio = voiceNoteCommentAudios[commentIdx];
+                    const progress = (audio.currentTime / audio.duration) * 100;
+                    document.getElementById(`vn-progress-${commentIdx}`).style.width = `${progress}%`;
+                    document.getElementById(`vn-duration-${commentIdx}`).textContent = formatDuration(audio.currentTime);
+                };
+            }
+            
+            const audio = voiceNoteCommentAudios[commentIdx];
+            const playBtn = document.getElementById(`vn-play-${commentIdx}`);
+            
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸';
+                currentPlayingVoiceNote = commentIdx;
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶';
+                currentPlayingVoiceNote = null;
+            }
+        }
+        
+        // Seek voice note in comments
+        function seekVoiceNoteComment(event, commentIdx) {
+            if (!voiceNoteCommentAudios[commentIdx]) return;
+            
+            const progressBar = event.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (event.clientX - rect.left) / rect.width;
+            voiceNoteCommentAudios[commentIdx].currentTime = percent * voiceNoteCommentAudios[commentIdx].duration;
+        }
+        
+        // Add keyboard shortcut for voice memo (Ctrl+Shift+M)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+                e.preventDefault();
+                openVoiceNoteModal(null);
+            }
+            
+            // Escape to cancel voice note modal
+            if (e.key === 'Escape') {
+                const voiceNoteModal = document.getElementById('voice-note-modal');
+                if (voiceNoteModal && voiceNoteModal.classList.contains('visible')) {
+                    cancelVoiceNote();
+                }
+            }
+        });
+
+        // ============================================
+        // NOTES + DIGITAL PEN SYSTEM
+        // ============================================
+        
+        // Notes State
+        let notesState = {
+            currentNoteId: null,
+            currentTool: 'pen',
+            currentColor: '#000000',
+            strokeWidth: 3,
+            background: 'plain',
+            isDrawing: false,
+            penActive: false,  // For palm rejection
+            currentStroke: null,
+            strokes: [],
+            undoStack: [],
+            redoStack: [],
+            lastPoint: null
+        };
+
+        // Canvas references
+        let notesCanvas = null;
+        let notesCtx = null;
+
+        // Initialize Notes Canvas
+        function initNotesCanvas() {
+            notesCanvas = document.getElementById('notes-canvas');
+            if (!notesCanvas) return;
+            
+            notesCtx = notesCanvas.getContext('2d');
+            resizeNotesCanvas();
+            
+            // Pointer events for stylus/touch/mouse support
+            notesCanvas.addEventListener('pointerdown', handleNotePointerDown);
+            notesCanvas.addEventListener('pointermove', handleNotePointerMove);
+            notesCanvas.addEventListener('pointerup', handleNotePointerUp);
+            notesCanvas.addEventListener('pointerleave', handleNotePointerUp);
+            notesCanvas.addEventListener('pointercancel', handleNotePointerUp);
+            
+            // Prevent default touch behavior (scrolling)
+            notesCanvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+            notesCanvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+            
+            // Resize on window resize
+            window.addEventListener('resize', resizeNotesCanvas);
+        }
+
+        // Resize canvas to fit container
+        function resizeNotesCanvas() {
+            if (!notesCanvas) return;
+            
+            const container = document.getElementById('notes-canvas-container');
+            if (!container) return;
+            
+            const rect = container.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            
+            // Set display size
+            notesCanvas.style.width = rect.width + 'px';
+            notesCanvas.style.height = rect.height + 'px';
+            
+            // Set actual size in memory (scaled for retina)
+            notesCanvas.width = rect.width * dpr;
+            notesCanvas.height = rect.height * dpr;
+            
+            // Scale context for retina
+            notesCtx.scale(dpr, dpr);
+            
+            // Redraw
+            redrawNotes();
+        }
+
+        // Handle pointer down (start stroke)
+        function handleNotePointerDown(e) {
+            // Palm rejection: if touch and pen is active, ignore
+            if (e.pointerType === 'touch' && notesState.penActive) {
+                return;
+            }
+            
+            // Track pen state for palm rejection
+            if (e.pointerType === 'pen') {
+                notesState.penActive = true;
+            }
+            
+            notesState.isDrawing = true;
+            
+            const point = getCanvasPoint(e);
+            point.p = e.pressure || 0.5; // Pressure (0-1)
+            
+            notesState.currentStroke = {
+                points: [point],
+                color: notesState.currentTool === 'eraser' ? 'eraser' : notesState.currentColor,
+                width: notesState.strokeWidth
+            };
+            
+            notesState.lastPoint = point;
+            
+            // Capture pointer for smooth tracking
+            notesCanvas.setPointerCapture(e.pointerId);
+        }
+
+        // Handle pointer move (continue stroke)
+        function handleNotePointerMove(e) {
+            if (!notesState.isDrawing || !notesState.currentStroke) return;
+            
+            // Palm rejection
+            if (e.pointerType === 'touch' && notesState.penActive) {
+                return;
+            }
+            
+            const point = getCanvasPoint(e);
+            point.p = e.pressure || 0.5;
+            
+            notesState.currentStroke.points.push(point);
+            
+            // Draw the line segment
+            if (notesState.currentTool === 'eraser') {
+                // For eraser, we'll check intersection on pointer up
+                drawEraserPreview(point);
+            } else {
+                drawLineSegment(notesState.lastPoint, point, notesState.currentStroke);
+            }
+            
+            notesState.lastPoint = point;
+        }
+
+        // Handle pointer up (end stroke)
+        function handleNotePointerUp(e) {
+            if (!notesState.isDrawing) return;
+            
+            notesState.isDrawing = false;
+            
+            // Reset pen state
+            if (e.pointerType === 'pen') {
+                notesState.penActive = false;
+            }
+            
+            if (notesState.currentStroke && notesState.currentStroke.points.length > 1) {
+                if (notesState.currentTool === 'eraser') {
+                    // Find and remove intersecting strokes
+                    eraseStrokes(notesState.currentStroke.points);
+                } else {
+                    // Add stroke to array
+                    notesState.strokes.push(notesState.currentStroke);
+                    notesState.undoStack.push({ type: 'add', stroke: notesState.currentStroke });
+                    notesState.redoStack = []; // Clear redo on new action
+                }
+                
+                updateUndoRedoButtons();
+            }
+            
+            notesState.currentStroke = null;
+            notesState.lastPoint = null;
+            
+            // Redraw to clean up eraser preview
+            if (notesState.currentTool === 'eraser') {
+                redrawNotes();
+            }
+        }
+
+        // Get canvas coordinates from event
+        function getCanvasPoint(e) {
+            const rect = notesCanvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        // Draw a line segment with pressure sensitivity
+        function drawLineSegment(from, to, stroke) {
+            notesCtx.beginPath();
+            notesCtx.strokeStyle = stroke.color;
+            notesCtx.lineCap = 'round';
+            notesCtx.lineJoin = 'round';
+            
+            // Variable width based on pressure
+            const avgPressure = ((from.p || 0.5) + (to.p || 0.5)) / 2;
+            notesCtx.lineWidth = stroke.width * (0.5 + avgPressure);
+            
+            notesCtx.moveTo(from.x, from.y);
+            notesCtx.lineTo(to.x, to.y);
+            notesCtx.stroke();
+        }
+
+        // Draw eraser preview circle
+        function drawEraserPreview(point) {
+            // Draw a circle to show eraser area
+            notesCtx.save();
+            notesCtx.globalCompositeOperation = 'source-over';
+            notesCtx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+            notesCtx.lineWidth = 2;
+            notesCtx.beginPath();
+            notesCtx.arc(point.x, point.y, notesState.strokeWidth * 2, 0, Math.PI * 2);
+            notesCtx.stroke();
+            notesCtx.restore();
+        }
+
+        // Erase strokes that intersect with eraser path
+        function eraseStrokes(eraserPoints) {
+            const eraserRadius = notesState.strokeWidth * 2;
+            const strokesToRemove = [];
+            
+            for (let i = 0; i < notesState.strokes.length; i++) {
+                const stroke = notesState.strokes[i];
+                let shouldRemove = false;
+                
+                // Check if any point of this stroke is near the eraser path
+                for (const sp of stroke.points) {
+                    for (const ep of eraserPoints) {
+                        const dist = Math.hypot(sp.x - ep.x, sp.y - ep.y);
+                        if (dist < eraserRadius) {
+                            shouldRemove = true;
+                            break;
+                        }
+                    }
+                    if (shouldRemove) break;
+                }
+                
+                if (shouldRemove) {
+                    strokesToRemove.push(i);
+                }
+            }
+            
+            // Remove strokes in reverse order
+            for (let i = strokesToRemove.length - 1; i >= 0; i--) {
+                const idx = strokesToRemove[i];
+                const removed = notesState.strokes.splice(idx, 1)[0];
+                notesState.undoStack.push({ type: 'remove', stroke: removed, index: idx });
+            }
+            
+            if (strokesToRemove.length > 0) {
+                notesState.redoStack = [];
+            }
+        }
+
+        // Redraw all strokes
+        function redrawNotes() {
+            if (!notesCtx || !notesCanvas) return;
+            
+            const dpr = window.devicePixelRatio || 1;
+            const w = notesCanvas.width / dpr;
+            const h = notesCanvas.height / dpr;
+            
+            // Clear canvas
+            notesCtx.clearRect(0, 0, w, h);
+            
+            // Draw each stroke
+            for (const stroke of notesState.strokes) {
+                if (stroke.points.length < 2) continue;
+                
+                for (let i = 1; i < stroke.points.length; i++) {
+                    drawLineSegment(stroke.points[i - 1], stroke.points[i], stroke);
+                }
+            }
+        }
+
+        // Set tool (pen/eraser)
+        function setNoteTool(tool) {
+            notesState.currentTool = tool;
+            
+            document.getElementById('tool-pen').classList.toggle('active', tool === 'pen');
+            document.getElementById('tool-eraser').classList.toggle('active', tool === 'eraser');
+            
+            // Change cursor
+            if (notesCanvas) {
+                notesCanvas.style.cursor = tool === 'eraser' ? 'cell' : 'crosshair';
+            }
+        }
+
+        // Set stroke color
+        function setNoteColor(color) {
+            notesState.currentColor = color;
+            
+            // Update active button
+            document.querySelectorAll('.notes-color-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Find and activate the right button
+            const colorMap = {
+                '#000000': 'color-black',
+                '#2563eb': 'color-blue',
+                '#dc2626': 'color-red',
+                '#16a34a': 'color-green',
+                '#eab308': 'color-yellow',
+                '#ffffff': 'color-white'
+            };
+            
+            const btnId = colorMap[color];
+            if (btnId) {
+                document.getElementById(btnId)?.classList.add('active');
+            }
+            
+            // Switch to pen when selecting color
+            setNoteTool('pen');
+        }
+
+        // Set stroke width
+        function setNoteStrokeWidth(width) {
+            notesState.strokeWidth = parseInt(width, 10);
+            document.getElementById('stroke-width-value').textContent = width + 'px';
+        }
+
+        // Set background
+        function setNoteBackground(bg) {
+            notesState.background = bg;
+            
+            const container = document.getElementById('notes-canvas-container');
+            if (container) {
+                container.className = 'notes-canvas-container';
+                if (bg !== 'plain') {
+                    container.classList.add(bg);
+                }
+            }
+        }
+
+        // Undo
+        function noteUndo() {
+            if (notesState.undoStack.length === 0) return;
+            
+            const action = notesState.undoStack.pop();
+            
+            if (action.type === 'add') {
+                // Remove the last added stroke
+                const idx = notesState.strokes.indexOf(action.stroke);
+                if (idx !== -1) {
+                    notesState.strokes.splice(idx, 1);
+                }
+                notesState.redoStack.push(action);
+            } else if (action.type === 'remove') {
+                // Re-add the removed stroke at its original position
+                notesState.strokes.splice(action.index, 0, action.stroke);
+                notesState.redoStack.push(action);
+            }
+            
+            updateUndoRedoButtons();
+            redrawNotes();
+        }
+
+        // Redo
+        function noteRedo() {
+            if (notesState.redoStack.length === 0) return;
+            
+            const action = notesState.redoStack.pop();
+            
+            if (action.type === 'add') {
+                // Re-add the stroke
+                notesState.strokes.push(action.stroke);
+                notesState.undoStack.push(action);
+            } else if (action.type === 'remove') {
+                // Remove again
+                const idx = notesState.strokes.indexOf(action.stroke);
+                if (idx !== -1) {
+                    notesState.strokes.splice(idx, 1);
+                }
+                notesState.undoStack.push(action);
+            }
+            
+            updateUndoRedoButtons();
+            redrawNotes();
+        }
+
+        // Update undo/redo button states
+        function updateUndoRedoButtons() {
+            document.getElementById('tool-undo').disabled = notesState.undoStack.length === 0;
+            document.getElementById('tool-redo').disabled = notesState.redoStack.length === 0;
+        }
+
+        // Clear all strokes
+        function noteClear() {
+            if (notesState.strokes.length === 0) return;
+            
+            if (!confirm('Clear all strokes? This cannot be undone.')) return;
+            
+            notesState.strokes = [];
+            notesState.undoStack = [];
+            notesState.redoStack = [];
+            
+            updateUndoRedoButtons();
+            redrawNotes();
+        }
+
+        // Toggle fullscreen
+        function toggleNotesFullscreen() {
+            const container = document.getElementById('notes-container');
+            container.classList.toggle('fullscreen');
+            
+            // Resize canvas after toggling
+            setTimeout(resizeNotesCanvas, 100);
+        }
+
+        // Create new note
+        function createNewNote() {
+            const noteId = 'note_' + Date.now();
+            const newNote = {
+                id: noteId,
+                title: 'Untitled Note',
+                strokes: [],
+                background: 'plain',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Initialize notes array if needed
+            if (!STATE.data.notes) {
+                STATE.data.notes = [];
+            }
+            
+            STATE.data.notes.push(newNote);
+            
+            // Open the editor for this note
+            openNoteEditor(noteId);
+        }
+
+        // Open note editor
+        function openNoteEditor(noteId) {
+            const note = STATE.data.notes?.find(n => n.id === noteId);
+            if (!note) {
+                showToast('error', 'Note not found');
+                return;
+            }
+            
+            notesState.currentNoteId = noteId;
+            
+            // Load note data
+            notesState.strokes = note.strokes ? JSON.parse(JSON.stringify(note.strokes)) : [];
+            notesState.background = note.background || 'plain';
+            notesState.undoStack = [];
+            notesState.redoStack = [];
+            
+            // Update UI
+            document.getElementById('note-title-input').value = note.title || 'Untitled Note';
+            document.getElementById('note-bg-select').value = notesState.background;
+            setNoteBackground(notesState.background);
+            
+            // Show editor, hide list
+            document.getElementById('notes-list').classList.add('hidden');
+            document.getElementById('notes-editor').classList.add('active');
+            
+            // Initialize canvas if needed
+            if (!notesCanvas) {
+                initNotesCanvas();
+            }
+            
+            // Resize and redraw
+            setTimeout(() => {
+                resizeNotesCanvas();
+                updateUndoRedoButtons();
+            }, 50);
+        }
+
+        // Close note editor
+        function closeNoteEditor() {
+            // Auto-save before closing
+            saveCurrentNote();
+            
+            notesState.currentNoteId = null;
+            notesState.strokes = [];
+            
+            // Hide editor, show list
+            document.getElementById('notes-editor').classList.remove('active');
+            document.getElementById('notes-list').classList.remove('hidden');
+            
+            // Exit fullscreen if active
+            document.getElementById('notes-container').classList.remove('fullscreen');
+            
+            // Refresh notes list
+            renderNotesList();
+        }
+
+        // Update note title
+        function updateNoteTitle() {
+            if (!notesState.currentNoteId) return;
+            
+            const note = STATE.data.notes?.find(n => n.id === notesState.currentNoteId);
+            if (!note) return;
+            
+            const title = document.getElementById('note-title-input').value.trim() || 'Untitled Note';
+            note.title = title;
+            note.updatedAt = new Date().toISOString();
+        }
+
+        // Save current note
+        async function saveCurrentNote() {
+            if (!notesState.currentNoteId) return;
+            
+            const note = STATE.data.notes?.find(n => n.id === notesState.currentNoteId);
+            if (!note) return;
+            
+            // Update note data
+            note.title = document.getElementById('note-title-input').value.trim() || 'Untitled Note';
+            note.strokes = JSON.parse(JSON.stringify(notesState.strokes));
+            note.background = notesState.background;
+            note.updatedAt = new Date().toISOString();
+            
+            // Generate thumbnail
+            note.thumbnail = generateNoteThumbnail();
+            
+            // Save to storage
+            await autoSave(`📝 Save note: ${note.title}`);
+            
+            showToast('success', 'Note saved!');
+        }
+
+        // Generate thumbnail from current canvas
+        function generateNoteThumbnail() {
+            if (!notesCanvas) return null;
+            
+            // Create a smaller canvas for thumbnail
+            const thumbCanvas = document.createElement('canvas');
+            thumbCanvas.width = 200;
+            thumbCanvas.height = 140;
+            const thumbCtx = thumbCanvas.getContext('2d');
+            
+            // Draw background
+            if (notesState.background === 'dark') {
+                thumbCtx.fillStyle = '#1a1a1a';
+            } else {
+                thumbCtx.fillStyle = '#ffffff';
+            }
+            thumbCtx.fillRect(0, 0, 200, 140);
+            
+            // Scale and draw the main canvas
+            const dpr = window.devicePixelRatio || 1;
+            thumbCtx.drawImage(
+                notesCanvas, 
+                0, 0, notesCanvas.width, notesCanvas.height,
+                0, 0, 200, 140
+            );
+            
+            return thumbCanvas.toDataURL('image/png', 0.7);
+        }
+
+        // Delete note
+        function deleteNote(noteId, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            if (!confirm('Delete this note? This cannot be undone.')) return;
+            
+            const idx = STATE.data.notes?.findIndex(n => n.id === noteId);
+            if (idx === -1) return;
+            
+            const note = STATE.data.notes[idx];
+            STATE.data.notes.splice(idx, 1);
+            
+            autoSave(`🗑️ Delete note: ${note.title}`);
+            renderNotesList();
+            
+            showToast('success', 'Note deleted');
+        }
+
+        // Render notes list
+        function renderNotesList() {
+            const grid = document.getElementById('notes-grid');
+            if (!grid) return;
+            
+            const notes = STATE.data.notes || [];
+            
+            // Sort by updated date (newest first)
+            const sorted = [...notes].sort((a, b) => 
+                new Date(b.updatedAt) - new Date(a.updatedAt)
+            );
+            
+            let html = '';
+            
+            // New note card
+            html += `
+                <div class="note-card new-note" onclick="createNewNote()">
+                    <div class="new-note-content">
+                        <div class="icon">+</div>
+                        <div>New Note</div>
+                    </div>
+                </div>
+            `;
+            
+            // Existing notes
+            for (const note of sorted) {
+                const date = new Date(note.updatedAt);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                const thumbClass = note.background === 'dark' ? 'dark' : 
+                                   note.background === 'lined' ? 'lined' :
+                                   note.background === 'grid' ? 'grid' : '';
+                
+                html += `
+                    <div class="note-card" onclick="openNoteEditor('${note.id}')" style="position: relative;">
+                        <button class="note-card-delete" onclick="deleteNote('${note.id}', event)" title="Delete">×</button>
+                        <div class="note-card-thumbnail ${thumbClass}">
+                            ${note.thumbnail 
+                                ? `<img src="${note.thumbnail}" alt="Note thumbnail">`
+                                : `<span class="empty-note">📝</span>`
+                            }
+                        </div>
+                        <div class="note-card-info">
+                            <div class="note-card-title">${escapeHtml(note.title)}</div>
+                            <div class="note-card-date">${dateStr}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            grid.innerHTML = html;
+        }
+
+        // Escape HTML helper
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Keyboard shortcuts for notes
+        document.addEventListener('keydown', (e) => {
+            // Only handle if notes view is active
+            const notesView = document.getElementById('view-notes');
+            if (!notesView || notesView.style.display === 'none') return;
+            
+            // Ctrl+Z: Undo
+            if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                noteUndo();
+            }
+            
+            // Ctrl+Shift+Z or Ctrl+Y: Redo
+            if ((e.ctrlKey && e.shiftKey && e.key === 'z') || (e.ctrlKey && e.key === 'y')) {
+                e.preventDefault();
+                noteRedo();
+            }
+            
+            // Ctrl+S: Save
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveCurrentNote();
+            }
+            
+            // Escape: Close editor or exit fullscreen
+            if (e.key === 'Escape') {
+                const container = document.getElementById('notes-container');
+                if (container.classList.contains('fullscreen')) {
+                    toggleNotesFullscreen();
+                } else if (document.getElementById('notes-editor').classList.contains('active')) {
+                    closeNoteEditor();
+                }
+            }
+            
+            // P: Pen tool
+            if (e.key === 'p' && !e.ctrlKey && !e.metaKey) {
+                setNoteTool('pen');
+            }
+            
+            // E: Eraser tool
+            if (e.key === 'e' && !e.ctrlKey && !e.metaKey) {
+                setNoteTool('eraser');
+            }
+        });
+
         // === INIT ===
         document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            
+            // Initialize theme system
+            initTheme();
+            
             // Restore activity sidebar state
             if (localStorage.getItem('activity-collapsed') === 'true') {
                 const sidebar = document.getElementById('activity-sidebar');
@@ -7268,6 +10892,116 @@
 
         // Check auth on page load
         checkAuth();
+
+        // ============================
+        // CHAT WIDGET (Simple Notes)
+        // ============================
+        const chatWidget = document.getElementById('chat-widget');
+        const chatBody = document.getElementById('chat-body');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        let chatInitialized = false;
+        
+        function toggleChat() {
+            chatWidget.classList.toggle('collapsed');
+            const toggle = document.getElementById('chat-toggle');
+            toggle.textContent = chatWidget.classList.contains('collapsed') ? '▲' : '▼';
+        }
+
+        function addMessage(sender, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${sender}`;
+            msgDiv.textContent = text;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            addMessage('user', text);
+            chatInput.value = '';
+            
+            // Simple feedback - no actual connection
+            setTimeout(() => {
+                addMessage('system', '💡 Chat in Telegram: https://t.me/NomuraBot');
+            }, 300);
+        }
+
+        function handleChatKey(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        // Initialize chat on page load (once only)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (chatInitialized) return;
+            chatInitialized = true;
+            
+            // Show welcome message
+            chatMessages.innerHTML = '';
+            addMessage('bot', '👋 Hi! Chat with me on Telegram.');
+            addMessage('system', 'Telegram: @NomuraBot');
+        });
+    </script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js', {
+                        scope: '/'
+                    });
+                    console.log('✅ Service Worker registered:', registration.scope);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('🔄 Service Worker update found');
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New version available - show update banner
+                                const versionBanner = document.querySelector('.version-banner');
+                                if (versionBanner) {
+                                    versionBanner.classList.add('visible');
+                                    versionBanner.querySelector('.version-banner-text').innerHTML = 
+                                        '<span class="update-icon">🔄</span> New version available!';
+                                }
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.warn('⚠️ Service Worker registration failed:', error);
+                }
+            });
+            
+            // Handle controller change (new SW activated)
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('🔄 New Service Worker active');
+            });
+        }
+        
+        // Install prompt handler for "Add to Home Screen"
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('📲 Install prompt available');
+            
+            // Could show custom install button here
+            // For now, browser's native prompt will work
+        });
+        
+        // Track successful installation
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ Mission Control installed as PWA');
+            deferredPrompt = null;
+        });
     </script>
 </body>
 </html>

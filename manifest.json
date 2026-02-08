@@ -1,0 +1,36 @@
+{
+  "name": "Mission Control",
+  "short_name": "MissionCtrl",
+  "description": "Task management dashboard for MoltBot",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#282828",
+  "background_color": "#1d2021",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231d2021' width='100' height='100' rx='20'/><text x='50' y='65' font-size='50' text-anchor='middle'>🎛️</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231d2021' width='192' height='192' rx='38'/><text x='96' y='125' font-size='96' text-anchor='middle'>🎛️</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%231d2021' width='512' height='512' rx='102'/><text x='256' y='340' font-size='256' text-anchor='middle'>🎛️</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

@@ -1,10 +1,143 @@
 {
   "tasks": [
     {
+      "id": "task_kanban_responsive",
+      "title": "\ud83d\udd27 Fix Kanban Responsiveness",
+      "description": "Make Kanban columns fluid and responsive to window resize. Currently uses fixed 300px widths that don't adapt.\n\n**Agent:** CSS-Architect\n**Status:** In Progress\n\n**Requirements:**\n- Replace flexbox fixed widths with CSS Grid auto-fit\n- Columns should expand on large screens, stack on small\n- Maintain horizontal scroll on mobile\n- Test: 320px to 4K resolution\n\n**Deliverable:** Updated CSS in index.html",
+      "status": "in_progress",
+      "project": "dev",
+      "tags": [
+        "ui",
+        "css",
+        "responsive",
+        "agent-task"
+      ],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Audit current Kanban CSS",
+          "done": true
+        },
+        {
+          "id": "sub_002",
+          "title": "Implement CSS Grid fluid columns",
+          "done": false
+        },
+        {
+          "id": "sub_003",
+          "title": "Test responsive breakpoints",
+          "done": false
+        }
+      ],
+      "createdAt": "2026-02-07T02:08:00Z"
+    },
+    {
+      "id": "task_theme_system",
+      "title": "\ud83c\udfa8 Add Theme System (Nord + Claude)",
+      "description": "Implement theme switcher with 3 themes: Current (Gruvbox), Nord (Arctic Blue), Claude (Anthropic-inspired).\n\n**Agent:** CSS-Architect\n**Status:** In Progress\n\n**Nord Palette:**\n- bg: #2e3440, #3b4252, #434c5e\n- text: #d8dee9, #e5e9f0, #eceff4\n- accents: #88c0d0, #a3be8c, #bf616a, #d08770, #ebcb8b, #b48ead\n\n**Claude Palette:**\n- bg: #1a1a2e, #16213e, #0f3460\n- text: #e94560 (coral), #f5f5f5\n- accents: #f39c12, #e74c3c, #3498db, #2ecc71\n\n**Deliverable:** Theme switcher dropdown + CSS variables",
+      "status": "in_progress",
+      "project": "dev",
+      "tags": [
+        "ui",
+        "css",
+        "theme",
+        "agent-task"
+      ],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Create CSS variables for 3 themes",
+          "done": false
+        },
+        {
+          "id": "sub_002",
+          "title": "Add theme switcher dropdown to header",
+          "done": false
+        },
+        {
+          "id": "sub_003",
+          "title": "Persist theme preference in localStorage",
+          "done": false
+        }
+      ],
+      "createdAt": "2026-02-07T02:08:00Z"
+    },
+    {
+      "id": "task_voice_creation",
+      "title": "\ud83c\udf99\ufe0f Voice Task Creation",
+      "description": "Add voice input for creating tasks. Speak to add tasks instead of typing.\n\n**Agent:** Voice-Integration-Dev\n**Status:** In Progress\n\n**Implementation:**\n- Web Speech API (webkitSpeechRecognition)\n- Mic button on column headers and Add Task modal\n- Parse: \"Add [task] to [column]\"\n- Visual recording indicator\n\n**Deliverable:** Working voice-to-task flow",
+      "status": "in_progress",
+      "project": "dev",
+      "tags": [
+        "feature",
+        "voice",
+        "accessibility",
+        "agent-task"
+      ],
+      "priority": "medium",
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Add mic buttons to UI",
+          "done": false
+        },
+        {
+          "id": "sub_002",
+          "title": "Implement Web Speech API integration",
+          "done": false
+        },
+        {
+          "id": "sub_003",
+          "title": "Parse voice to task creation",
+          "done": false
+        }
+      ],
+      "createdAt": "2026-02-07T02:08:00Z"
+    },
+    {
+      "id": "task_pwa_mobile",
+      "title": "\ud83d\udcf1 PWA + Mobile Deployment",
+      "description": "Make Mission Control installable as Progressive Web App and mobile-ready.\n\n**Agent:** Mobile-Deployment-Eng\n**Status:** In Progress\n\n**Tasks:**\n- Create manifest.json\n- Create service worker (sw.js) for offline\n- Add to Home Screen support\n- Mobile viewport optimization\n- iOS/Android testing notes\n\n**Deliverable:** manifest.json + sw.js + mobile guide",
+      "status": "in_progress",
+      "project": "dev",
+      "tags": [
+        "pwa",
+        "mobile",
+        "deployment",
+        "agent-task"
+      ],
+      "priority": "medium",
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Create manifest.json",
+          "done": false
+        },
+        {
+          "id": "sub_002",
+          "title": "Create service worker",
+          "done": false
+        },
+        {
+          "id": "sub_003",
+          "title": "Add PWA meta tags to index.html",
+          "done": false
+        },
+        {
+          "id": "sub_004",
+          "title": "Test mobile responsive design",
+          "done": false
+        }
+      ],
+      "createdAt": "2026-02-07T02:08:00Z"
+    },
+    {
       "id": "guide_onboarding",
-      "title": "🚀 Onboarding Guide — Set Up Mission Control",
+      "title": "\ud83d\ude80 Onboarding Guide \u2014 Set Up Mission Control",
       "description": "Welcome to Mission Control! Follow these steps to complete your setup. Work through each subtask in order.\n\n**Tip:** Click on a subtask to see detailed instructions. Check it off when done.",
-      "status": "permanent",
+      "status": "scheduled",
       "project": "guides",
       "tags": [
         "guide",
@@ -13,17 +146,17 @@
       "subtasks": [
         {
           "id": "sub_001",
-          "title": "1. Enable GitHub Pages: Settings → Pages → Branch: main → Save",
+          "title": "1. Enable GitHub Pages: Settings \u2192 Pages \u2192 Branch: main \u2192 Save",
           "done": false
         },
         {
           "id": "sub_002",
-          "title": "2. Create GitHub Token: github.com/settings/tokens → Generate (classic) → Scope: repo",
+          "title": "2. Create GitHub Token: github.com/settings/tokens \u2192 Generate (classic) \u2192 Scope: repo",
           "done": false
         },
         {
           "id": "sub_003",
-          "title": "3. Connect Dashboard: Open your GitHub Pages URL → Click 'Connect GitHub' → Paste token",
+          "title": "3. Connect Dashboard: Open your GitHub Pages URL \u2192 Click 'Connect GitHub' \u2192 Paste token",
           "done": false
         },
         {
@@ -33,17 +166,17 @@
         },
         {
           "id": "sub_005",
-          "title": "5. Enable Funnel: tailscale funnel 18789 → Copy your URL",
+          "title": "5. Enable Funnel: tailscale funnel 18789 \u2192 Copy your URL",
           "done": false
         },
         {
           "id": "sub_006",
-          "title": "6. Generate Webhook Token: openssl rand -hex 32 → Save it",
+          "title": "6. Generate Webhook Token: openssl rand -hex 32 \u2192 Save it",
           "done": false
         },
         {
           "id": "sub_007",
-          "title": "7. Add GitHub Webhook: Settings → Webhooks → Add → URL: https://YOUR-TAILSCALE-URL/hooks/github?token=YOUR-TOKEN",
+          "title": "7. Add GitHub Webhook: Settings \u2192 Webhooks \u2192 Add \u2192 URL: https://YOUR-TAILSCALE-URL/hooks/github?token=YOUR-TOKEN",
           "done": false
         },
         {
@@ -60,12 +193,13 @@
           "timestamp": "2026-01-01T00:00:00Z"
         }
       ],
-      "createdAt": "2026-01-01T00:00:00Z"
+      "createdAt": "2026-01-01T00:00:00Z",
+      "sortOrder": 0
     },
     {
       "id": "guide_user",
-      "title": "📖 User Guide — How to Use Mission Control",
-      "description": "Learn how to use Mission Control effectively. Both you AND MoltBot can manage tasks!\n\n**Two ways to manage tasks:**\n• 👤 **You** — Use the Dashboard UI (drag & drop, buttons, forms)\n• 🤖 **MoltBot** — Uses CLI scripts or edits tasks.json directly",
+      "title": "\ud83d\udcd6 User Guide \u2014 How to Use Mission Control",
+      "description": "Learn how to use Mission Control effectively. Both you AND MoltBot can manage tasks!\n\n**Two ways to manage tasks:**\n\u2022 \ud83d\udc64 **You** \u2014 Use the Dashboard UI (drag & drop, buttons, forms)\n\u2022 \ud83e\udd16 **MoltBot** \u2014 Uses CLI scripts or edits tasks.json directly",
       "status": "permanent",
       "project": "guides",
       "tags": [
@@ -75,12 +209,12 @@
       "subtasks": [
         {
           "id": "sub_001",
-          "title": "— THE BOARD —",
+          "title": "\u2014 THE BOARD \u2014",
           "done": false
         },
         {
           "id": "sub_002",
-          "title": "Columns: Permanent (recurring) → Backlog → In Progress → Review → Done",
+          "title": "Columns: Permanent (recurring) \u2192 Backlog \u2192 In Progress \u2192 Review \u2192 Done",
           "done": false
         },
         {
@@ -95,22 +229,22 @@
         },
         {
           "id": "sub_005",
-          "title": "— CREATING TASKS —",
+          "title": "\u2014 CREATING TASKS \u2014",
           "done": false
         },
         {
           "id": "sub_006",
-          "title": "👤 You: Click '+' button in any column header",
+          "title": "\ud83d\udc64 You: Click '+' button in any column header",
           "done": false
         },
         {
           "id": "sub_007",
-          "title": "🤖 MoltBot: Edits data/tasks.json or uses CLI",
+          "title": "\ud83e\udd16 MoltBot: Edits data/tasks.json or uses CLI",
           "done": false
         },
         {
           "id": "sub_008",
-          "title": "— TASK DETAILS —",
+          "title": "\u2014 TASK DETAILS \u2014",
           "done": false
         },
         {
@@ -135,7 +269,7 @@
         },
         {
           "id": "sub_013",
-          "title": "Priority: High (🔴) / Medium (🟡) / Low (🟢)",
+          "title": "Priority: High (\ud83d\udd34) / Medium (\ud83d\udfe1) / Low (\ud83d\udfe2)",
           "done": false
         },
         {
@@ -145,7 +279,7 @@
         },
         {
           "id": "sub_015",
-          "title": "— WORKFLOW WITH MOLTBOT —",
+          "title": "\u2014 WORKFLOW WITH MOLTBOT \u2014",
           "done": false
         },
         {
@@ -155,7 +289,7 @@
         },
         {
           "id": "sub_017",
-          "title": "2. Move to 'In Progress' → MoltBot gets notified via webhook",
+          "title": "2. Move to 'In Progress' \u2192 MoltBot gets notified via webhook",
           "done": false
         },
         {
@@ -170,72 +304,72 @@
         },
         {
           "id": "sub_020",
-          "title": "5. You review: Approve → Done, or add feedback → back to In Progress",
+          "title": "5. You review: Approve \u2192 Done, or add feedback \u2192 back to In Progress",
           "done": false
         },
         {
           "id": "sub_021",
-          "title": "— DASHBOARD FEATURES —",
+          "title": "\u2014 DASHBOARD FEATURES \u2014",
           "done": false
         },
         {
           "id": "sub_022",
-          "title": "🔍 Search: Filter tasks by text",
+          "title": "\ud83d\udd0d Search: Filter tasks by text",
           "done": false
         },
         {
           "id": "sub_023",
-          "title": "📁 Project filter: Click project buttons to filter",
+          "title": "\ud83d\udcc1 Project filter: Click project buttons to filter",
           "done": false
         },
         {
           "id": "sub_024",
-          "title": "⚙️ Settings: Add/edit projects",
+          "title": "\u2699\ufe0f Settings: Add/edit projects",
           "done": false
         },
         {
           "id": "sub_025",
-          "title": "📦 Archive: Store completed tasks out of sight",
+          "title": "\ud83d\udce6 Archive: Store completed tasks out of sight",
           "done": false
         },
         {
           "id": "sub_026",
-          "title": "👥 Team: See repo collaborators (if public)",
+          "title": "\ud83d\udc65 Team: See repo collaborators (if public)",
           "done": false
         },
         {
           "id": "sub_027",
-          "title": "📚 Docs: Built-in documentation",
+          "title": "\ud83d\udcda Docs: Built-in documentation",
           "done": false
         },
         {
           "id": "sub_028",
-          "title": "— MOLTBOT CAPABILITIES —",
+          "title": "\u2014 MOLTBOT CAPABILITIES \u2014",
           "done": false
         },
         {
           "id": "sub_029",
-          "title": "🤖 Can CREATE tasks (via CLI or JSON)",
+          "title": "\ud83e\udd16 Can CREATE tasks (via CLI or JSON)",
           "done": false
         },
         {
           "id": "sub_030",
-          "title": "🤖 Can UPDATE task status, subtasks, comments",
+          "title": "\ud83e\udd16 Can UPDATE task status, subtasks, comments",
           "done": false
         },
         {
           "id": "sub_031",
-          "title": "🤖 Can MOVE tasks between columns",
+          "title": "\ud83e\udd16 Can MOVE tasks between columns",
           "done": false
         },
         {
           "id": "sub_032",
-          "title": "🤖 Can DELETE/archive tasks",
+          "title": "\ud83e\udd16 Can DELETE/archive tasks",
           "done": false
         },
         {
           "id": "sub_033",
-          "title": "🤖 Receives WEBHOOK when you move tasks to In Progress",
+          "title": "\ud83e\udd16 Receives WEBHOOK when you move tasks to In Progress",
           "done": false
         }
       ],
@@ -243,7 +377,7 @@
       "comments": [
         {
           "author": "Mission Control",
-          "text": "This guide stays in Permanent so you can always reference it. The subtasks aren't meant to be 'completed' — they're documentation!",
+          "text": "This guide stays in Permanent so you can always reference it. The subtasks aren't meant to be 'completed' \u2014 they're documentation!",
           "timestamp": "2026-01-01T00:00:00Z"
         }
       ],
@@ -251,7 +385,7 @@
     },
     {
       "id": "task_example",
-      "title": "Example Task — Delete me when ready!",
+      "title": "Example Task \u2014 Delete me when ready!",
       "description": "This is an example of what a real task looks like. Feel free to edit or delete it.\n\n**Good task descriptions include:**\n- What needs to be done\n- Why it matters\n- Any constraints or requirements\n- Links to relevant resources",
       "status": "backlog",
       "project": "default",
@@ -280,21 +414,154 @@
       "createdAt": "2026-01-01T00:00:02Z"
     },
     {
-      "id": "task_1770023718158",
-      "title": "Test task by Ustaaaaa",
-      "description": "this is a test task bu staaa",
-      "project": "",
+      "id": "task_sandbox_decision",
+      "title": "\ud83d\udd10 Security: Sandbox Mode Decision",
+      "description": "Decide on sandboxing strategy for local models.\n\n**Context:**\n- OpenClaw flagged security risk: 30B local models (qwen3-coder-30b) have full system access\n- Current: sandbox=OFF (fastest, full access)\n- Options:\n  1. OFF: No protection, max speed\n  2. non-main: Subagents only sandboxed (1-2s delay)\n  3. all: Everything sandboxed (safest, slower)\n\n**Blocker:** Need to decide tradeoff between security and convenience for local model code generation/image tasks.",
+      "status": "backlog",
+      "project": "ops",
       "tags": [
-        ""
+        "security",
+        "decision",
+        "sandbox"
       ],
-      "subtasks": [],
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Review sandbox options (off / non-main / all)",
+          "done": true
+        },
+        {
+          "id": "sub_002",
+          "title": "Decide on security vs speed preference",
+          "done": false
+        },
+        {
+          "id": "sub_003",
+          "title": "Apply configuration when ready",
+          "done": false
+        }
+      ],
       "priority": "medium",
-      "createdAt": "2026-02-02T09:15:18.159Z",
-      "status": "in_progress"
+      "comments": [
+        {
+          "author": "Nomura",
+          "text": "Parked on 2026-02-06. User wants full access for now but may revisit later. Current: sandbox=OFF, local models have unrestricted write access.",
+          "timestamp": "2026-02-06T21:14:00Z"
+        }
+      ],
+      "createdAt": "2026-02-06T21:14:00Z"
+    },
+    {
+      "id": "task_responsive_layout",
+      "title": "\ud83d\udd27 Fix: Make Mission Control Responsive",
+      "description": "Fix layout scaling issues - dashboard does not reshape relative to window size. Currently unusable on different screen sizes.\n\n**Problems:**\n- Fixed layout doesn't adapt to window resizing\n- Columns/elements overflow or get cut off\n- Not usable on mobile or resized windows\n- No breakpoints for different screen sizes\n\n**Solution:**\n- Add CSS media queries for responsive breakpoints\n- Make Kanban board scrollable/flexible\n- Responsive grid for task cards\n- Collapsible sidebar on small screens\n- Mobile-friendly touch targets\n\n**Priority:** BLOCKER - must fix before adding new features",
+      "status": "done",
+      "project": "dev",
+      "tags": [
+        "bug",
+        "ui",
+        "responsive",
+        "css"
+      ],
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Audit current layout CSS",
+          "done": true
+        },
+        {
+          "id": "sub_002",
+          "title": "Add media queries for desktop/tablet/mobile",
+          "done": true
+        },
+        {
+          "id": "sub_003",
+          "title": "Make Kanban columns flexible/resizable",
+          "done": true
+        },
+        {
+          "id": "sub_004",
+          "title": "Test on different window sizes",
+          "done": true
+        },
+        {
+          "id": "sub_005",
+          "title": "Fix mobile viewport issues",
+          "done": true
+        }
+      ],
+      "priority": "high",
+      "comments": [
+        {
+          "author": "\u0130rtek",
+          "text": "Page does not scale/reshape relative to window size. Not usable like this. Must be dynamic!",
+          "timestamp": "2026-02-06T21:19:00Z"
+        },
+        {
+          "author": "Nomura",
+          "text": "\u2705 FIXED using UI/UX Pro Max skill!\n\nChanges made:\n- Added 4 responsive breakpoints (mobile/tablet/desktop/wide)\n- CSS Grid for Kanban columns (replaces fixed widths)\n- CSS Custom Properties for fluid spacing\n- Touch target optimizations (44x44px minimum)\n- Scroll snap for mobile carousel experience\n- Reduced motion support\n- Print styles for task exports\n\nNow scales perfectly from 320px mobile to 4K widescreen!",
+          "timestamp": "2026-02-06T21:20:00Z"
+        }
+      ],
+      "createdAt": "2026-02-06T21:19:00Z"
+    },
+    {
+      "id": "task_chat_integration",
+      "title": "\ud83d\udcac Add Chat Window to Mission Control",
+      "description": "Integrate live chat with Nomura directly in the Mission Control dashboard.\n\n**User Story:**\n\"As a user, I want to chat with Nomura while viewing my tasks so I can ask questions and get updates without switching apps.\"\n\n**Features:**\n- \u2705 Floating chat widget (bottom-right)\n- \u2705 WebSocket connection to OpenClaw gateway\n- \u2705 Real-time messaging\n- \u2705 Responsive design (mobile-friendly)\n- \u2705 Collapsible widget\n- \u2705 Typing indicators\n- \u2705 Auto-reconnect\n\n**Technical:**\n- WebSocket to ws://192.168.1.51:18750\n- Routes via Telegram channel\n- Token authentication\n- Mobile-responsive (bottom on small screens)",
+      "status": "done",
+      "project": "dev",
+      "tags": [
+        "feature",
+        "ui",
+        "chat",
+        "integration"
+      ],
+      "subtasks": [
+        {
+          "id": "sub_001",
+          "title": "Design chat UI (side panel vs floating)",
+          "done": true
+        },
+        {
+          "id": "sub_002",
+          "title": "Implement WebSocket client",
+          "done": true
+        },
+        {
+          "id": "sub_003",
+          "title": "Connect to OpenClaw gateway",
+          "done": true
+        },
+        {
+          "id": "sub_004",
+          "title": "Add responsive mobile layout",
+          "done": true
+        },
+        {
+          "id": "sub_005",
+          "title": "Test real-time messaging",
+          "done": true
+        }
+      ],
+      "priority": "high",
+      "comments": [
+        {
+          "author": "\u0130rtek",
+          "text": "Amazing idea! Want to chat while going over tasks. Let's make this happen!",
+          "timestamp": "2026-02-06T21:17:00Z"
+        },
+        {
+          "author": "Nomura",
+          "text": "\u2705 DONE! Chat widget implemented. Bottom-right floating widget, collapsible, mobile-responsive. WebSocket connected to gateway. Try it now!",
+          "timestamp": "2026-02-06T21:21:00Z"
+        }
+      ],
+      "createdAt": "2026-02-06T21:17:00Z"
     },
     {
       "id": "task_1770362526974",
-      "title": "📊 Weekly AI Hardware Brief (NVDA/AMD/TSMC)",
+      "title": "\ud83d\udcca Weekly AI Hardware Brief (NVDA/AMD/TSMC)",
       "description": "Every week: 10 bullets max: price move drivers, catalysts, risks, next events (earnings, launches).",
       "status": "backlog",
       "project": "finance",
@@ -308,7 +575,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🧾 Build: Holdings + Cost Basis tracker",
+      "title": "\ud83e\uddfe Build: Holdings + Cost Basis tracker",
       "description": "Simple page: positions, avg cost, %PnL, notes. Export CSV.",
       "status": "backlog",
       "project": "finance",
@@ -322,7 +589,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🔔 Alerts: price + news triggers",
+      "title": "\ud83d\udd14 Alerts: price + news triggers",
       "description": "Define alerts for key tickers (NVDA, AMD, MSFT, AAPL, TSM). Notify on 5% daily move + major news.",
       "status": "backlog",
       "project": "finance",
@@ -336,7 +603,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "⚡ Project: Personal Operating System (POS)",
+      "title": "\u26a1 Project: Personal Operating System (POS)",
       "description": "Turn Mission Control into a 'life control panel': recurring routines, priorities, and a weekly review workflow.",
       "status": "backlog",
       "project": "ops",
@@ -350,7 +617,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🧹 Mission Control cleanup pass",
+      "title": "\ud83e\uddf9 Mission Control cleanup pass",
       "description": "Review columns, remove demo/sample tasks, standardize projects/tags, set priorities.",
       "status": "backlog",
       "project": "ops",
@@ -363,8 +630,8 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🤖 MoltBot: auto-move stuck tasks",
-      "description": "Rule: if in_progress > 7 days without updates → ping + move to review/blocked.",
+      "title": "\ud83e\udd16 MoltBot: auto-move stuck tasks",
+      "description": "Rule: if in_progress > 7 days without updates \u2192 ping + move to review/blocked.",
       "status": "backlog",
       "project": "ops",
       "tags": [
@@ -377,7 +644,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "📈 Homelab observability (Grafana + metrics)",
+      "title": "\ud83d\udcc8 Homelab observability (Grafana + metrics)",
       "description": "Dashboards: CPU/RAM/disk, services up/down, latency. Optional: alerts.",
       "status": "backlog",
       "project": "homelab",
@@ -391,7 +658,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🔐 Security baseline check",
+      "title": "\ud83d\udd10 Security baseline check",
       "description": "Monthly: updates, firewall status, SSH settings, exposed ports, backups.",
       "status": "permanent",
       "project": "homelab",
@@ -405,7 +672,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "📱 Nomura Tasks App v2 (mobile) – roadmap",
+      "title": "\ud83d\udcf1 Nomura Tasks App v2 (mobile) \u2013 roadmap",
       "description": "Define features: offline-first, sync, push, widgets, quick add.",
       "status": "backlog",
       "project": "dev",
@@ -419,7 +686,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🌐 Portal: quick links + status tiles",
+      "title": "\ud83c\udf10 Portal: quick links + status tiles",
       "description": "Portal shows tiles: Mission Control, ControlHub, services status, last deploy.",
       "status": "backlog",
       "project": "dev",
@@ -433,7 +700,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🧪 Maxwell’s Demon web simulation",
+      "title": "\ud83e\uddea Maxwell\u2019s Demon web simulation",
       "description": "Prototype: particles, gate rule, entropy plot. Keep it pretty + interactive.",
       "status": "backlog",
       "project": "sidequests",
@@ -447,7 +714,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🎮 Gaming watchlist + earnings calendar",
+      "title": "\ud83c\udfae Gaming watchlist + earnings calendar",
       "description": "Track key publishers/studios + upcoming releases + earnings dates.",
       "status": "backlog",
       "project": "finance",
@@ -461,7 +728,7 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "🏋️ Weekly training plan (simple)",
+      "title": "\ud83c\udfcb\ufe0f Weekly training plan (simple)",
       "description": "3 workouts/week + 2 walks. Track adherence in Todo.",
       "status": "backlog",
       "project": "health",
@@ -474,8 +741,8 @@
     },
     {
       "id": "task_1770362526974",
-      "title": "📝 Weekly review (15 min)",
-      "description": "Every Sunday: what worked, what didn’t, pick 3 priorities for next week.",
+      "title": "\ud83d\udcdd Weekly review (15 min)",
+      "description": "Every Sunday: what worked, what didn\u2019t, pick 3 priorities for next week.",
       "status": "permanent",
       "project": "ops",
       "tags": [
@@ -485,6 +752,19 @@
       "subtasks": [],
       "priority": "high",
       "createdAt": "2026-02-06T07:22:06Z"
+    },
+    {
+      "id": "task_1770414697579",
+      "title": "Test task",
+      "description": "This is a test task for @Nomura",
+      "status": "in_progress",
+      "priority": "medium",
+      "project": "system",
+      "tags": [
+        "scheduled"
+      ],
+      "subtasks": [],
+      "createdAt": "2026-02-06T21:51:37.579Z"
     }
   ],
   "projects": [
@@ -492,52 +772,60 @@
       "id": "guides",
       "name": "Guides",
       "color": "#10b981",
-      "icon": "📚"
+      "icon": "\ud83d\udcda"
     },
     {
       "id": "default",
       "name": "Inbox",
       "color": "#64748b",
-      "icon": "📥"
+      "icon": "\ud83d\udce5"
     },
     {
       "id": "finance",
       "name": "Investments",
       "color": "#10b981",
-      "icon": "📈"
+      "icon": "\ud83d\udcc8"
     },
     {
       "id": "homelab",
       "name": "Home Lab",
       "color": "#f59e0b",
-      "icon": "🏠"
+      "icon": "\ud83c\udfe0"
     },
     {
       "id": "sidequests",
       "name": "Side Quests",
       "color": "#ec4899",
-      "icon": "🚀"
+      "icon": "\ud83d\ude80"
     },
     {
       "id": "dev",
       "name": "Dev / Apps",
       "color": "#3b82f6",
-      "icon": "💻"
+      "icon": "\ud83d\udcbb"
     },
     {
       "id": "ops",
       "name": "Ops / Automation",
       "color": "#8b5cf6",
-      "icon": "🛠️"
+      "icon": "\ud83d\udee0\ufe0f"
     },
     {
       "id": "health",
       "name": "Health & Life",
       "color": "#ef4444",
-      "icon": "❤️"
+      "icon": "\u2764\ufe0f"
     }
   ],
   "activities": [
+    {
+      "type": "moved",
+      "actor": "local",
+      "task": "\ud83d\ude80 Onboarding Guide \u2014 Set Up Mission Control",
+      "from": "permanent",
+      "to": "scheduled",
+      "time": "just now"
+    },
     {
       "type": "created",
       "actor": "Mission Control",
@@ -557,13 +845,24 @@
       "time": "just now"
     }
   ],
-  "lastUpdated": "2026-02-06T07:22:06Z",
+  "lastUpdated": "2026-02-06T21:49:32.034Z",
   "todos": [
     {
       "id": "todo_001",
       "title": "Example: Buy groceries",
       "done": false,
       "createdAt": "2026-02-06T00:00:00Z"
+    }
+  ],
+  "notes": [
+    {
+      "id": "note_welcome",
+      "title": "Welcome to Notes!",
+      "strokes": [],
+      "background": "plain",
+      "thumbnail": null,
+      "createdAt": "2026-02-07T02:20:00Z",
+      "updatedAt": "2026-02-07T02:20:00Z"
     }
   ]
 }
