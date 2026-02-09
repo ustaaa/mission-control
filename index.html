@@ -4,24 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Control - MoltBot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Gruvbox Theme */
+            /* Linear Dark Theme (default) */
+            --bg-primary: #0A0A0B;
+            --bg-secondary: #111113;
+            --bg-card: #1A1A1E;
+            --bg-modal: #141416;
+            --bg-tertiary: #0E0E10;
+            --bg-hover: rgba(255, 255, 255, 0.06);
+            --text-primary: #EDEDEF;
+            --text-secondary: #8A8F98;
+            --text-muted: #555B66;
+
+            /* Linear Accents */
+            --accent: #5E6AD2;
+            --accent-blue: #5E6AD2;
+            --accent-green: #26B455;
+            --accent-yellow: #F2C94C;
+            --accent-red: #D14343;
+            --accent-purple: #9B59B6;
+
+            --border: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* === GRUVBOX DARK THEME === */
+        [data-theme="gruvbox-dark"] {
             --bg-primary: #1d2021;
             --bg-secondary: #282828;
             --bg-card: #32302f;
             --bg-modal: #282828;
+            --bg-tertiary: #1d2021;
+            --bg-hover: rgba(235, 219, 178, 0.08);
             --text-primary: #ebdbb2;
             --text-secondary: #a89984;
-            
-            /* Gruvbox Accents */
+            --text-muted: #665c54;
+            --accent: #458588;
             --accent-blue: #458588;
             --accent-green: #98971a;
             --accent-yellow: #d79921;
             --accent-red: #cc241d;
             --accent-purple: #b16286;
-            
             --border: rgba(235, 219, 178, 0.12);
+            --border-color: rgba(235, 219, 178, 0.12);
         }
 
         * {
@@ -31,10 +60,14 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-feature-settings: 'liga' 1, 'calt' 1;
+            font-variant-numeric: tabular-nums;
         }
 
         /* Header */
@@ -106,7 +139,7 @@
         }
 
         .btn-primary:hover {
-            background: #2563eb;
+            filter: brightness(1.2);
         }
 
         .btn-secondary {
@@ -502,7 +535,7 @@
         }
 
         .task-card mark {
-            background: rgba(215, 153, 33, 0.35);
+            background: rgba(242, 201, 76, 0.25);
             color: inherit;
             border-radius: 2px;
             padding: 0 2px;
@@ -1491,7 +1524,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -1732,23 +1767,194 @@
         button:focus-visible, .btn:focus-visible, .nav-tab:focus-visible, .filter-btn:focus-visible {
             outline: 2px solid var(--accent-blue);
             outline-offset: 2px;
-            box-shadow: 0 0 0 4px rgba(69, 133, 136, 0.25);
         }
 
-        /* === LIGHT THEME === */
-        [data-theme="light"] {
+        /* === GRUVBOX LIGHT THEME === */
+        [data-theme="gruvbox-light"] {
             --bg-primary: #fbf1c7;
             --bg-secondary: #f2e5bc;
             --bg-card: #ebdbb2;
             --bg-modal: #f2e5bc;
+            --bg-tertiary: #fbf1c7;
+            --bg-hover: rgba(60, 56, 54, 0.08);
             --text-primary: #3c3836;
             --text-secondary: #665c54;
+            --text-muted: #928374;
+            --accent: #076678;
             --accent-blue: #076678;
             --accent-green: #79740e;
             --accent-yellow: #b57614;
             --accent-red: #9d0006;
             --accent-purple: #8f3f71;
             --border: rgba(60, 56, 54, 0.15);
+            --border-color: rgba(60, 56, 54, 0.15);
+        }
+
+        /* === LINEAR THEME REFINEMENTS === */
+        /* Custom scrollbar for Linear theme */
+        html:not([data-theme]) {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+        }
+        html:not([data-theme]) ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        html:not([data-theme]) ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        html:not([data-theme]) ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 3px;
+        }
+        html:not([data-theme]) ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Linear typography refinements */
+        html:not([data-theme]) .logo {
+            letter-spacing: -0.03em;
+            font-weight: 600;
+        }
+
+        html:not([data-theme]) .column-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        html:not([data-theme]) .modal-title {
+            letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+
+        html:not([data-theme]) .stat-value {
+            letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+
+        html:not([data-theme]) .login-title {
+            letter-spacing: -0.04em;
+            font-weight: 800;
+        }
+
+        /* Linear card refinements */
+        html:not([data-theme]) .task-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            transition: background 0.15s ease, border-color 0.15s ease, opacity 0.3s, filter 0.3s;
+        }
+
+        html:not([data-theme]) .task-card:hover {
+            background: var(--bg-card);
+            border-color: rgba(255, 255, 255, 0.12);
+            transform: none;
+        }
+
+        /* Linear modal refinements */
+        html:not([data-theme]) .modal {
+            box-shadow: 0 16px 70px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Linear nav tab refinements */
+        html:not([data-theme]) .nav-tab {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0;
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+        }
+
+        html:not([data-theme]) .nav-tab.active {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        html:not([data-theme]) .nav-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Linear filter button refinements */
+        html:not([data-theme]) .filter-btn {
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            border-color: transparent;
+            background: transparent;
+        }
+
+        html:not([data-theme]) .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: transparent;
+        }
+
+        html:not([data-theme]) .filter-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        /* Linear button refinements */
+        html:not([data-theme]) .btn {
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+
+        html:not([data-theme]) .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        html:not([data-theme]) .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Linear activity header refinement */
+        html:not([data-theme]) .activity-header {
+            font-size: 0.6875rem;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        /* Linear search refinements */
+        html:not([data-theme]) .search-input {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        html:not([data-theme]) .search-input:focus {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.15);
+        }
+
+        /* Linear form input refinements */
+        html:not([data-theme]) .form-input {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        html:not([data-theme]) .form-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.15);
+        }
+
+        /* Linear toast refinements */
+        html:not([data-theme]) .toast {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Linear focus visible */
+        html:not([data-theme]) *:focus-visible {
+            outline-color: var(--accent-blue);
+        }
+
+        html:not([data-theme]) button:focus-visible,
+        html:not([data-theme]) .btn:focus-visible {
+            box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.25);
         }
 
         .theme-toggle {
@@ -1773,7 +1979,7 @@
         }
         .toast .undo-btn {
             background: var(--accent-yellow);
-            color: #1d2021;
+            color: var(--bg-primary);
             border: none;
             padding: 4px 12px;
             border-radius: 4px;
@@ -1793,7 +1999,7 @@
             gap: 1rem;
             padding: 0.75rem 2rem;
             background: var(--accent-blue);
-            color: #ebdbb2;
+            color: white;
             font-size: 0.9rem;
         }
         .bulk-bar.visible {
@@ -1801,7 +2007,7 @@
         }
         .bulk-bar button {
             background: rgba(255,255,255,0.15);
-            color: #ebdbb2;
+            color: white;
             border: 1px solid rgba(255,255,255,0.3);
             padding: 4px 12px;
             border-radius: 4px;
@@ -2533,7 +2739,7 @@
             </div>
         </div>
         <div class="header-right">
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark theme" id="theme-toggle">Dark</button>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cycle theme" id="theme-toggle">Linear</button>
             <span class="live-indicator live" id="live-indicator">Live</span>
             <button class="btn btn-secondary" onclick="pollForUpdates(); window.location.reload()">↻ Refresh</button>
 
@@ -3216,30 +3422,54 @@
         CONFIG.useProxy = getStorageMode() === 'internal';
 
         // === THEME ===
+        const THEMES = [
+            { id: 'linear', label: 'Linear', attr: null },
+            { id: 'gruvbox-dark', label: 'Gruvbox', attr: 'gruvbox-dark' },
+            { id: 'gruvbox-light', label: 'Gruvbox Light', attr: 'gruvbox-light' }
+        ];
+
+        function getActiveThemeIndex() {
+            const attr = document.documentElement.getAttribute('data-theme');
+            if (!attr) return 0; // Linear (default)
+            const idx = THEMES.findIndex(t => t.attr === attr);
+            return idx >= 0 ? idx : 0;
+        }
+
         function initTheme() {
-            const saved = localStorage.getItem('mc_theme');
-            if (saved === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
-            updateThemeButton();
-        }
-        function toggleTheme() {
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            if (isLight) {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('mc_theme', 'dark');
+            let saved = localStorage.getItem('mc_theme');
+            // Migrate legacy values
+            if (saved === 'dark') { saved = 'gruvbox-dark'; localStorage.setItem('mc_theme', saved); }
+            if (saved === 'light') { saved = 'gruvbox-light'; localStorage.setItem('mc_theme', saved); }
+
+            if (saved && saved !== 'linear') {
+                document.documentElement.setAttribute('data-theme', saved);
             } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('mc_theme', 'light');
+                document.documentElement.removeAttribute('data-theme');
+                if (!saved) localStorage.setItem('mc_theme', 'linear');
             }
             updateThemeButton();
         }
+
+        function toggleTheme() {
+            const current = getActiveThemeIndex();
+            const next = (current + 1) % THEMES.length;
+            const theme = THEMES[next];
+            if (theme.attr) {
+                document.documentElement.setAttribute('data-theme', theme.attr);
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            localStorage.setItem('mc_theme', theme.id);
+            updateThemeButton();
+        }
+
         function updateThemeButton() {
             const btn = document.getElementById('theme-toggle');
             if (!btn) return;
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            btn.textContent = isLight ? 'Light' : 'Dark';
+            const idx = getActiveThemeIndex();
+            btn.textContent = THEMES[idx].label;
         }
+
         initTheme();
 
         // === STATE ===

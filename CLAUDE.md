@@ -7,7 +7,7 @@ Mission Control is a self-hosted, single-file Kanban task management dashboard. 
 ## Architecture
 
 ```
-index.html          – Complete frontend (HTML + CSS + JS, ~7300 lines, Gruvbox dark theme)
+index.html          – Complete frontend (HTML + CSS + JS, ~8000 lines, Linear dark default theme)
 server.py           – Python HTTP server and API proxy (~210 lines, stdlib only)
 data/tasks.json     – Primary task datastore (JSON)
 data/crons.json     – Scheduled task definitions
@@ -33,7 +33,7 @@ examples/           – Config reference docs and templates
 | Cloud sync | GitHub API + Supabase PostgREST (both optional) |
 | Webhooks | Node.js ES modules (`transforms/`) |
 | CI/CD | GitHub Actions → GitHub Pages |
-| Theme | Gruvbox dark (CSS custom properties) |
+| Theme | Linear dark (default), Gruvbox dark/light (CSS custom properties) |
 
 ## Running Locally
 
@@ -198,7 +198,7 @@ Task cards include a `↔` move button (`.task-move-btn`) that opens a dropdown 
 #### Search Highlighting
 - `highlightText(text, query)` wraps matches in `<mark>` tags
 - `applySearchFilter()` highlights matched text in task titles and descriptions
-- `<mark>` styled with Gruvbox yellow background (`rgba(215, 153, 33, 0.35)`)
+- `<mark>` styled with yellow background (`rgba(242, 201, 76, 0.25)`)
 
 #### Processing Indicator
 - Tasks with `processingStartedAt` show animated border pulse (blue for active, red for 30+ min timeout)
@@ -218,25 +218,36 @@ Task cards include a `↔` move button (`.task-move-btn`) that opens a dropdown 
 _No deployment yet — Nomura will update this section after first deploy._
 
 ### Handoff Notes
-**Session: 2026-02-08**
+**Session: 2026-02-09**
 
 **What changed:**
-- Created CLAUDE.md from scratch
-- **Critical UI:** ARIA labels on all interactive elements, modal accessibility (role=dialog, focus trap), keyboard task movement (↔ move dropdown), focus-visible styles
-- **High UI:** Undo system (toast with undo callback on delete/archive), modal overflow fix on mobile, bulk operations (multi-select + bulk move/archive/delete), advanced filtering & sorting (priority, tag, sort)
-- **Medium UI:** Subtask/comment delete confirmations with undo, activity feed pagination (15/page), search result highlighting (`<mark>` tags), processing indicator auto-refresh + cancel button
-- **Icon cleanup:** Replaced all emoji in UI action buttons, modal titles, column headers, badges, filter bar, and project filter buttons with plain monochrome text. Only docs view content retains emoji. CSS pseudo-element `📦` replaced with `[archived]` text badge.
-- **Theme toggle:** Added light/dark theme switch in header, persisted via `localStorage('mc_theme')`. Light theme uses Gruvbox light palette (`[data-theme="light"]`).
-- **Visual polish:** Fixed `.btn-icon` sizing (Settings button), `.column-add` button reset (no browser default border), `.theme-toggle` sizing, stripped project emoji from filter buttons for uniform look.
+- **Linear-inspired theme redesign** — Complete visual overhaul inspired by Linear.app's design system:
+  - **New default theme:** Linear Dark — near-black backgrounds (`#0A0A0B`), indigo accent (`#5E6AD2`), cool blue-gray text (`#EDEDEF`/`#8A8F98`)
+  - **Inter font:** Added Google Fonts CDN import for Inter (300-800 weights) with `-webkit-font-smoothing: antialiased`, `font-feature-settings`, and `tabular-nums`
+  - **Three-theme system:** Cycle button rotates through Linear (default) → Gruvbox Dark → Gruvbox Light
+  - **Legacy migration:** `initTheme()` maps old `'dark'`/`'light'` localStorage values to `'gruvbox-dark'`/`'gruvbox-light'`
+  - **Linear-specific CSS overrides** scoped via `html:not([data-theme])`:
+    - Custom thin scrollbars (`scrollbar-width: thin`, 6px WebKit)
+    - Tight letter-spacing on logo (`-0.03em`), headings (`-0.02em`), login title (`-0.04em`)
+    - Uppercase column titles with `0.05em` letter-spacing
+    - Subtle card styling: `--bg-secondary` at rest → `--bg-card` on hover, no `translateY` lift
+    - Opacity-based filter buttons (transparent bg, no border)
+    - Form inputs with `rgba(255,255,255,0.04)` backgrounds and indigo focus rings
+    - Modal backdrop `blur(4px)` and deep `box-shadow`
+    - Subtle toast shadows
+  - **Previously undefined CSS vars** now defined in all themes: `--accent`, `--bg-tertiary`, `--bg-hover`, `--text-muted`, `--border-color`
+  - **Fixed hardcoded Gruvbox colors:** `.undo-btn` color, `.bulk-bar` text, `.btn-primary:hover`, focus-visible shadow, search mark highlight
+- Previous session changes preserved (ARIA, undo, bulk ops, filtering, pagination, etc.)
 
 **Issues / watch out for:**
-- The `column-add` elements were changed from `<span>` to `<button>` — button reset CSS added (no border/bg/padding)
-- Bulk mode changes the task card `onclick` handler dynamically — test that clicking tasks still opens the detail modal in normal mode
-- Search highlighting uses `innerHTML` replacement on `.task-title-text` and `.task-description` — if task titles contain HTML entities they may render unexpectedly
-- Some elements use `--border-color` (not defined in `:root`) — pre-existing issue, not caused by these changes
-- Light theme may need fine-tuning on some hard-coded `rgba()` values (e.g. login screen gradient, processing pulse animations)
+- **Google Fonts CDN dependency:** Inter font loaded from `fonts.googleapis.com`. Falls back to system sans-serif if CDN unreachable
+- **`html:not([data-theme])` selectors:** Linear overrides rely on absence of `data-theme` attribute — if any code sets an unexpected attribute value, these rules may not apply
+- Some `rgba()` values in component CSS (e.g. `.live-indicator.live`, `.task-action-btn.done`) use hardcoded RGB that won't match the new accent colors exactly — functional but slightly off-palette in Linear theme
+- Login gradient uses hardcoded `#1a1a2e` endpoint — looks fine with Linear's near-black but could be refined
+- Processing pulse animations use hardcoded `rgba(59, 130, 246, ...)` (blue) — works but doesn't match indigo accent precisely
 
-**What's next / TODO (Low priority items remaining):**
+**What's next / TODO:**
+- Fine-tune remaining hardcoded `rgba()` values to match Linear accent palette
 - Task duplication feature
 - Keyboard shortcut overlay (? key)
 - Export options (JSON, CSV, Markdown)
