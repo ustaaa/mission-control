@@ -20,15 +20,17 @@
 
 ## Last Deployment
 
-**Commit:** `6b9c627`  
-**Date:** 2026-02-08 16:06 UTC  
-**Summary:** Monochrome icons + theme toggle  
+**Commit:** `78640fd`  
+**Date:** 2026-02-09 07:09 UTC  
+**Summary:** Linear-inspired dark theme redesign  
 **Status:** ✅ Live on http://192.168.1.51:18701
 
 ### What was deployed:
-- Monochrome text icons (replaced emoji throughout UI)
-- Light/dark theme toggle with localStorage persistence
-- Gruvbox light palette support
+- New Linear-style dark theme as default (#0F0F10 background)
+- Inter font family with refined typography
+- Updated color accents (blue: #5E6AD2, green: #4CB782, etc.)
+- Better shadows and border radii
+- Improved visual hierarchy
 
 ---
 
