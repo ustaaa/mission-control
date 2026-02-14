@@ -36,7 +36,19 @@
 
 ## Handoff Notes (Claude Code → Nomura)
 
-_Currently empty — last handoff deployed at 2026-02-08 16:06 UTC._
+### Session: 2026-02-14
+**Changed:**
+- Added Second Brain project (Blinko fork) in `second-brain/` directory
+- Hierarchical note folders, `[[wikilink]]` backlinks, daily journal, theme polish
+
+**Watch out for:**
+- Second Brain requires PostgreSQL + Prisma migrations
+- New Prisma migration for `noteFolder` model needs to be applied
+- Second Brain runs on port 1111 (separate from MC on 18701)
+
+**Next up / TODO:**
+- Deploy Second Brain as systemd service alongside MC
+- Configure Tailscale/Cloudflare Tunnel for remote access
 
 **Pending TODO (Low priority from Claude Code):**
 - Task duplication feature
@@ -81,6 +93,76 @@ examples/           – Config reference docs and templates
 - **No build step.** The frontend is vanilla JS served directly — no bundler, transpiler, or framework.
 - **No package manager.** No `package.json`, no `requirements.txt`. Python server uses only stdlib. Node.js transforms use only built-in modules + `fetch()`.
 - **Single-file UI.** All frontend code (HTML, CSS, JS) lives in `index.html`.
+
+---
+
+## Second Brain (Blinko Fork)
+
+A personal knowledge hub forked from [Blinko](https://github.com/blinkospace/blinko) (GPL-3.0), living in the `second-brain/` directory. Provides notes, document vault, wikilink backlinks, daily journal, and AI-powered search.
+
+### Second Brain Architecture
+
+```
+second-brain/
+├── app/                    – Vite + React 18 frontend
+│   ├── src/components/     – UI components (Editor, Layout, Journal, NoteFolderTree, etc.)
+│   ├── src/pages/          – Route pages (index, journal, resources, review, etc.)
+│   ├── src/store/          – MobX stores (baseStore, noteStore, etc.)
+│   └── src/styles/         – CSS (globals.css, vditor.css)
+├── server/                 – Express 5 + tRPC backend
+│   ├── routerTrpc/         – tRPC routers (note.ts, attachment.ts, etc.)
+│   └── index.ts            – Server entry point
+├── prisma/
+│   └── schema.prisma       – PostgreSQL schema (notes, noteReference, noteFolder, etc.)
+└── .env                    – Database URL, secrets (DO NOT COMMIT)
+```
+
+### Second Brain Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Vite + React 18 + TypeScript |
+| UI Library | HeroUI + Tailwind CSS 4 |
+| State | MobX |
+| Editor | Vditor (WYSIWYG Markdown) |
+| Backend | Express 5 + tRPC |
+| Database | PostgreSQL + Prisma |
+| AI | Vercel AI SDK + pgvector |
+| Desktop | Tauri 2 (Rust) |
+
+### Running Second Brain
+
+```bash
+# Ensure PostgreSQL is running and DATABASE_URL is set in second-brain/.env
+cd second-brain/server
+bun --env-file ../.env --watch index.ts
+# Serves on http://localhost:1111
+```
+
+### Key Features Added (on top of Blinko)
+- **Hierarchical note folders** — `noteFolder` Prisma model with tree UI in sidebar
+- **`[[Wikilink]]` syntax** — autocomplete in editor, auto-parsed on save, backlink panel
+- **Daily journal** — `/journal` route with calendar, quick capture (`Ctrl+Shift+J`)
+- **Linear dark theme** — matching Mission Control's design language
+
+### Second Brain Key Files
+
+| Purpose | Path |
+|---------|------|
+| Prisma schema | `second-brain/prisma/schema.prisma` |
+| Note tRPC router | `second-brain/server/routerTrpc/note.ts` |
+| Attachment router | `second-brain/server/routerTrpc/attachment.ts` |
+| Editor component | `second-brain/app/src/components/Common/Editor/index.tsx` |
+| App routes | `second-brain/app/src/App.tsx` |
+| Sidebar nav | `second-brain/app/src/store/baseStore.ts` |
+
+### Second Brain Conventions
+- **Prisma migrations:** After schema changes, run `npx prisma migrate dev --name <name>`
+- **Follow existing patterns:** Folder CRUD mirrors `attachment.ts`, wikilinks mirror `extractHashtags()`
+- **i18n:** Add new keys to `app/public/locales/*/translation.json`
+- **Never modify** `second-brain/.env` — contains database credentials
+
+---
 
 ## Tech Stack
 
