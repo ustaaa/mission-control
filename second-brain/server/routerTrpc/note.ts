@@ -22,6 +22,12 @@ const extractHashtags = (input: string): string[] => {
   return matches ? matches : [];
 };
 
+const extractWikilinks = (input: string): string[] => {
+  const withoutCodeBlocks = input.replace(/```[\s\S]*?```/g, '');
+  const matches = withoutCodeBlocks.match(/\[\[([^\]]+)\]\]/g) || [];
+  return [...new Set(matches.map(m => m.slice(2, -2).trim()))];
+};
+
 export const noteRouter = router({
   list: authProcedure
     .meta({ openapi: { method: 'POST', path: '/v1/note/list', summary: 'Query notes list', protect: true, tags: ['Note'] } })
@@ -43,6 +49,7 @@ export const noteRouter = router({
         startDate: z.union([z.date(), z.null(), z.string()]).default(null).optional(),
         endDate: z.union([z.date(), z.null(), z.string()]).default(null).optional(),
         hasTodo: z.boolean().default(false).optional(),
+        folderId: z.union([z.number(), z.null()]).default(null).optional(),
       }),
     )
     .output(
@@ -104,7 +111,7 @@ export const noteRouter = router({
       ),
     )
     .mutation(async function ({ input, ctx }) {
-      const { tagId, type, isArchived, isRecycle, searchText, page, size, orderBy, withFile, withoutTag, withLink, isUseAiQuery, startDate, endDate, isShare, hasTodo } = input;
+      const { tagId, type, isArchived, isRecycle, searchText, page, size, orderBy, withFile, withoutTag, withLink, isUseAiQuery, startDate, endDate, isShare, hasTodo, folderId } = input;
       if (isUseAiQuery && searchText?.trim() != '') {
         const cleanedQuery = searchText?.replace(/@/g, '').trim();
         if (cleanedQuery && cleanedQuery.length > 0) {
@@ -189,6 +196,9 @@ export const noteRouter = router({
           { content: { contains: '* [ ]', mode: 'insensitive' } },
           { content: { contains: '* [x]', mode: 'insensitive' } },
         ];
+      }
+      if (folderId !== null && folderId !== undefined) {
+        where.folderId = folderId;
       }
       const config = await getGlobalConfig({ ctx });
       let timeOrderBy = config?.isOrderByCreateTime ? { createdAt: orderBy } : { updatedAt: orderBy };
@@ -858,6 +868,7 @@ export const noteRouter = router({
         isShare: z.union([z.boolean(), z.null()]).default(null),
         isRecycle: z.union([z.boolean(), z.null()]).default(null),
         references: z.array(z.number()).optional(),
+        folderId: z.union([z.number(), z.null()]).optional(),
         createdAt: z.date().optional(),
         updatedAt: z.date().optional(),
         metadata: z.any().optional(),
@@ -865,7 +876,7 @@ export const noteRouter = router({
     )
     .output(z.any())
     .mutation(async function ({ input, ctx }) {
-      let { id, isArchived, isRecycle, type, attachments, content, isTop, isShare, references } = input;
+      let { id, isArchived, isRecycle, type, attachments, content, isTop, isShare, references, folderId: inputFolderId } = input;
 
       // Check for internal sharing permission if updating an existing note
       let isSharedEditor = false;
@@ -941,6 +952,7 @@ export const noteRouter = router({
         ...(content != null && { content }),
         ...(input.createdAt && { createdAt: input.createdAt }),
         ...(input.updatedAt && { updatedAt: input.updatedAt }),
+        ...(inputFolderId !== undefined && { folderId: inputFolderId }),
       };
 
       if (input.metadata && id) {
@@ -1014,12 +1026,46 @@ export const noteRouter = router({
         const needTobeAddedRelationTags = _.difference(newTagsString, oldTagsString);
         const needToBeDeletedRelationTags = _.difference(oldTagsString, newTagsString);
 
-        // handle references
+        // handle references (explicit + wikilinks)
         const oldReferences = await prisma.noteReference.findMany({ where: { fromNoteId: note.id } });
         const oldReferencesIds = oldReferences.map((ref) => ref.toNoteId);
-        if (references !== undefined) {
-          const needToBeAddedReferences = _.difference(references || [], oldReferencesIds);
-          const needToBeDeletedReferences = _.difference(oldReferencesIds, references || []);
+
+        // Auto-extract wikilinks from content and merge with explicit references
+        let allReferences = references || [];
+        if (content) {
+          const wikilinkTitles = extractWikilinks(content);
+          if (wikilinkTitles.length > 0) {
+            const linkedNotes = await prisma.notes.findMany({
+              where: {
+                accountId: Number(ctx.id),
+                content: { in: wikilinkTitles.map(title => {
+                  // Match notes whose first line contains the title
+                  return undefined as any; // handled below
+                }).filter(Boolean) },
+              },
+            });
+            // Search for each wikilink title in note content (first line = title)
+            for (const title of wikilinkTitles) {
+              const matchedNote = await prisma.notes.findFirst({
+                where: {
+                  accountId: Number(ctx.id),
+                  content: { startsWith: `# ${title}` },
+                  id: { not: note.id },
+                },
+                select: { id: true },
+              });
+              if (matchedNote && !allReferences.includes(matchedNote.id)) {
+                allReferences.push(matchedNote.id);
+              }
+            }
+          }
+        }
+
+        if (allReferences.length > 0 || references !== undefined) {
+          const needToBeAddedReferences = _.difference(allReferences, oldReferencesIds);
+          const needToBeDeletedReferences = references !== undefined
+            ? _.difference(oldReferencesIds, allReferences)
+            : [];
 
           // references delete old references
           if (needToBeDeletedReferences.length != 0) {
@@ -1798,6 +1844,417 @@ export const noteRouter = router({
       );
 
       return { success: true };
+    }),
+
+  // ========================================
+  // Note Folder CRUD
+  // ========================================
+  createFolder: authProcedure
+    .input(z.object({
+      name: z.string().min(1).max(255),
+      parentId: z.number().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const { name, parentId } = input;
+      let path = name;
+      let depth = 0;
+
+      if (parentId) {
+        const parentFolder = await prisma.noteFolder.findFirst({
+          where: { id: parentId, accountId: Number(ctx.id) },
+        });
+        if (!parentFolder) throw new Error('Parent folder not found');
+        path = parentFolder.path ? `${parentFolder.path},${name}` : name;
+        depth = parentFolder.depth + 1;
+      }
+
+      const folder = await prisma.noteFolder.create({
+        data: {
+          name,
+          parentId: parentId || null,
+          path,
+          depth,
+          accountId: Number(ctx.id),
+        },
+      });
+      return folder;
+    }),
+
+  listFolders: authProcedure
+    .input(z.object({}).optional())
+    .query(async ({ ctx }) => {
+      const folders = await prisma.noteFolder.findMany({
+        where: { accountId: Number(ctx.id) },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+        include: {
+          _count: { select: { notes: true } },
+        },
+      });
+      return folders;
+    }),
+
+  renameFolder: authProcedure
+    .input(z.object({
+      id: z.number(),
+      name: z.string().min(1).max(255),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, name } = input;
+
+      return await prisma.$transaction(async (tx) => {
+        const folder = await tx.noteFolder.findFirst({
+          where: { id, accountId: Number(ctx.id) },
+        });
+        if (!folder) throw new Error('Folder not found');
+
+        const oldPath = folder.path;
+        const pathParts = oldPath.split(',');
+        pathParts[pathParts.length - 1] = name;
+        const newPath = pathParts.join(',');
+
+        // Update the folder itself
+        await tx.noteFolder.update({
+          where: { id },
+          data: { name, path: newPath },
+        });
+
+        // Update all children paths
+        const children = await tx.noteFolder.findMany({
+          where: {
+            accountId: Number(ctx.id),
+            path: { startsWith: `${oldPath},` },
+          },
+        });
+
+        for (const child of children) {
+          const updatedPath = child.path.replace(oldPath, newPath);
+          await tx.noteFolder.update({
+            where: { id: child.id },
+            data: { path: updatedPath },
+          });
+        }
+
+        return { success: true };
+      });
+    }),
+
+  moveFolder: authProcedure
+    .input(z.object({
+      id: z.number(),
+      newParentId: z.number().nullable(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, newParentId } = input;
+
+      return await prisma.$transaction(async (tx) => {
+        const folder = await tx.noteFolder.findFirst({
+          where: { id, accountId: Number(ctx.id) },
+        });
+        if (!folder) throw new Error('Folder not found');
+
+        let newPath = folder.name;
+        let newDepth = 0;
+
+        if (newParentId) {
+          if (newParentId === id) throw new Error('Cannot move folder into itself');
+          const newParent = await tx.noteFolder.findFirst({
+            where: { id: newParentId, accountId: Number(ctx.id) },
+          });
+          if (!newParent) throw new Error('Target folder not found');
+          // Prevent moving into own descendant
+          if (newParent.path.startsWith(`${folder.path},`)) {
+            throw new Error('Cannot move folder into its own descendant');
+          }
+          newPath = `${newParent.path},${folder.name}`;
+          newDepth = newParent.depth + 1;
+        }
+
+        const oldPath = folder.path;
+        const depthDiff = newDepth - folder.depth;
+
+        // Update the folder
+        await tx.noteFolder.update({
+          where: { id },
+          data: { parentId: newParentId, path: newPath, depth: newDepth },
+        });
+
+        // Update all children
+        const children = await tx.noteFolder.findMany({
+          where: {
+            accountId: Number(ctx.id),
+            path: { startsWith: `${oldPath},` },
+          },
+        });
+
+        for (const child of children) {
+          const updatedPath = child.path.replace(oldPath, newPath);
+          await tx.noteFolder.update({
+            where: { id: child.id },
+            data: { path: updatedPath, depth: child.depth + depthDiff },
+          });
+        }
+
+        return { success: true };
+      });
+    }),
+
+  deleteFolder: authProcedure
+    .input(z.object({
+      id: z.number(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const { id } = input;
+
+      return await prisma.$transaction(async (tx) => {
+        const folder = await tx.noteFolder.findFirst({
+          where: { id, accountId: Number(ctx.id) },
+        });
+        if (!folder) throw new Error('Folder not found');
+
+        // Move notes in this folder (and descendants) to unfiled
+        const descendantFolders = await tx.noteFolder.findMany({
+          where: {
+            accountId: Number(ctx.id),
+            OR: [
+              { id },
+              { path: { startsWith: `${folder.path},` } },
+            ],
+          },
+          select: { id: true },
+        });
+        const folderIds = descendantFolders.map(f => f.id);
+
+        await tx.notes.updateMany({
+          where: { folderId: { in: folderIds } },
+          data: { folderId: null },
+        });
+
+        // Delete descendant folders first (deepest first), then the folder itself
+        await tx.noteFolder.deleteMany({
+          where: {
+            accountId: Number(ctx.id),
+            path: { startsWith: `${folder.path},` },
+          },
+        });
+        await tx.noteFolder.delete({ where: { id } });
+
+        return { success: true };
+      });
+    }),
+
+  moveToFolder: authProcedure
+    .input(z.object({
+      noteIds: z.array(z.number()),
+      folderId: z.number().nullable(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const { noteIds, folderId } = input;
+
+      if (folderId !== null) {
+        const folder = await prisma.noteFolder.findFirst({
+          where: { id: folderId, accountId: Number(ctx.id) },
+        });
+        if (!folder) throw new Error('Folder not found');
+      }
+
+      await prisma.notes.updateMany({
+        where: {
+          id: { in: noteIds },
+          accountId: Number(ctx.id),
+        },
+        data: { folderId },
+      });
+
+      return { success: true };
+    }),
+
+  // ========================================
+  // Journal
+  // ========================================
+  getJournalEntry: authProcedure
+    .input(z.object({
+      date: z.string(), // YYYY-MM-DD
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const { date } = input;
+      const journalTag = `#journal/${date}`;
+
+      // Find existing journal entry by tag
+      const tag = await prisma.tag.findFirst({
+        where: { name: `journal/${date}`, accountId: Number(ctx.id) },
+      });
+
+      if (tag) {
+        const relation = await prisma.tagsToNote.findFirst({
+          where: { tagId: tag.id },
+          include: {
+            note: {
+              include: {
+                tags: { include: { tag: true } },
+                attachments: { orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }] },
+                references: { select: { toNoteId: true, toNote: { select: { content: true } } } },
+                referencedBy: { select: { fromNoteId: true, fromNote: { select: { content: true } } } },
+                _count: { select: { comments: true, histories: true } },
+              },
+            },
+          },
+        });
+        if (relation?.note) return relation.note;
+      }
+
+      // Create new journal entry
+      const dayjs = (await import('dayjs')).default;
+      const d = dayjs(date);
+      const dayName = d.format('dddd');
+      const dateFormatted = d.format('MMMM D, YYYY');
+
+      const content = `# ${dayName}, ${dateFormatted}\n\n## Quick Captures\n\n\n## Notes\n\n\n## End of Day\n\n${journalTag}`;
+
+      const note = await prisma.notes.create({
+        data: {
+          content,
+          type: 1, // note type
+          accountId: Number(ctx.id),
+        },
+      });
+
+      // Create journal tag hierarchy
+      let parentTag = await prisma.tag.findFirst({
+        where: { name: 'journal', parent: 0, accountId: Number(ctx.id) },
+      });
+      if (!parentTag) {
+        parentTag = await prisma.tag.create({
+          data: { name: 'journal', parent: 0, accountId: Number(ctx.id) },
+        });
+      }
+
+      let dateTag = await prisma.tag.findFirst({
+        where: { name: `journal/${date}`, parent: parentTag.id, accountId: Number(ctx.id) },
+      });
+      if (!dateTag) {
+        dateTag = await prisma.tag.create({
+          data: { name: `journal/${date}`, parent: parentTag.id, accountId: Number(ctx.id) },
+        });
+      }
+
+      await prisma.tagsToNote.create({
+        data: { noteId: note.id, tagId: dateTag.id },
+      });
+
+      // Return with full includes
+      return await prisma.notes.findUnique({
+        where: { id: note.id },
+        include: {
+          tags: { include: { tag: true } },
+          attachments: { orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }] },
+          references: { select: { toNoteId: true, toNote: { select: { content: true } } } },
+          referencedBy: { select: { fromNoteId: true, fromNote: { select: { content: true } } } },
+          _count: { select: { comments: true, histories: true } },
+        },
+      });
+    }),
+
+  quickCapture: authProcedure
+    .input(z.object({
+      text: z.string().min(1),
+      date: z.string().optional(), // YYYY-MM-DD, defaults to today
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const dayjs = (await import('dayjs')).default;
+      const date = input.date || dayjs().format('YYYY-MM-DD');
+      const time = dayjs().format('HH:mm');
+      const bullet = `- ${time} — ${input.text}`;
+
+      const journalTag = `journal/${date}`;
+      const tag = await prisma.tag.findFirst({
+        where: { name: journalTag, accountId: Number(ctx.id) },
+      });
+
+      if (tag) {
+        const relation = await prisma.tagsToNote.findFirst({
+          where: { tagId: tag.id },
+        });
+        if (relation) {
+          const note = await prisma.notes.findUnique({ where: { id: relation.noteId } });
+          if (note) {
+            // Insert after "## Quick Captures" section
+            const marker = '## Quick Captures';
+            const idx = note.content.indexOf(marker);
+            let newContent: string;
+            if (idx !== -1) {
+              const insertPoint = idx + marker.length;
+              newContent = note.content.slice(0, insertPoint) + '\n' + bullet + note.content.slice(insertPoint);
+            } else {
+              newContent = note.content + '\n' + bullet;
+            }
+            await prisma.notes.update({
+              where: { id: note.id },
+              data: { content: newContent },
+            });
+            return { success: true, noteId: note.id };
+          }
+        }
+      }
+
+      // No journal entry exists yet — create one via getJournalEntry logic then append
+      const dayName = dayjs(date).format('dddd');
+      const dateFormatted = dayjs(date).format('MMMM D, YYYY');
+      const content = `# ${dayName}, ${dateFormatted}\n\n## Quick Captures\n${bullet}\n\n## Notes\n\n\n## End of Day\n\n#journal/${date}`;
+
+      const note = await prisma.notes.create({
+        data: {
+          content,
+          type: 1,
+          accountId: Number(ctx.id),
+        },
+      });
+
+      // Create tags
+      let parentTag = await prisma.tag.findFirst({
+        where: { name: 'journal', parent: 0, accountId: Number(ctx.id) },
+      });
+      if (!parentTag) {
+        parentTag = await prisma.tag.create({
+          data: { name: 'journal', parent: 0, accountId: Number(ctx.id) },
+        });
+      }
+      let dateTagRecord = await prisma.tag.findFirst({
+        where: { name: journalTag, parent: parentTag.id, accountId: Number(ctx.id) },
+      });
+      if (!dateTagRecord) {
+        dateTagRecord = await prisma.tag.create({
+          data: { name: journalTag, parent: parentTag.id, accountId: Number(ctx.id) },
+        });
+      }
+      await prisma.tagsToNote.create({
+        data: { noteId: note.id, tagId: dateTagRecord.id },
+      });
+
+      return { success: true, noteId: note.id };
+    }),
+
+  journalDates: authProcedure
+    .input(z.object({
+      yearMonth: z.string(), // YYYY-MM
+    }))
+    .query(async ({ input, ctx }) => {
+      const { yearMonth } = input;
+      const tags = await prisma.tag.findMany({
+        where: {
+          name: { startsWith: `journal/${yearMonth}` },
+          accountId: Number(ctx.id),
+        },
+        include: {
+          tagsToNote: { select: { noteId: true } },
+        },
+      });
+
+      return tags
+        .filter(t => t.tagsToNote.length > 0)
+        .map(t => {
+          const datePart = t.name.replace('journal/', '');
+          return datePart;
+        });
     }),
 });
 

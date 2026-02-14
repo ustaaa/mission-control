@@ -834,5 +834,18 @@
   "enable-signin-footer": "Enable Signin Footer",
   "signin-footer-text": "Signin Footer Content",
   "signin-footer-desc": "Supports HTML: <a href='...'>link</a>, <strong>bold</strong>, <em>italic</em>, <br/>",
-  "signin-footer-placeholder": "e.g., <a href='https://blinko.space/'>Blinko</a> © 2026 Blinko. All rights reserved."
+  "signin-footer-placeholder": "e.g., <a href='https://blinko.space/'>Blinko</a> © 2026 Blinko. All rights reserved.",
+  "journal": "Journal",
+  "today": "Today",
+  "quick-capture": "Quick Capture",
+  "quick-capture-placeholder": "Capture a thought...",
+  "no-journal-entry": "No journal entry for this day",
+  "last-updated": "Updated",
+  "folders": "Folders",
+  "folder-name": "Folder name",
+  "new-subfolder": "New Subfolder",
+  "all-notes": "All Notes",
+  "rename": "Rename",
+  "move-to-folder": "Move to Folder",
+  "todo": "Todo"
 }

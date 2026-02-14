@@ -27,7 +27,52 @@ const HighlightTags = observer(({ text, }: { text: any }) => {
   const navigate = useNavigate();
   if (!text) return text
   try {
-    const decodedText = text.replace(/&nbsp;/g, ' ');
+    // Convert text to string for processing
+    const textStr = typeof text === 'string' ? text : Array.isArray(text)
+      ? text.map(t => typeof t === 'string' ? t : '').join('')
+      : String(text || '');
+
+    const decodedText = textStr.replace(/&nbsp;/g, ' ');
+
+    // Process wikilinks first: [[Title]] → clickable links
+    const wikilinkRegex = /\[\[([^\]]+)\]\]/g;
+    const segments: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = wikilinkRegex.exec(decodedText)) !== null) {
+      // Add text before the wikilink
+      if (match.index > lastIndex) {
+        segments.push(decodedText.slice(lastIndex, match.index));
+      }
+      const title = match[1];
+      segments.push(
+        <span
+          key={`wikilink-${match.index}`}
+          className="text-primary cursor-pointer hover:underline font-medium"
+          onClick={() => {
+            navigate(`/?path=all&searchText=${encodeURIComponent(`# ${title}`)}`);
+            RootStore.Get(BlinkoStore).forceQuery++;
+          }}
+        >
+          {title}
+        </span>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+
+    if (segments.length > 0) {
+      if (lastIndex < decodedText.length) {
+        segments.push(decodedText.slice(lastIndex));
+      }
+      // Now process hashtags within the non-wikilink segments
+      return segments.map((segment, segIdx) => {
+        if (typeof segment !== 'string') return segment;
+        return processHashtags(segment, segIdx, location, navigate);
+      });
+    }
+
+    // No wikilinks found, process hashtags normally
     const lines = decodedText?.split("\n");
     return lines.map((line, lineIndex) => {
       const parts = line.split(/\s+/);
@@ -56,6 +101,31 @@ const HighlightTags = observer(({ text, }: { text: any }) => {
     return text
   }
 });
+
+function processHashtags(text: string, keyPrefix: number, location: any, navigate: any) {
+  const lines = text.split("\n");
+  return lines.map((line, lineIndex) => {
+    const parts = line.split(/\s+/);
+    const processedParts = parts.map((part, index) => {
+      if (part.startsWith('#') && part.length > 1 && part.match(helper.regex.isContainHashTag)) {
+        const isShareMode = location.pathname.includes('share');
+        return (
+          <span key={`${keyPrefix}-${lineIndex}-${index}`}
+            className={`select-none blinko-tag px-1 font-bold cursor-pointer hover:opacity-80 !transition-all ${isShareMode ? 'pointer-events-none' : ''}`}
+            onClick={async () => {
+              if (isShareMode) return;
+              navigate(`/?path=all&searchText=${encodeURIComponent(part)}`);
+              RootStore.Get(BlinkoStore).forceQuery++;
+            }}>
+            {part + " "}
+          </span>
+        );
+      }
+      return part + " ";
+    });
+    return <React.Fragment key={`frag-${keyPrefix}-${lineIndex}`}>{processedParts}{lineIndex < lines.length - 1 && <br />}</React.Fragment>;
+  });
+}
 
 const Table = ({ children }: { children: React.ReactNode }) => {
   return <div className="table-container">{children}</div>;

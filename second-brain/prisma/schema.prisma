@@ -36,6 +36,7 @@ model accounts {
   conversations conversation[]
   sharedNotes   noteInternalShare[]
   aiScheduledTasks aiScheduledTask[]
+  noteFolders   noteFolder[]
 }
 
 model attachments {
@@ -86,14 +87,18 @@ model notes {
   sortOrder         Int             @default(0)
   createdAt         DateTime        @default(now()) @db.Timestamptz(6)
   updatedAt         DateTime        @updatedAt @db.Timestamptz(6)
+  folderId          Int?
   attachments       attachments[]
   tags              tagsToNote[]
   account           accounts?       @relation(fields: [accountId], references: [id])
+  folder            noteFolder?     @relation(fields: [folderId], references: [id], onDelete: SetNull)
   referencedBy      noteReference[] @relation("ReferencedNote")
   references        noteReference[] @relation("ReferencingNote")
   comments          comments[]      @relation("NoteComments")
   histories         noteHistory[]
   internalShares    noteInternalShare[]
+
+  @@index([folderId])
 }
 
 model comments {
@@ -148,6 +153,25 @@ model noteReference {
   toNote   notes @relation("ReferencedNote", fields: [toNoteId], references: [id])
 
   @@unique([fromNoteId, toNoteId])
+}
+
+model noteFolder {
+  id        Int          @id @default(autoincrement())
+  name      String       @db.VarChar(255)
+  parentId  Int?
+  parent    noteFolder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  noteFolder[] @relation("FolderTree")
+  path      String       @default("") @db.VarChar  // comma-separated: "root,projects,work"
+  depth     Int          @default(0)
+  sortOrder Int          @default(0)
+  accountId Int
+  account   accounts     @relation(fields: [accountId], references: [id])
+  notes     notes[]
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime     @updatedAt @db.Timestamptz(6)
+
+  @@index([accountId])
+  @@index([parentId])
 }
 
 model follows {

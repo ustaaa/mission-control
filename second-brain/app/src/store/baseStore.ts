@@ -25,16 +25,15 @@ export class BaseStore implements Store {
       icon: 'hugeicons:note',
     },
     {
+      title: 'journal',
+      href: '/journal',
+      icon: 'hugeicons:calendar-01',
+    },
+    {
       title: 'todo',
       shallow: true,
       href: '/?path=todo',
       icon: 'solar:bill-check-linear',
-    },
-    {
-      title: 'analytics',
-      href: '/analytics',
-      hiddenMobile: true,
-      icon: 'hugeicons:analytics-01',
     },
     {
       title: 'resources',
@@ -43,10 +42,18 @@ export class BaseStore implements Store {
       hiddenMobile: true,
     },
     {
+      title: 'analytics',
+      href: '/analytics',
+      hiddenMobile: true,
+      hiddenSidebar: true,
+      icon: 'hugeicons:analytics-01',
+    },
+    {
       title: 'archived',
       href: '/?path=archived',
       icon: 'solar:box-broken',
       hiddenMobile: true,
+      hiddenSidebar: true,
     },
     {
       title: 'trash',
@@ -159,6 +166,8 @@ export class BaseStore implements Store {
         this.currentTitle = 'todo';
       } else if (searchParams.get('path') == 'archived') {
         this.currentTitle = 'archived';
+      } else if (location.pathname == '/journal') {
+        this.currentTitle = 'journal';
       } else if (location.pathname == '/resources') {
         this.currentTitle = 'resources';
       } else if (searchParams.get('path') == 'trash') {

@@ -26,6 +26,7 @@ import QuickNotePage from "./pages/quicknote";
 import QuickAIPage from "./pages/quickai";
 import QuickToolPage from "./pages/quicktool";
 import { useQuicknoteHotkey } from "./hooks/useQuicknoteHotkey";
+import { useJournalHotkey } from "./hooks/useJournalHotkey";
 
 const HomePage = lazy(() => import('./pages/index'));
 const SignInPage = lazy(() => import('./pages/signin'));
@@ -37,6 +38,7 @@ const ReviewPage = lazy(() => import('./pages/review'));
 const SettingsPage = lazy(() => import('./pages/settings'));
 const PluginPage = lazy(() => import('./pages/plugin'));
 const AnalyticsPage = lazy(() => import('./pages/analytics'));
+const JournalPage = lazy(() => import('./pages/journal'));
 const AllPage = lazy(() => import('./pages/all'));
 const OAuthCallbackPage = lazy(() => import('./pages/oauth-callback'));
 const DetailPage = lazy(() => import('./pages/detail'));
@@ -130,10 +132,15 @@ function AppRoutes() {
   const navigate = useNavigate();
   const windowType = getWindowType();
 
-  // Initialize Quick AI hotkey handler inside Router context (only for main window on desktop)
+  // Initialize hotkey handlers inside Router context (only for main window on desktop)
   if (windowType === 'main' && isDesktop()) {
     useQuickaiHotkey();
     useQuicknoteHotkey(true);
+  }
+
+  // Journal hotkey (Ctrl+Shift+J) - works in browser and desktop
+  if (windowType === 'main') {
+    useJournalHotkey();
   }
 
   // Listen for navigation commands from Tauri (only for current window type)
@@ -235,6 +242,7 @@ function AppRoutes() {
             <Route path="/hub" element={<ProtectedRoute><HubPage /></ProtectedRoute>} />
             <Route path="/ai" element={<ProtectedRoute><AIPage /></ProtectedRoute>} />
             <Route path="/resources" element={<ProtectedRoute><ResourcesPage /></ProtectedRoute>} />
+            <Route path="/journal" element={<ProtectedRoute><JournalPage /></ProtectedRoute>} />
             <Route path="/review" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
             <Route path="/plugin" element={<ProtectedRoute><PluginPage /></ProtectedRoute>} />

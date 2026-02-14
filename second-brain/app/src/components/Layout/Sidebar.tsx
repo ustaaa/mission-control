@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'usehooks-ts';
 import { UserAvatarDropdown } from '../Common/UserAvatarDropdown';
 import { TagListPanel } from '../Common/TagListPanel';
+import { NoteFolderTree } from '../NoteFolderTree';
 import { useEffect, useState } from 'react';
 import { BlinkoStore } from '@/store/blinkoStore';
 import { useLocation, useSearchParams, Link, useNavigate } from 'react-router-dom';
@@ -109,6 +110,7 @@ export const Sidebar = observer(({ onItemClick }: SidebarProps) => {
                 {!base.isSidebarCollapsed && <span className="!transition-all">{t(i.title)}</span>}
               </Link>
             ))}
+          {!base.isSidebarCollapsed && <NoteFolderTree />}
           {!base.isSidebarCollapsed && blinkoStore.tagList.value?.listTags.length != 0 && blinkoStore.tagList.value?.listTags && <TagListPanel />}
         </div>
       </ScrollShadow>

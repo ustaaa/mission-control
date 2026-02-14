@@ -79,6 +79,7 @@ export const notesSchema = z.object({
   shareViewCount: z.number().nullable().optional(),
   metadata: z.any(),
   sortOrder: z.number().nullable().optional(),
+  folderId: z.number().int().nullable().optional(),
   accountId: z.union([z.number().int(), z.null()]),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
@@ -113,6 +114,24 @@ export const tagsToNoteSchema = z.object({
 })
 
 export type tagsToNote = z.infer<typeof tagsToNoteSchema>
+
+/////////////////////////////////////////
+// NOTE FOLDER SCHEMA
+/////////////////////////////////////////
+
+export const noteFolderSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  parentId: z.number().int().nullable(),
+  path: z.string(),
+  depth: z.number().int(),
+  sortOrder: z.number().int(),
+  accountId: z.number().int(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type noteFolder = z.infer<typeof noteFolderSchema>
 
 /////////////////////////////////////////
 // SELECT & INCLUDE
