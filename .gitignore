@@ -16,3 +16,15 @@ __pycache__/
 
 # Local data backups
 *.bak
+
+# Second Brain (Blinko fork)
+second-brain/node_modules/
+second-brain/.next/
+second-brain/.blinko/
+second-brain/dist/
+second-brain/prisma/*.db
+second-brain/app/node_modules/
+second-brain/server/node_modules/
+second-brain/shared/node_modules/
+second-brain/blinko-types/node_modules/
+second-brain/uploads/
