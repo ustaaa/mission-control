@@ -36,21 +36,48 @@
 
 ## Handoff Notes (Claude Code → Nomura)
 
-### Session: 2026-02-14
+### Session: 2026-02-14 (Feature Build)
 **Changed:**
-- Added Second Brain project (Blinko fork) in `second-brain/` directory
-- Hierarchical note folders, `[[wikilink]]` backlinks, daily journal, theme polish
+- Built complete Second Brain feature set on top of Blinko fork (`second-brain/`)
+- **Phase 1** (prior session): Forked Blinko, rebranded to "Second Brain", applied Linear dark theme
+- **Phase 2**: Hierarchical note folders — `noteFolder` Prisma model, 6 tRPC CRUD procedures, `NoteFolderTree` sidebar component
+- **Phase 3**: `[[Wikilink]]` backlinks — `extractWikilinks()` auto-parses on save, `WikilinkAutocomplete` editor component, clickable links in MarkdownRender, enhanced BlinkoReference with incoming/outgoing tabs
+- **Phase 4**: Daily journal — `/journal` page with calendar navigation, `QuickCapture` component, auto-created daily templates, `Ctrl+Shift+J` global hotkey
+- **Phase 5**: Sidebar polish — Journal added to nav, analytics/archived hidden from sidebar, i18n keys added
+
+**Files created (new):**
+- `second-brain/app/src/components/NoteFolderTree/index.tsx` — folder tree sidebar
+- `second-brain/app/src/components/Journal/JournalCalendar.tsx` — month calendar with entry dots
+- `second-brain/app/src/components/Journal/QuickCapture.tsx` — timestamped quick capture input
+- `second-brain/app/src/components/Common/Editor/WikilinkAutocomplete.tsx` — `[[` autocomplete popup
+- `second-brain/app/src/pages/journal.tsx` — journal page
+- `second-brain/app/src/hooks/useJournalHotkey.ts` — Ctrl+Shift+J shortcut
+- `SECOND-BRAIN-ROADMAP.md` — future plans and architecture decisions
+
+**Files modified:**
+- `second-brain/prisma/schema.prisma` — added `noteFolder` model + `folderId` on `notes`
+- `second-brain/server/routerTrpc/note.ts` — added folder CRUD, journal, wikilink procedures (~470 new lines)
+- `second-brain/shared/lib/prismaZodType.ts` — added `noteFolderSchema` + `folderId` to `notesSchema`
+- `second-brain/app/src/App.tsx` — added `/journal` route + journal hotkey
+- `second-brain/app/src/store/baseStore.ts` — reordered sidebar, added journal nav item + title
+- `second-brain/app/src/components/Layout/Sidebar.tsx` — integrated `NoteFolderTree`
+- `second-brain/app/src/components/Common/MarkdownRender/index.tsx` — wikilink rendering
+- `second-brain/app/src/components/BlinkoReference/index.tsx` — incoming/outgoing tabs
+- `second-brain/app/public/locales/en/translation.json` — new i18n keys
 
 **Watch out for:**
-- Second Brain requires PostgreSQL + Prisma migrations
-- New Prisma migration for `noteFolder` model needs to be applied
-- Second Brain runs on port 1111 (separate from MC on 18701)
+- **Prisma migration required:** Run `npx prisma migrate dev --name add-note-folders` before starting the server. The `noteFolder` model and `notes.folderId` column are new.
+- Second Brain runs on **port 1111** (separate from MC on 18701)
+- The `extractWikilinks()` in `note.ts` looks up notes by `content startsWith "# Title"` — this means note titles must be the first line as a markdown heading
+- Journal entries are tagged with `#journal/YYYY-MM-DD` — the tag hierarchy is auto-created
+- `WikilinkAutocomplete` hooks into DOM events on the Vditor editor; may need testing across browsers
 
 **Next up / TODO:**
 - Deploy Second Brain as systemd service alongside MC
 - Configure Tailscale/Cloudflare Tunnel for remote access
+- See `SECOND-BRAIN-ROADMAP.md` for full future plans
 
-**Pending TODO (Low priority from Claude Code):**
+**Pending TODO (Low priority — Mission Control Kanban):**
 - Task duplication feature
 - Keyboard shortcut overlay (? key)
 - Export options (JSON, CSV, Markdown)
@@ -151,16 +178,36 @@ bun --env-file ../.env --watch index.ts
 |---------|------|
 | Prisma schema | `second-brain/prisma/schema.prisma` |
 | Note tRPC router | `second-brain/server/routerTrpc/note.ts` |
-| Attachment router | `second-brain/server/routerTrpc/attachment.ts` |
+| Attachment router (folder pattern) | `second-brain/server/routerTrpc/attachment.ts` |
+| tRPC app router (where routers are merged) | `second-brain/server/routerTrpc/_app.ts` |
+| Auth middleware | `second-brain/server/middleware/index.ts` |
+| Shared Zod types | `second-brain/shared/lib/prismaZodType.ts` |
 | Editor component | `second-brain/app/src/components/Common/Editor/index.tsx` |
+| Wikilink autocomplete | `second-brain/app/src/components/Common/Editor/WikilinkAutocomplete.tsx` |
+| Markdown renderer | `second-brain/app/src/components/Common/MarkdownRender/index.tsx` |
+| Note folder tree | `second-brain/app/src/components/NoteFolderTree/index.tsx` |
+| Journal calendar | `second-brain/app/src/components/Journal/JournalCalendar.tsx` |
+| Quick capture | `second-brain/app/src/components/Journal/QuickCapture.tsx` |
+| Backlink panel | `second-brain/app/src/components/BlinkoReference/index.tsx` |
+| Journal page | `second-brain/app/src/pages/journal.tsx` |
 | App routes | `second-brain/app/src/App.tsx` |
-| Sidebar nav | `second-brain/app/src/store/baseStore.ts` |
+| Sidebar nav & router list | `second-brain/app/src/store/baseStore.ts` |
+| i18n (English) | `second-brain/app/public/locales/en/translation.json` |
+| Future roadmap | `SECOND-BRAIN-ROADMAP.md` |
 
 ### Second Brain Conventions
 - **Prisma migrations:** After schema changes, run `npx prisma migrate dev --name <name>`
 - **Follow existing patterns:** Folder CRUD mirrors `attachment.ts`, wikilinks mirror `extractHashtags()`
 - **i18n:** Add new keys to `app/public/locales/*/translation.json`
 - **Never modify** `second-brain/.env` — contains database credentials
+- **State management:** MobX with `makeAutoObservable()` — use `RootStore.Get(StoreName)` for global, `RootStore.Local()` for component-scoped
+- **Async data:** Use `PromiseState` wrapper from `@/store/standard/PromiseState`
+- **API calls:** Use `api.notes.procedureName.mutate()` or `.query()` from `@/lib/trpc`
+- **Components:** Always wrap with `observer()` from `mobx-react-lite` for reactivity
+- **UI library:** HeroUI (Button, Card, Input, Popover, etc.) + Tailwind CSS 4
+- **Animations:** Framer Motion for transitions
+- **tRPC procedures:** Define with `authProcedure` for authenticated routes, use `z.object()` for input validation
+- **New pages:** Lazy import in `App.tsx`, wrap with `<ProtectedRoute>`, add to `routerList` in `baseStore.ts`
 
 ---
 
